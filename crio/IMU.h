@@ -1,5 +1,8 @@
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) Kauai Labs. All Rights Reserved.							  */
+/*                                                                            */
+/* Created in support of Team 2465 (Kauaibots).  Go Thunderchicken!           */
+/*                                                                            */
 /* Based upon the Open Source WPI Library released by FIRST robotics.         */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
