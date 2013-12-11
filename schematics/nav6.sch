@@ -1854,6 +1854,11 @@ Commonly used for small ceramic capacitors. Like our 0.1uF (http://www.sparkfun.
 <package name="MICRO-FIDUCIAL">
 <smd name="1" x="0" y="0" dx="0.635" dy="0.635" layer="1" roundness="100" cream="no"/>
 </package>
+<package name="CREATIVE_COMMONS">
+<text x="-20.32" y="5.08" size="1.778" layer="27">Released under the Creative Commons Attribution Share-Alike 3.0 License</text>
+<text x="0" y="2.54" size="1.778" layer="27">http://creativecommons.org/licenses/by-sa/3.0</text>
+<text x="11.43" y="0" size="1.778" layer="27">Designed by:</text>
+</package>
 </packages>
 <symbols>
 <symbol name="LETTER_L">
@@ -2080,6 +2085,11 @@ Commonly used for small ceramic capacitors. Like our 0.1uF (http://www.sparkfun.
 <wire x1="-0.762" y1="0.762" x2="0.762" y2="-0.762" width="0.254" layer="94"/>
 <wire x1="0.762" y1="0.762" x2="-0.762" y2="-0.762" width="0.254" layer="94"/>
 <circle x="0" y="0" radius="1.27" width="0.254" layer="94"/>
+</symbol>
+<symbol name="CREATIVE_COMMONS">
+<text x="0" y="5.08" size="1.778" layer="95">Released under the Creative Commons Attribution Share-Alike 3.0 License</text>
+<text x="0" y="2.54" size="1.778" layer="95">http://creativecommons.org/licenses/by-sa/3.0</text>
+<text x="0" y="0" size="1.778" layer="95">Design by:</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -3117,6 +3127,18 @@ Various fiducial points for machine vision alignment.</description>
 </technologies>
 </device>
 <device name="UFIDUCIAL" package="MICRO-FIDUCIAL">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="CREATIVE_COMMONS">
+<gates>
+<gate name="G$1" symbol="CREATIVE_COMMONS" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="CREATIVE_COMMONS">
 <technologies>
 <technology name=""/>
 </technologies>
@@ -4745,6 +4767,7 @@ MSOP&lt;br&gt;
 <part name="GND2" library="SparkFun" deviceset="GND" device=""/>
 <part name="GND4" library="SparkFun" deviceset="GND" device=""/>
 <part name="P+1" library="SparkFun" deviceset="5V" device=""/>
+<part name="U$1" library="SparkFun" deviceset="CREATIVE_COMMONS" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -4766,6 +4789,9 @@ MSOP&lt;br&gt;
 <text x="266.7" y="12.7" size="1.778" layer="97">(This component not required if MPU-9150 is used)</text>
 <text x="275.59" y="63.5" size="4.064" layer="95">COMPASS</text>
 <text x="266.7" y="7.62" size="1.778" layer="91">I2C Address:  x1E (x3C Write, x3D Read)</text>
+<text x="53.34" y="203.2" size="5.08" layer="95">KauaiLabs.com</text>
+<text x="70.104" y="193.04" size="1.778" layer="95">Scott Libert, 2013</text>
+<text x="53.34" y="189.992" size="1.778" layer="95">Portions of this work are based on theopen-source ArduIMU project.</text>
 </plain>
 <instances>
 <instance part="C22" gate="G$1" x="91.44" y="68.58"/>
@@ -4910,6 +4936,7 @@ MSOP&lt;br&gt;
 <instance part="GND2" gate="1" x="142.24" y="68.58"/>
 <instance part="GND4" gate="1" x="154.94" y="50.8"/>
 <instance part="P+1" gate="G$1" x="43.18" y="152.4"/>
+<instance part="U$1" gate="G$1" x="53.34" y="193.04"/>
 </instances>
 <busses>
 </busses>

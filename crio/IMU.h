@@ -1,5 +1,6 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.							  */
+/* Copyright (c) Kauai Labs. All Rights Reserved.							  */
+/* Based upon the Open Source WPI Library released by FIRST robotics.         */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
@@ -13,13 +14,11 @@
 #include "SerialPort.h"
 #include "Task.h"
 /**
- * Use the angle sensor to read an absolute angle measurement.
+ * Use the IMU to retrieve a Yaw/Pitch/Roll measurement.
  * 
- * This utilizes the Avagotech AEAT-6012-A06 12-bit Absolute Magnetic Encoder.
+ * This utilizes the Kauai Labs Nav6 IMU.
  * 
- * This sensor requires two DigitalOutput pin (Chip Select, Clock)
- * 
- * This sensor also requires one DigitalInput pin (Data)
+ * This IMU interfaces to the CRio processor via a Serial port.
  */
 
 #define YAW_HISTORY_LENGTH 10
