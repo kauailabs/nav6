@@ -1,3 +1,10 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) Kauai Labs. All Rights Reserved.							  */
+/* Based upon the Open Source WPI Library released by FIRST robotics.         */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
+/*----------------------------------------------------------------------------*/
+
 
 #include "NetworkCommunication/UsageReporting.h"
 #include "Timer.h"
