@@ -29,8 +29,8 @@ The nav6 Factory Test Procedure verifies correct operation of the circuit board 
   *  If successful, the Status LED will be steady on.
   *  If unsuccessful, the Status LED will repeatedly flash quickly a number of times, then pausing a few seconds before repeating the sequence of flashes.  The number of flashes corresponds to an error code, as follows:
 || Code	|| Error	|| Typical Cause ||
-||1	||MPU-6050 not responding on I2C bus	||MPU-6050 missing, incorrectly installed, or malfunctioning||
-||2	||HMC5883L not responding on I2C bus	||HMC5883L missing, incorrectly installed, or malfunctioning||
+||1	||MPU-6050 not responding on I2C bus	||MPU-6050 missing, incorrectly installed, or malfunctioning.  Or, I2C bus failure.||
+||2	||HMC5883L not responding on I2C bus	||HMC5883L missing, incorrectly installed, or malfunctioning.  Or, I2C bus failure.||
 ||3	||MPU-6050 firmware load failed	||MPU-6050 malfunctioning||
 ||4	||MPU-6050 Initialization Failed	||MPU-6050 malfunctioning||
 ||5	||MPU-6050 Gyro Test Failed	||MPU-6050 on-chip Gyroscope(s) malfunctioning||
