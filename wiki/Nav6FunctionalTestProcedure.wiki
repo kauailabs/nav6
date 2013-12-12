@@ -31,7 +31,7 @@ The nav6 Functional Test software verifies correct operation of the circuit boar
 || Code	|| Error	|| Typical Cause ||
 ||1	||MPU-6050 not responding on I2C bus	||MPU-6050 missing, incorrectly installed, or malfunctioning||
 ||2	||HMC5883L not responding on I2C bus	||HMC5883L missing, incorrectly installed, or malfunctioning||
-||3	||MPU-6050 firmware load failed	||MPU-6050 malfunctioning
+||3	||MPU-6050 firmware load failed	||MPU-6050 malfunctioning||
 ||4	||MPU-6050 Initialization Failed	||MPU-6050 malfunctioning||
 ||5	||MPU-6050 Gyro Test Failed	||MPU-6050 on-chip Gyroscope(s) malfunctioning||
 ||6	||MPU-6050 Accelerometer Test Failed	||MPU-6050 on-chip Accelerometer(s) malfunctioning||
