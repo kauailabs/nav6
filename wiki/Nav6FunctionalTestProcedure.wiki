@@ -28,13 +28,13 @@ The nav6 Functional Test software verifies correct operation of the circuit boar
   7) When the functional test completes, the result will be displayed on the Nav6 Status LED.
   *  If successful, the Status LED will be steady on.
   *  If unsuccessful, the Status LED will repeatedly flash quickly a number of times, then pausing a few seconds before repeating the sequence of flashes.  The number of flashes corresponds to an error code, as follows:
-Code	Error	Typical Cause
-1	MPU-6050 not responding on I2C bus	MPU-6050 missing, incorrectly installed, or malfunctioning
-2	HMC5883L not responding on I2C bus	HMC5883L missing, incorrectly installed, or malfunctioning
-3	MPU-6050 firmware load failed	MPU-6050 malfunctioning
-4	MPU-6050 Initialization Failed	MPU-6050 malfunctioning
-5	MPU-6050 Gyro Test Failed	MPU-6050 on-chip Gyroscope(s) malfunctioning
-6	MPU-6050 Accelerometer Test Failed	MPU-6050 on-chip Accelerometer(s) malfunctioning
-7	HMC5883L Self-test Failed	HMC5883L malfunctioning
-8	MPU-6050 Interrupt not Received	Interrupt Line between MPU-6050 and ATMEGA328 not connected; MPU-6050 malfunctioning
-9	HMC5883L Interrupt not Received	Interrupt Line between HMC5883L and ATMEGA328 not connected; MPU-6050 malfunctioning
+|| Code	|| Error	|| Typical Cause ||
+||1	||MPU-6050 not responding on I2C bus	||MPU-6050 missing, incorrectly installed, or malfunctioning||
+||2	||HMC5883L not responding on I2C bus	||HMC5883L missing, incorrectly installed, or malfunctioning||
+||3	||MPU-6050 firmware load failed	||MPU-6050 malfunctioning
+||4	||MPU-6050 Initialization Failed	||MPU-6050 malfunctioning||
+||5	||MPU-6050 Gyro Test Failed	||MPU-6050 on-chip Gyroscope(s) malfunctioning||
+||6	||MPU-6050 Accelerometer Test Failed	||MPU-6050 on-chip Accelerometer(s) malfunctioning||
+||7	||HMC5883L Self-test Failed	||HMC5883L malfunctioning||
+||8	||MPU-6050 Interrupt not Received	||Interrupt Line between MPU-6050 and ATMEGA328 not connected; MPU-6050 malfunctioning||
+||9	||HMC5883L Interrupt not Received	||Interrupt Line between HMC5883L and ATMEGA328 not connected; MPU-6050 malfunctioning||
