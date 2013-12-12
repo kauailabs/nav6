@@ -2,12 +2,24 @@
 
 = Introduction =
 
-Add your content here.
+Connecting the nav6 IMU to the CRio on a FIRST FRC robot is a very simple process and can be accomplished in just a few minutes.
 
+The following are needed to accomplish this integration:
+
+  * nav6 IMU Circuit Board
+  * nav6 Power Wire harness(with 2-pin JST "PH" style connector)
+  * DB9 Male-to-female cable
+
+Note that the DB9 Male-to-female cable is a "straight-through" cable, NOT a "crossover" cable.
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+First, connect the nav6 Power wire harness to one of the unregulated 12-volt connections on the power distribution board.  The nav6 consumes approximately 200 milliamps of current and thus can be connected to any of the 12-Volt power distribution board connections.  The nav6 requires a  minimum voltage of 5.5 volts.
+
+Next, connect the male DB9 connector to the nav6 circuit board, and the female DB9 connector to the CRio.
+
+Finally, integrate the provide C++ IMU class into your robot software.  The IMU constructor must be provided a pointer to an instance of the WPI Library SerialPort class.
+
+The IMU::IsConnected() method indicates whether data is successfully being received from the IMU.  At this point, the IMU::GetPitch(), IMU::GetRoll() and IMU::GetYaw() methods can be used to access the latest values received from the IMU.
+
+The IMU::GetUpdateCount() can be used to determine if new yaw/pitch/roll values have arrived.
