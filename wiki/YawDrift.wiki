@@ -1,4 +1,4 @@
-#summary Tips on how to overcome "yaw drift"
+#summary Tips on dealing with "yaw drift"
 
 = Introduction =
 
