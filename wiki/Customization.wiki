@@ -1,4 +1,4 @@
-#summary Describes how to modify the IMU source code.
+#summary How to customize the IMU source code
 
 = Introduction =
 
@@ -17,3 +17,5 @@ NOTE: To interface the Arduino IDE to the nav6 from a computer without a RS-232 
 4) Connect to the IMU via the Serial Port. 
 
 5) Download the modified software into the IMU using the Arduino IDE.
+
+*NOTE:  At any time you can re-load the latest official IMU firmware using this same process on the code located at http://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Farduino
