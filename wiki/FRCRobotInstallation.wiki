@@ -1,4 +1,4 @@
-#summary Describes the process of connecting the nav6 IMU to a CRio-based system (e.g., a FIRST FRC competition robot)
+#summary How to connect the nav6 IMU to a CRio-based system (e.g., a FIRST FRC competition robot)
 
 = Introduction =
 
