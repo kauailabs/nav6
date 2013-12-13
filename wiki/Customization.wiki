@@ -1,0 +1,19 @@
+#summary Describes how to modify the IMU source code.
+
+= Introduction =
+
+The nav6 IMU is fully open source, both hardware and software.  If you are a software developer and want to change the behavior of the IMU, you can modify the source code for the IMU by following these instructions.
+
+NOTE: To interface the Arduino IDE to the nav6 from a computer without a RS-232 serial port, you can use an inexpensive USB-to-RS-232 converter cable such as found at http://www.iogear.com/product/GUC232A/. 
+
+= Details =
+
+1) Download the free Arduino IDE.
+
+2) Install subversion and check out the IMU source code.
+
+3) Modify the source code in the Arduino IDE.
+
+4) Connect to the IMU via the Serial Port. 
+
+5) Download the modified software into the IMU using the Arduino IDE.
