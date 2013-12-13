@@ -1,4 +1,4 @@
-#summary This document describes how to use of the nav6 Factory Test Procedure.
+#summary How to run the nav6 Factory Test Procedure.
 
 = Introduction =
 
