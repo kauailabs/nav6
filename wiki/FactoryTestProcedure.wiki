@@ -38,6 +38,6 @@ The nav6 Factory Test Procedure verifies correct operation of the circuit board 
 ||8	||MPU-6050 Interrupt not Received	||Interrupt Line between MPU-6050 and ATMEGA328 not connected; MPU-6050 malfunctioning||
 ||9	||HMC5883L Interrupt not Received	||Interrupt Line between HMC5883L and ATMEGA328 not connected; MPU-6050 malfunctioning||
 
-8) NOTE:  In certain rare circumstances, the Factory test will "hang" after step 4.  This occurs because one of the devices on the I2C buses is in a bad state.
+8) NOTE:  In certain rare circumstances, the Factory test will "hang" after step 4.  This occurs because one of the devices on the I2C buses is in a bad state.  When this "hang" occurs, all of the green LEDs on the nav6 will be off and will not light up again until the device is reset.
 
 To clear this condition, completely remove power from the nav6, wait a few seconds, and the re-apply power and re-run the Factory test.  If this process does result in correct operation, the board is defective and the error code should indicate the source of the trouble.
