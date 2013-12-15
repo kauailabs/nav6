@@ -10,8 +10,8 @@ The nav6 Factory Test Procedure verifies correct operation of the circuit board 
   2)  Apply power (6V – 12V DC) to the nav6 Power connector.  This connector is a 2-pin JST PH connector.
     *  Verify that the two Red power LEDs are on and solidly-lit.
     *  If the two Red power LEDs are not on or solidly lit, either a valid power source is not connected to the power connector, or one of the voltage regulators is malfunctioning.
-  3) After power is applied, the nav6 “STATUS” Led will quickly flash 3 times.
-    *  If these quick flashes are not seen during startup, this indicates the ATMEGA328 microcontroller is not correctly installed or is malfunctioning.
+  3) After power is applied, the nav6 bootloader will quickly flash the “STATUS” Led 3 times.
+    *  If these quick flashes are not seen during startup, this indicates the ATMEGA328 microcontroller is not correctly installed, the bootloader is not loaded, or is malfunctioning.
   4) Next, after a brief delay of a few seconds, the Nav6 “STATUS” Led will quickly flash 3 more times.  This indicates the Functional Test is beginning.
     *  If the “STATUS” Led does not slowly flash 3 times at startup, this indicates the “nav6 Factory Test” software is not correctly installed on the ATMEGA328 processor.
   5) The “nav6 Factory Test” software will verify communication with and correct operation of the following components:
