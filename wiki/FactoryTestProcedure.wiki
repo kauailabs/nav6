@@ -6,7 +6,7 @@ The nav6 Factory Test Procedure verifies correct operation of the circuit board 
 
 = Test Procedure =
 
-  1)  Ensure the “nav6 Factory Test” software is running on the nav6 circuit board. 
+  1)  Ensure the “nav6 Factory Test” software is running on the nav6 circuit board.
   2)  Apply power (6V – 12V DC) to the nav6 Power connector.  This connector is a 2-pin JST PH connector.
     *  Verify that the two Red power LEDs are on and solidly-lit.
     *  If the two Red power LEDs are not on or solidly lit, either a valid power source is not connected to the power connector, or one of the voltage regulators is malfunctioning.
