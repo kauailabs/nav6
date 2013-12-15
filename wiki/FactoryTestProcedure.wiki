@@ -12,9 +12,9 @@ The nav6 Factory Test Procedure verifies correct operation of the circuit board 
     *  If the two Red power LEDs are not on or solidly lit, either a valid power source is not connected to the power connector, or one of the voltage regulators is malfunctioning.
   3) After power is applied, the nav6 bootloader will quickly flash the “STATUS” Led 3 times.
     *  If these quick flashes are not seen during startup, this indicates the ATMEGA328 microcontroller is not correctly installed, the bootloader is not loaded, or is malfunctioning.
-  4) Next, after a brief delay of a few seconds, the Nav6 “STATUS” Led will quickly flash 3 more times.  This indicates the Functional Test is beginning.
-    *  If the “STATUS” Led does not slowly flash 3 times at startup, this indicates the “nav6 Factory Test” software is not correctly installed on the ATMEGA328 processor.
-  5) The “nav6 Factory Test” software will verify communication with and correct operation of the following components:
+  4) Next, after a brief delay of a second or so, the Nav6 “STATUS” Led will quickly flash 3 more times.  This indicates the Factory Test is beginning.
+    *  If the “STATUS” Led does not, for a second time, quickly flash 3 times at startup, this indicates the “nav6 Factory Test” software is not correctly installed on the ATMEGA328 processor.
+  5) The “nav6 Factory Test” software will next verify communication on the I2C bus with and correct operation of the following components:
     *  MPU-6050 Gyro/Accelerometer
     *  HMC5883L 3-axis Magnetometer
   6) The “Nav6 Factory Test” software also provides detailed operational status via its serial port.
@@ -24,7 +24,7 @@ The nav6 Factory Test Procedure verifies correct operation of the circuit board 
         Data Bits:  8
         Parity:  None
         Stop Bits:  1
-  7) When the factory test completes, the result will be displayed on the Nav6 Status LED.
+  7) When the Factory Test completes, the result will be displayed on the Nav6 Status LED.
     *  If successful, the Status LED will be steady on.
     *  If unsuccessful, the Status LED will repeatedly flash quickly a number of times, then pausing a few seconds before repeating the sequence of flashes.  The number of flashes corresponds to an error code, as follows:
 || Code	|| Error	|| Typical Cause ||
