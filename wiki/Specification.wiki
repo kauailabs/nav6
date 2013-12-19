@@ -11,8 +11,8 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 MPU-6050:       
 
 ||
-||Gyro Sensitivity Range: ||250,500,1000 or 2000 degrees/sec||
-||Accelerometer Range:    ||2,4,8 or 16 g||
+||Gyro Sensitivity Range:             ||250,500,1000 or 2000 degrees/sec||
+||Accelerometer Sensitivity Range:    ||2,4,8 or 16 g||
 ||
 
 HMC5883L:
@@ -26,6 +26,7 @@ nav6 Software:
 ||
 ||Calibration Period:             ||20 seconds||
 ||Gyro Sensitivity                ||2000 degrees/sec||
+||Accel Sensitivity               ||2 g||
 ||Gyro Low-pass Filter Bandwidth: ||42Hz||
 ||Yaw angle accuracy:             ||~1 degree of drift/minute||
 ||Serial Port Update Rate:        ||200 Hz||
