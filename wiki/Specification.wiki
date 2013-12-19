@@ -28,7 +28,7 @@ nav6 Software:
 ||Gyro Sensitivity                ||2000 degrees/sec||
 ||Gyro Low-pass Filter Bandwidth: ||42Hz||
 ||Yaw angle accuracy:             ||~1 degree of drift/minute||
-||Serial Port Update Rate:        ||100 Hz||
-||DMP Update Rate:                ||100 Hz||
+||Serial Port Update Rate:        ||200 Hz||
+||DMP Update Rate:                ||200 Hz||
 ||Magnetometer Raw Update Rate:   ||15 Hz||
 ||
