@@ -139,8 +139,8 @@ class HMC5883L {
         uint8_t getIDB();
         uint8_t getIDC();
 
-    private:
         uint8_t devAddr;
+    private:
         uint8_t buffer[6];
         uint8_t mode;
 };
