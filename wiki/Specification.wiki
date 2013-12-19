@@ -13,6 +13,7 @@ MPU-6050:
 ||
 ||Gyro Sensitivity Range:             ||250,500,1000 or 2000 degrees/sec||
 ||Accelerometer Sensitivity Range:    ||2,4,8 or 16 g||
+||Motion Processor Update Rate:       ||Up to 200Hz||
 ||
 
 HMC5883L:
@@ -29,7 +30,7 @@ nav6 Software:
 ||Accel Sensitivity               ||2 g||
 ||Gyro Low-pass Filter Bandwidth: ||42Hz||
 ||Yaw angle accuracy:             ||~1 degree of drift/minute||
-||Serial Port Update Rate:        ||200 Hz||
-||DMP Update Rate:                ||200 Hz||
+||Serial Port Update Rate:        ||100 Hz||
+||DMP Update Rate:                ||100 Hz||
 ||Magnetometer Raw Update Rate:   ||15 Hz||
 ||
