@@ -4,7 +4,7 @@
 
 The nav6 circuit board and default software provide inertial and magnetic measurement, with a range, accuracy and update rate as described on this page.
 
-Note that accuracy values are valid after a start-up calibration period, during which time the nav6 circuit board must be held still.
+_Note that accuracy values are only valid after a start-up calibration period, during which time the nav6 circuit board must be held still._
 
 = Detailed Specifications =
 
