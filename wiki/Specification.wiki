@@ -1,0 +1,32 @@
+#summary nav6 Specifications
+
+= Introduction =
+
+The nav6 circuit board and default software provide inertial and magnetic measurement, with a range, accuracy and update rate as described on this page.
+
+Note that accuracy values are valid after a start-up calibration period, during which time the nav6 circuit board must be held still.
+
+= Detailed Specifications =
+
+MPU-6050:       
+
+||
+||Gyro Range:         ||250,500,1000 or 2000 degrees/sec
+||Accelerometer Range:||2,4,8 or 16 g||
+||
+
+HMC5883L:
+
+Compass accuracy:                1-2 degrees
+
+nav6 Software:
+
+
+Calibration Period:              20 seconds
+Gyro Full scale range:           2000 degrees/sec
+Gyro Low-pass Filter Bandwidth:  42Hz     
+Yaw angle accuracy:              ~1 degree of drift/minute (after calibration)
+Serial Port Update Rate:         200 Hz
+
+DMP Update Rate:                 100 Hz
+Magnetometer Raw Update Rate:    15 Hz
