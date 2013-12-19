@@ -8,14 +8,24 @@ NOTE: To interface the Arduino IDE to the nav6 from a computer without a RS-232 
 
 = Details =
 
-1) Download the free Arduino IDE.
+1) Download the free Arduino IDE to your development computer.
 
-2) Install subversion and check out the IMU source code.
+2) Install subversion on your development computer and [https://code.google.com/p/nav6/source/checkout check out the IMU source code].
 
-3) Modify the source code in the Arduino IDE.
+3) Modify the source code in the Arduino IDE to include your desired new functionality.
 
 4) Connect to the IMU via the Serial Port. 
 
-5) Download the modified software into the IMU using the Arduino IDE.
+5) In the Arduino IDE, select the Serial Port corresponding to the nav6 IMU via the Tools->Serial Port menu item.
 
-*NOTE:  At any time you can re-load the latest official IMU firmware using this same process.  The latest official IMU firmware source code is located at http://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Farduino
+6) In the Arduino IDE, set the Board type to "Arduino UNO".
+
+7) Compile and upload your latest code to the nav6 via the File->Upload menu item.
+
+*NOTES:  
+
+  * At any time you can re-load the latest official IMU firmware using this same process.  The latest official IMU firmware source code is located at 
+
+http://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Farduino
+
+  * Alternatively, if you suspect the nav6 may be malfunctioning, you may load and run the "Factory Test" software, which is located at this same location.
