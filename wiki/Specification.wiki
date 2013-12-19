@@ -11,16 +11,17 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 MPU-6050:       
 
 ||
-||Gyro Sensitivity Range:             ||250,500,1000 or 2000 degrees/sec||
-||Accelerometer Sensitivity Range:    ||2,4,8 or 16 g||
-||Motion Processor Update Rate:       ||Up to 200Hz||
-||ADC Resolution:                     ||16 bits||
+||Gyro Sensitivity Range             ||250,500,1000 or 2000 degrees/sec||
+||Accelerometer Sensitivity Range    ||2,4,8 or 16 g||
+||Motion Processor Update Rate       ||Up to 200Hz||
+||ADC Resolution                     ||16 bits||
 ||
 
 HMC5883L:
 
 ||
 ||Angular accuracy:                   ||1-2 degrees||
+||ADC Resolution                      ||12 bits||
 ||
 
 nav6 Software:
