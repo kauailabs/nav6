@@ -1,0 +1,12 @@
+#summary nav6 component datasheets
+
+= nav6 Components =
+
+The nav6 IMU contains several integrated circuits:
+
+  * [https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&ved=0CDMQFjAB&url=http%3A%2F%2Fwww.atmel.com%2Fimages%2Fatmel-8271-8-bit-avr-microcontroller-atmega48a-48pa-88a-88pa-168a-168pa-328-328p_datasheet.pdf&ei=XEKzUp_MFJLkoATOvoCAAg&usg=AFQjCNG11iPfTyE8Bo48itJKyz_DwRYClg&sig2=Sfl8nCw1F9EZuvA3DVCyZQ&bvm=bv.58187178,d.cGU Atmel ATMEGA328P Microcontroller]
+  * Invensense MPU-6050 3-axis gyro, 3-axis accelerometer and motion processor
+  * Honeywell HMC5883L 3-axis magnetometer
+  * Maxim MAX232 RS-232 Transceiver
+  * Micrel 3975 3.3V DC Voltage Regulator
+  * Micrel 3975 5V DC Voltage Regulator
