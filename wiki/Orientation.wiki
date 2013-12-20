@@ -10,8 +10,8 @@ The nav6 board can measure a total of 9 axes (3 gyroscope axes, 3 accelerometer 
 The standard nav6 board orientation is with the nav6 logo on the _Rear Left_.
 
 ||
-||Axis||AKA||Points to||Increases||
-||X||Pitch||Right side of the nav6||As the nav6 right side lifts||
-||Y||Roll||Front of the nav6||As the nav6 front side lifts||
-||Z||Yaw||Up from the top of the nav6||As the nav6 rotates to the left.||
+||Axis||AKA||Points to||Increases as||
+||X||Pitch||Right side of the nav6||the nav6 right side lifts||
+||Y||Roll||Front of the nav6||the nav6 front side lifts||
+||Z||Yaw||Up from the top of the nav6||the nav6 rotates to the left.||
 ||
