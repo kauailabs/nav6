@@ -22,7 +22,7 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 ||ADC Resolution                      ||12 bits||
 ||
 
-== nav6 Firmward Key Specifications ==
+== nav6 Firmware Key Specifications ==
 
 ||
 ||Calibration Period:             ||20 seconds||
