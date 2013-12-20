@@ -11,7 +11,7 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 MPU-6050:       
 
 ||
-||Gyro Sensitivity Range             ||250,500,1000 or 2000 degrees/sec||
+||Gyro Sensitivity Range             ||+/- 250,500,1000 or 2000 degrees/sec||
 ||Accelerometer Sensitivity Range    ||+/- 2,4,8 or 16 g||
 ||Motion Processor Update Rate       ||Up to 200Hz||
 ||ADC Resolution                     ||16 bits||
@@ -28,7 +28,7 @@ nav6 Software:
 
 ||
 ||Calibration Period:             ||20 seconds||
-||Gyro Sensitivity                ||2000 degrees/sec||
+||Gyro Sensitivity                ||+/- 2000 degrees/sec||
 ||Accel Sensitivity               ||+/- 8 g||
 ||Magnetometer Sensitivity:       ||1.3 Gauss||
 ||Gyro Low-pass Filter Bandwidth: ||42Hz||
