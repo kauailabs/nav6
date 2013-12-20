@@ -1,4 +1,4 @@
-#summary nav6 Specifications
+#summary nav6 Key Specifications
 
 = Introduction =
 
