@@ -29,7 +29,7 @@ nav6 Software:
 ||
 ||Calibration Period:             ||20 seconds||
 ||Gyro Sensitivity                ||2000 degrees/sec||
-||Accel Sensitivity               ||2 g||
+||Accel Sensitivity               ||+/- 8 g||
 ||Magnetometer Sensitivity:       ||1.3 Gauss||
 ||Gyro Low-pass Filter Bandwidth: ||42Hz||
 ||Yaw angle accuracy:             ||~1 degree of drift/minute||
