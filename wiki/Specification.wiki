@@ -12,7 +12,7 @@ MPU-6050:
 
 ||
 ||Gyro Sensitivity Range             ||250,500,1000 or 2000 degrees/sec||
-||Accelerometer Sensitivity Range    ||2,4,8 or 16 g||
+||Accelerometer Sensitivity Range    ||+/- 2,4,8 or 16 g||
 ||Motion Processor Update Rate       ||Up to 200Hz||
 ||ADC Resolution                     ||16 bits||
 ||
