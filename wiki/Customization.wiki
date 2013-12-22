@@ -14,7 +14,7 @@ NOTE: To interface the Arduino IDE to the nav6 from a computer without a RS-232 
 
 3) Modify the source code in the Arduino IDE to include your desired new functionality.
 
-4) Connect to the IMU via the Serial Port. 
+4) Connect the nav6 IMU to your development computer via the Serial Port. 
 
 5) In the Arduino IDE, select the Serial Port corresponding to the nav6 IMU via the Tools->Serial Port menu item.
 
