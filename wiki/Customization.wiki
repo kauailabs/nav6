@@ -8,7 +8,7 @@ NOTE: To interface the Arduino IDE to the nav6 from a computer without a RS-232 
 
 = Details =
 
-1) Download the free Arduino IDE to your development computer.
+1) Download the free [http://arduino.cc/en/Main/Software Arduino IDE] to your development computer.
 
 2) Install subversion on your development computer and [https://code.google.com/p/nav6/source/checkout check out the IMU source code].
 
