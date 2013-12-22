@@ -14,6 +14,7 @@ The references on this page are provided to help students gain a deeper understa
 
 [http://gentlenav.googlecode.com/files/DCMDraft2.pdf Direction Cosine Matrix theory]
 
+[http://bilgin.esme.org/BitsBytes/KalmanFilterforDummies.aspx Kalman Filtering Overview]
 = Technology =
 
 [http://www.memsnet.org/mems/what_is.html MEMS]
