@@ -12,6 +12,8 @@ The references on this page are provided to help students gain a deeper understa
 
 [http://www.pieter-jan.com/node/11 Complementary Filter Algorithm]
 
+[http://gentlenav.googlecode.com/files/DCMDraft2.pdf Direction Cosine Matrix theory]
+
 = Technology =
 
 [http://www.memsnet.org/mems/what_is.html MEMS]
