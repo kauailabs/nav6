@@ -30,5 +30,8 @@ The references on this page are provided to help students gain a deeper understa
 
 [https://learn.sparkfun.com/tutorials/how-to-install-and-setup-eagle Eagle PCB Tutorial]
 
+= Arduino Programming Tips =
+
+[http://learn.adafruit.com/downloads/pdf/memories-of-an-arduino.pdf Arduino Memory Issues and Tips]
 = Other Notable Works =
 [http://freeimu.varesano.net/ Free IMU]
