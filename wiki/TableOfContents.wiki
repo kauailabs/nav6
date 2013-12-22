@@ -1,5 +1,3 @@
-#summary Table of Contents
-
 * Getting Started
 
   * [https://code.google.com/p/nav6/wiki/FRCRobotInstallation Installation]
