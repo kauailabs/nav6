@@ -1,0 +1,14 @@
+#summary Useful references for better understanding the nav6 IMU.
+
+= Introduction =
+
+The references on this page are provided to help students gain a deeper understanding of the technologies and algorithms used within the nav6 IMU, in addition to the provided source code and schematics.
+
+= Details =
+
+Magnetometer Calibration
+IMU Sensor Fusion Algorithms
+Accelerometers
+Gyroscopes
+MEMS
+Arduino Programming
