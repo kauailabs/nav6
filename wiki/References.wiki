@@ -10,9 +10,9 @@ The references on this page are provided to help students gain a deeper understa
 
 [http://www.olliw.eu/2013/imu-data-fusing/ IMU Sensor Fusion Algorithms]
 
-[http://mafija.fmf.uni-lj.si/seminar/files/2007_2008/MEMS_accelerometers-koncna.pdf MEMS Accelerometers]
-
 [http://www.memsnet.org/mems/what_is.html MEMS]
+
+[http://mafija.fmf.uni-lj.si/seminar/files/2007_2008/MEMS_accelerometers-koncna.pdf MEMS Accelerometers]
 
 [http://electroiq.com/blog/2010/11/introduction-to-mems-gyroscopes/ MEMS Gyroscopes]
 
