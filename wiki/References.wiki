@@ -8,7 +8,9 @@ The references on this page are provided to help students gain a deeper understa
 
 [http://www.sensorsmag.com/sensors/motion-velocity-displacement/compensating-tilt-hard-iron-and-soft-iron-effects-6475  Magnetometer Calibration and Tilt Compensation]
 
-[http://www.olliw.eu/2013/imu-data-fusing/ IMU Sensor Fusion Algorithms]
+[http://www.olliw.eu/2013/imu-data-fusing/ Summary of IMU Sensor Fusion Algorithms]
+
+[http://www.pieter-jan.com/node/11 Complementary Filter Algorithm]
 
 [http://www.memsnet.org/mems/what_is.html MEMS]
 
