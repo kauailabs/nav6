@@ -2,7 +2,7 @@
 
 = Introduction =
 
-The references on this page are provided to help students gain a deeper understanding of the algorithms, technologies and tools used within the nav6 IMU, in addition to the provided source code and schematics.
+The references on this page are provided to help students gain a deeper understanding of the algorithms, technologies and tools used within the nav6 IMU, in addition to the provided source code and schematics.  Additionally, links to other notable works which could be adapted to work on the nav6 are included.
 
 = Algorithms =
 
@@ -27,3 +27,6 @@ The references on this page are provided to help students gain a deeper understa
 [http://playground.arduino.cc/uploads/Main/arduino_notebook_v1-1.pdf Arduino Programming]
 
 [https://learn.sparkfun.com/tutorials/how-to-install-and-setup-eagle Eagle PCB Tutorial]
+
+= Other Notable Works =
+[http://freeimu.varesano.net/ Free IMU]
