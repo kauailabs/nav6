@@ -2,9 +2,9 @@
 
 = Introduction =
 
-The references on this page are provided to help students gain a deeper understanding of the technologies and algorithms used within the nav6 IMU, in addition to the provided source code and schematics.
+The references on this page are provided to help students gain a deeper understanding of the algorithms, technologies and tools used within the nav6 IMU, in addition to the provided source code and schematics.
 
-= Details =
+= Algorithms =
 
 [http://www.sensorsmag.com/sensors/motion-velocity-displacement/compensating-tilt-hard-iron-and-soft-iron-effects-6475  Magnetometer Calibration and Tilt Compensation]
 
@@ -12,11 +12,15 @@ The references on this page are provided to help students gain a deeper understa
 
 [http://www.pieter-jan.com/node/11 Complementary Filter Algorithm]
 
+= Technology =
+
 [http://www.memsnet.org/mems/what_is.html MEMS]
 
 [http://mafija.fmf.uni-lj.si/seminar/files/2007_2008/MEMS_accelerometers-koncna.pdf MEMS Accelerometers]
 
 [http://electroiq.com/blog/2010/11/introduction-to-mems-gyroscopes/ MEMS Gyroscopes]
+
+= Tools =
 
 [http://playground.arduino.cc/uploads/Main/arduino_notebook_v1-1.pdf Arduino Programming]
 
