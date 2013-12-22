@@ -1,5 +1,11 @@
 #summary Table of Contents
 
 * [https://code.google.com/p/nav6/wiki/FRCRobotInstallation Installation]
+
 * [https://code.google.com/p/nav6/wiki/Orientation Orientation]
+
 * [https://code.google.com/p/nav6/wiki/Specification Specifications]
+
+* [https://code.google.com/p/nav6/wiki/SensorCalibration Calibration]
+
+* [https://code.google.com/p/nav6/wiki/YawDrift Yaw Drift]
