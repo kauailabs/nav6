@@ -24,6 +24,8 @@ The references on this page are provided to help students gain a deeper understa
 
 [http://electroiq.com/blog/2010/11/introduction-to-mems-gyroscopes/ MEMS Gyroscopes]
 
+[http://www.princeton.edu/~achaney/tmve/wiki100k/docs/Magnetometer.html Magnetometers]
+
 = Tools =
 
 [http://arduino.cc/en/Guide/HomePage Getting started with Arduino]
