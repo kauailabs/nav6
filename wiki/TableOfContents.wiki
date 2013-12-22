@@ -9,3 +9,11 @@
 * [https://code.google.com/p/nav6/wiki/SensorCalibration Calibration]
 
 * [https://code.google.com/p/nav6/wiki/YawDrift Yaw Drift]
+
+* [https://code.google.com/p/nav6/wiki/References References]
+
+* [https://code.google.com/p/nav6/wiki/Customization Customization]
+
+* [https://code.google.com/p/nav6/wiki/Datasheets Component Datasheets]
+
+* [https://code.google.com/p/nav6/wiki/FactoryTestProcedure Factory Test Procedure]
