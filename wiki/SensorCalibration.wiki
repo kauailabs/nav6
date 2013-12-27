@@ -16,8 +16,12 @@ Additionally, the Yaw offset is automatically calibrated during the nav6 initial
 
 = Magnetometer Calibration =
 
+== Hard Iron Calibration ==
+
 The HMC5883L Magnetometer includes a built-in "strap driver" circuit which is used to automatically calibrate the gain for each of the X, Y and Z axis magnetometers; this occurs when the nav6 is first powered on.  
 
 This calibration performs what is sometimes referred to as "Hard Iron" calibration.
+
+== Soft Iron Calibration ==
 
 Note that this automatic calibration does not include "Soft Iron" calibration which would correct for additional effects due to soft metals that may be near the magnetometer that will tend to impact the magnetometer accuracy.
