@@ -12,6 +12,8 @@
 
   * [https://code.google.com/p/nav6/wiki/YawDrift Yaw Drift]
 
+  * [https://code.google.com/p/nav6/wiki/FAQ Frequently Asked Questions]
+
 * Learning more
 
   * [https://code.google.com/p/nav6/wiki/References References]
