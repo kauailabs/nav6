@@ -8,7 +8,7 @@ The following are needed to accomplish this integration:
 
   * nav6 IMU Circuit Board
   * nav6 Power Wire harness(with 2-pin JST "PH" style connector)
-  * DB9 Male-to-female cable
+  * DB9 Male-to-female straight-through serial cable
 
 Note that the DB9 Male-to-female cable is a "straight-through" cable, NOT a "crossover" cable.
 
