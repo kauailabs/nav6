@@ -2,7 +2,7 @@
 
 = Overview =
 
-In order to communicate sensor data to a client (e.g., a robot controller) the nav6 IMU software uses a custom protocol.  This protocol defines messages which are sent between the IMU and the client, and also includes an error detection capability to ensure corrupted data is not used by the client.
+In order to communicate sensor data to a client (e.g., a robot controller) the nav6 IMU software uses a custom protocol.  This protocol defines messages which are sent between the IMU and the client over a serial interface, and also includes an error detection capability to ensure corrupted data is not used by the client.
 
 In order to enhance readability during debugging, the nav6 IMU protocol uses ASCII characters.
 
