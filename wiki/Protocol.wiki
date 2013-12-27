@@ -17,6 +17,17 @@ Each nav6 IMU protocol message has the following structure:
 ||1 byte||1 byte||length is message-type dependent||4 bytes||
 ||
 
+== Data Type Formatting ==
+
+In keeping with the ASCII encoding of the nav6 IMU protocol, the following encoding is used for message elements:
+
+||
+||Data Type||Encoding||Example||
+||Float||[Sign][100s][10s][1s].[10ths][1ths]||-132.96||
+||8-bit Integer||[HighNibble][LowNibble]||'E9'||
+||16-bit Integer||[HighByte,HighNibble][HighByte,LowNibble][LowByte,HighNibble][LowByte,LowNibble]||'1A0F'||
+||
+
 = Start of Message =
 
 Each IMU message begins with "start of message" indicator (a '!' character), which indicates that the following bytes contain a message.
@@ -31,17 +42,6 @@ Immediately following the "start of message", a one-byte Message ID character, w
 ||
 
 = Message Body =
-
-== ASCII Data Type Formatting ==
-
-In keeping with the ASCII encoding of the nav6 IMU protocol, the following encoding is used for message elements:
-[
-||
-||Data Type||Encoding||Example||
-||Float||[Sign][100s][10s][1s].[10ths][1ths]||-132.96||
-||8-bit Integer||[HighNibble][LowNibble]||'E9'||
-||16-bit Integer||[HighByte,HighNibble][HighByte,LowNibble][LowByte,HighNibble][LowByte,LowNibble]||'1A0F'||
-||
 
 == Yaw/Pitch/Roll/Compass Heading Message ==
 
