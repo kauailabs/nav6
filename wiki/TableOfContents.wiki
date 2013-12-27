@@ -2,6 +2,8 @@
 
   * [https://code.google.com/p/nav6/wiki/FRCRobotInstallation Installation]
 
+  * [https://code.google.com/p/nav6/wiki/Protocol Protocol]
+
   * [https://code.google.com/p/nav6/wiki/Orientation Orientation]
 
   * [https://code.google.com/p/nav6/wiki/Specification Specifications]
