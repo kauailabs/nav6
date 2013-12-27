@@ -59,6 +59,10 @@ The Yaw/Pitch/Roll/Compass Heading message indicates the nav6 IMU's current pose
 
 The final four bytes of each IMU protocol message contain an unsigned 8-bit checksum followed by a carriage return and then a line feed character.
 
+== Checksum ==
+
 The checksum is calculated by adding each byte of the message except the bytes within the Message Termination itself.  The checksum is accumulated within an 8-bit unsigned byte.
+
+== New Line ==
 
 The carriage return and line feed characters are present at the end of the message so that when the message is displayed in a console window, a new line will be inserted in the console at the end of the message.
