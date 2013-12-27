@@ -8,7 +8,15 @@ In order to enhance readability during debugging, the nav6 IMU protocol uses ASC
 
 [https://code.google.com/p/nav6/source/browse/trunk/arduino/nav6/IMUProtocol.h Source code] that implements the nav6 IMU protocol is provided to simplify adding support for the nav6 IMU protocol to a software project.  The source code is contained within a single .h file.  As of the date of this writing, this source code is portable to both the Arduino platform and the VxWorks operating system.
 
-= Header =
+= Message Structure =
+
+Each nav6 IMU protocol message has the following structure:
+
+||
+||Start of Message||Message ID||Message Body||Message Termination||
+||
+
+= Start of Message =
 
 Each IMU message begins with "start of message" indicator (a '!' character), which indicates that the following bytes contain a message.
 
@@ -21,7 +29,9 @@ Immediately following the "start of message", a one-byte Message ID character, w
 ||'y'||Yaw/Pitch/Roll/Compass Heading||
 ||
 
-= ASCII Data Type Formatting =
+= Message Body =
+
+== ASCII Data Type Formatting ==
 
 In keeping with the ASCII encoding of the nav6 IMU protocol, the following encoding is used for message elements:
 [
@@ -32,7 +42,7 @@ In keeping with the ASCII encoding of the nav6 IMU protocol, the following encod
 ||16-bit Integer||[HighByte,HighNibble][HighByte,LowNibble][LowByte,HighNibble][LowByte,LowNibble]||'1A0F'||
 ||
 
-= Yaw/Pitch/Roll/Compass Heading =
+== Yaw/Pitch/Roll/Compass Heading Message ==
 
 The Yaw/Pitch/Roll/Compass Heading message indicates the nav6 IMU's current pose, in units of degrees, as follows:
 
