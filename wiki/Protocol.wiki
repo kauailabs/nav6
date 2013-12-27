@@ -14,6 +14,7 @@ Each nav6 IMU protocol message has the following structure:
 
 ||
 ||Start of Message||Message ID||Message Body||Message Termination||
+||1 byte||1 byte||length is message-type dependent||4 bytes||
 ||
 
 = Start of Message =
