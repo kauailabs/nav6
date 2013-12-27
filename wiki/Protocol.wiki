@@ -21,7 +21,7 @@ Immediately following the "start of message", a one-byte Message ID character, w
 ||'y'||Yaw/Pitch/Roll/Compass Heading||
 ||
 
-= Formatting =
+= ASCII Data Type Formatting =
 
 In keeping with the ASCII encoding of the nav6 IMU protocol, the following encoding is used for message elements:
 [
@@ -34,8 +34,20 @@ In keeping with the ASCII encoding of the nav6 IMU protocol, the following encod
 
 = Yaw/Pitch/Roll/Compass Heading =
 
-{Yaw (Float)}{Pitch (Float)}{Roll (Float)}{CompassHeading (Float)}
+The Yaw/Pitch/Roll/Compass Heading message indicates the nav6 IMU's current pose, in units of degrees, as follows:
 
-= Checksum =
+||
+||Byte Offset||Element||Data Type||
+||2||Yaw (degrees from -180 to 180)||Float||
+||9||Pitch (degrees from -180 to 180)||Float||
+||16||Roll (degrees from -180 to 180)||Float||
+||23||Compass Heading (degrees from 0 to 360)||Float||
+||
 
-The final two bytes of each IMU protocol message are a checksum.
+= Message Termination =
+
+The final four bytes of each IMU protocol message contain an unsigned 8-bit checksum followed by a carriage return and then a line feed character.
+
+The checksum is calculated by adding each byte of the message except the bytes within the Message Termination itself.  The checksum is accumulated within an 8-bit unsigned byte.
+
+The carriage return and line feed characters are present at the end of the message so that when the message is displayed in a console window, a new line will be inserted in the console at the end of the message.
