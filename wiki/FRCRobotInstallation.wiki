@@ -22,6 +22,6 @@ Next, connect the male DB9 connector to the nav6 circuit board, and the female D
 
 Finally, integrate the provide C++ IMU class into your robot software.  The IMU constructor must be provided a pointer to an instance of the WPI Library SerialPort class.
 
-The IMU::IsConnected() method indicates whether data is successfully being received from the IMU.  At this point, the IMU::GetPitch(), IMU::GetRoll() and IMU::GetYaw() methods can be used to access the latest values received from the IMU.
+The !IMU::IsConnected() method indicates whether data is successfully being received from the IMU.  At this point, the IMU::GetPitch(), IMU::GetRoll() and IMU::GetYaw() methods can be used to access the latest values received from the IMU.
 
 The IMU::GetUpdateCount() can be used to determine if new yaw/pitch/roll values have arrived.
