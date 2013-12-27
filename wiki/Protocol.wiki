@@ -6,7 +6,7 @@ In order to communicate sensor data to a client (e.g., a robot controller) the n
 
 In order to enhance readability during debugging, the nav6 IMU protocol uses ASCII characters.
 
-[https://code.google.com/p/nav6/source/browse/trunk/arduino/nav6/IMUProtocol.h Source code] that implements the nav6 IMU protocol is provided to simplify adding support for the nav6 IMU protocol to a software project.  The source code is contained within a single .h file.  As of the date of this writing, this source code is portable to both the Arduino platform as well as VxWorks.
+[https://code.google.com/p/nav6/source/browse/trunk/arduino/nav6/IMUProtocol.h Source code] that implements the nav6 IMU protocol is provided to simplify adding support for the nav6 IMU protocol to a software project.  The source code is contained within a single .h file.  As of the date of this writing, this source code is portable to both the Arduino platform and the VxWorks operating system.
 
 = Header =
 
