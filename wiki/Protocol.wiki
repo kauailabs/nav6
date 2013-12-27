@@ -34,7 +34,7 @@ In keeping with the ASCII encoding of the nav6 IMU protocol, the following encod
 
 = Yaw/Pitch/Roll/Compass Heading =
 
-[Yaw (Float)][Pitch (Float)][Roll (Float)][CompassHeading (Float)]
+{Yaw (Float)}{Pitch (Float)}{Roll (Float)}{CompassHeading (Float)}
 
 = Checksum =
 
