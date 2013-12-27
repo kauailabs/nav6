@@ -1,11 +1,41 @@
-#summary nav6 component datasheets
+#summary nav6 IMU Protocol
 
-= nav6 Components =
+= Overview =
 
-The nav6 IMU contains several integrated circuits:
+In order to communicate sensor data to a client (e.g., a robot controller) the nav6 IMU software uses a custom protocol.  This protocol defines messages which are sent between the IMU and the client, and also includes an error detection capability to ensure corrupted data is not used by the client.
 
-  * [https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&ved=0CDMQFjAB&url=http%3A%2F%2Fwww.atmel.com%2Fimages%2Fatmel-8271-8-bit-avr-microcontroller-atmega48a-48pa-88a-88pa-168a-168pa-328-328p_datasheet.pdf&ei=XEKzUp_MFJLkoATOvoCAAg&usg=AFQjCNG11iPfTyE8Bo48itJKyz_DwRYClg&sig2=Sfl8nCw1F9EZuvA3DVCyZQ&bvm=bv.58187178,d.cGU Atmel ATMEGA328P Microcontroller]
-  * [http://www.invensense.com/mems/gyro/documents/PS-MPU-6000A-00v3.4.pdf Invensense MPU-6050 3-axis gyro, 3-axis accelerometer and motion processor]
-  * [https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&ved=0CCwQFjAA&url=http%3A%2F%2Fwww51.honeywell.com%2Faero%2Fcommon%2Fdocuments%2Fmyaerospacecatalog-documents%2FDefense_Brochures-documents%2FHMC5883L_3-Axis_Digital_Compass_IC.pdf&ei=p0KzUsKdHYzooASKjYGgCg&usg=AFQjCNERVlsMXwth4SXIth4jIgNI8Y3gJg&sig2=fhM4QWNmQoZeSJniYJqfmw&bvm=bv.58187178,d.cGU Honeywell HMC5883L 3-axis magnetometer]
-  * [http://www.ti.com/lit/ds/symlink/max232.pdf Texas Intruments MAX232 RS-232 Transceiver]
-  * [https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&ved=0CCwQFjAA&url=http%3A%2F%2Fwww.micrel.com%2F_PDF%2Fmic3975.pdf&ei=I0OzUsSZBdXeoASIqYCoBA&usg=AFQjCNG-YPsQa6S4Sk8jq_dBwrFd-Or2bg&sig2=XnxL6cOzmRuD483JNRHS0A&bvm=bv.58187178,d.cGU Micrel 3975 3.3V and 5V DC Voltage Regulators]
+In order to enhance readability during debugging, the nav6 IMU protocol uses ASCII characters.
+
+[https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Farduino%2Fnav6 Source code] that implements the nav6 IMU protocol is provided to simplify adding support for the nav6 IMU protocol to a software project.  The source code is contained within a single .h file.  As of the date of this writing, this source code is portable to both the Arduino platform as well as VxWorks.
+
+= Header =
+
+Each IMU message begins with "start of message" indicator (a '!' character), which indicates that the following bytes contain a message.
+
+= Message ID =
+
+Immediately following the "start of message", a one-byte Message ID character, which may be one of the following:
+
+||
+||ID||Message Type||
+||'y'||Yaw/Pitch/Roll/Compass Heading||
+||
+
+= Formatting =
+
+In keeping with the ASCII encoding of the nav6 IMU protocol, the following encoding is used for message elements:
+[
+||
+||Data Type||Encoding||Example||
+||Float||[Sign][100s][10s][1s].[10ths][1ths]||-132.96||
+||8-bit Integer||[HighNibble][LowNibble]||'E9'||
+||16-bit Integer||[HighByte,HighNibble][HighByte,LowNibble][LowByte,HighNibble][LowByte,LowNibble]||'1A0F'||
+||
+
+= Yaw/Pitch/Roll/Compass Heading =
+
+[Yaw (Float)][Pitch (Float)][Roll (Float)][CompassHeading (Float)]
+
+= Checksum =
+
+The final two bytes of each IMU protocol message are a checksum.
