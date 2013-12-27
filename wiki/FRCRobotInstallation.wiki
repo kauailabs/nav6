@@ -12,7 +12,7 @@ The following are needed to accomplish this integration:
 
 Note that the DB9 Male-to-female cable is a "straight-through" cable, NOT a "crossover" cable.
 
-https://code.google.com/p/nav6/source/browse/trunk/images/FRCMounting.png
+<img url=https://code.google.com/p/nav6/source/browse/trunk/images/FRCMounting.png>
 
 = Details =
 
