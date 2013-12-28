@@ -1,1 +1,5 @@
+[https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fenclosure Design files] for enclosure to help protect and mount the nav6 IMU is made freely available.  These files, in STL (Stereo Lithography) file format, may be printed using a 3D printer.
+
+The enclosure is comprised of two parts:  a "base" and a "lid".
+
 <img src="https://nav6.googlecode.com/svn/trunk/enclosure/enclosure.png">
