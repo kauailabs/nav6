@@ -26,7 +26,7 @@
 
   * [https://code.google.com/p/nav6/wiki/Enclosure Creating an Enclosure]
 
-  * [https://code.google.com/p/nav6/wiki/Customization Software Customization]
+  * [https://code.google.com/p/nav6/wiki/Customization Customizing the firmware]
 
   * [https://code.google.com/p/nav6/wiki/FactoryTestProcedure Factory Test Procedure]
 
