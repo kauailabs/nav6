@@ -25,3 +25,5 @@ This calibration performs what is sometimes referred to as "Hard Iron" calibrati
 == Soft Iron Calibration ==
 
 Note that this automatic calibration does not include "Soft Iron" calibration which would correct for additional effects due to soft metals that may be near the magnetometer that will tend to impact the magnetometer accuracy.
+
+Soft Iron calibration must be performed after the magnetometer has been installed, since the soft iron effects are impacted by soft metals in the environment near the sensor.
