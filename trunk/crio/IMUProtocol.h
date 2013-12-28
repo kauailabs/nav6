@@ -21,6 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ===============================================
 */
+
 #ifndef _IMU_PROTOCOL_H_
 #define _IMU_PROTOCOL_H_
 
@@ -32,14 +33,15 @@ THE SOFTWARE.
 // Yaw/Pitch/Roll (YPR) Update Packet
 
 #define MSGID_YPR_UPDATE 'y'
-#define YPR_UPDATE_MESSAGE_LENGTH 27 	// e.g., !y[yaw][pitch][roll][checksum][cr][lf]
+#define YPR_UPDATE_MESSAGE_LENGTH 34 	// e.g., !y[yaw][pitch][roll][checksum][cr][lf]
 						//       where yaw, pitch, roll are floats
 						//		 where checksum is 2 ascii-bytes of HEX checksum (all bytes before checksum)
 #define YPR_UPDATE_YAW_VALUE_INDEX 2
 #define YPR_UPDATE_PITCH_VALUE_INDEX 9
 #define YPR_UPDATE_ROLL_VALUE_INDEX 16
-#define YPR_UPDATE_CHECKSUM_INDEX 23
-#define YPR_UPDATE_TERMINATOR_INDEX 25
+#define YPR_UPDATE_COMPASS_VALUE_INDEX 23
+#define YPR_UPDATE_CHECKSUM_INDEX 30
+#define YPR_UPDATE_TERMINATOR_INDEX 32
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,7 +51,7 @@ class IMUProtocol
 
 public:
 
-static int encodeYPRUpdate( char *protocol_buffer, float yaw, float pitch, float roll )
+static int encodeYPRUpdate( char *protocol_buffer, float yaw, float pitch, float roll, float compass_heading )
 {
   // Header
   protocol_buffer[0] = PACKET_START_CHAR;
@@ -59,6 +61,7 @@ static int encodeYPRUpdate( char *protocol_buffer, float yaw, float pitch, float
   encodeProtocolFloat( yaw,    &protocol_buffer[YPR_UPDATE_YAW_VALUE_INDEX] );
   encodeProtocolFloat( pitch,  &protocol_buffer[YPR_UPDATE_PITCH_VALUE_INDEX] );
   encodeProtocolFloat( roll,    &protocol_buffer[YPR_UPDATE_ROLL_VALUE_INDEX] );
+  encodeProtocolFloat( compass_heading, &protocol_buffer[YPR_UPDATE_COMPASS_VALUE_INDEX] );
   
   // Footer
   encodeTermination( protocol_buffer, YPR_UPDATE_MESSAGE_LENGTH, YPR_UPDATE_MESSAGE_LENGTH - 4 );
@@ -66,7 +69,7 @@ static int encodeYPRUpdate( char *protocol_buffer, float yaw, float pitch, float
   return YPR_UPDATE_MESSAGE_LENGTH;
 }
 
-static int decodeYPRUpdate( char *buffer, int length, float& yaw, float& pitch, float& roll )
+static int decodeYPRUpdate( char *buffer, int length, float& yaw, float& pitch, float& roll, float& compass_heading )
 {
   if ( length < YPR_UPDATE_MESSAGE_LENGTH ) return 0;
   if ( ( buffer[0] == '!' ) && ( buffer[1] == 'y' ) )
@@ -76,9 +79,9 @@ static int decodeYPRUpdate( char *buffer, int length, float& yaw, float& pitch, 
     yaw   = decodeProtocolFloat( &buffer[YPR_UPDATE_YAW_VALUE_INDEX] );
     pitch = decodeProtocolFloat( &buffer[YPR_UPDATE_PITCH_VALUE_INDEX] );
     roll  = decodeProtocolFloat( &buffer[YPR_UPDATE_ROLL_VALUE_INDEX] );
-    return YPR_UPDATE_MESSAGE_LENGTH;
+	compass_heading = decodeProtocolFloat( &buffer[YPR_UPDATE_COMPASS_VALUE_INDEX] );
   }
-  return 0;
+  return YPR_UPDATE_MESSAGE_LENGTH;
 }
 
 protected:
