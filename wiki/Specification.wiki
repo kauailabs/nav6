@@ -11,6 +11,8 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 ||
 ||Yaw, Pitch and Roll Angles||
 ||Tilt-compensated Compass Heading||
+||Automatic Accelerometer/Gyroscope Calibration||
+||Automatic Hard-Iron Magnetometer Calibration||
 ||
 
 == nav6 Electrical/Interface Specifications ==
