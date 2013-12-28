@@ -24,7 +24,7 @@
 
 * Customization and Troubleshooting
 
-  * [https://code.google.com/p/nav6/wiki/Enclosure Enclosure]
+  * [https://code.google.com/p/nav6/wiki/Enclosure Creating an Enclosure]
 
   * [https://code.google.com/p/nav6/wiki/Customization Software Customization]
 
