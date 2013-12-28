@@ -6,20 +6,14 @@ The nav6 circuit board and default software provide inertial and magnetic measur
 
 _Note that accuracy values are only valid after a start-up calibration period, during which time the nav6 circuit board must be held still._
 
-== MPU-6050 Key Specifications ==
+== nav6 Electrical/Interface Specifications ==
 
 ||
-||Gyro Sensitivity Range             ||+/- 250,500,1000 or 2000 degrees/sec||
-||Accelerometer Sensitivity Range    ||+/- 2,4,8 or 16 g||
-||Motion Processor Update Rate       ||Up to 200Hz||
-||ADC Resolution                     ||16 bits||
-||
-
-== HMC5883L Key Specifications ==
-
-||
-||Angular accuracy:                   ||1-2 degrees||
-||ADC Resolution                      ||12 bits||
+||Voltage:                  ||6-16V DC||
+||Current Consumption:      ||200 millamps||
+||Communications Interface: ||RS-232||
+||Power Connector:          ||JST PH 2-pin connector||
+||RS-232 Connector:         ||DB9, Female||
 ||
 
 == nav6 Firmware Key Specifications ==
@@ -34,4 +28,20 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 ||Serial Port Update Rate:        ||100 Hz||
 ||DMP Update Rate:                ||100 Hz||
 ||Magnetometer Raw Update Rate:   ||15 Hz||
+||
+
+== MPU-6050 Key Specifications ==
+
+||
+||Gyro Sensitivity Range             ||+/- 250,500,1000 or 2000 degrees/sec||
+||Accelerometer Sensitivity Range    ||+/- 2,4,8 or 16 g||
+||Motion Processor Update Rate       ||Up to 200Hz||
+||ADC Resolution                     ||16 bits||
+||
+
+== HMC5883L Key Specifications ==
+
+||
+||Angular accuracy:                   ||1-2 degrees||
+||ADC Resolution                      ||12 bits||
 ||
