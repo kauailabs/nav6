@@ -2,8 +2,8 @@
 
 void setup()
 {
- Serial1.begin(57600);
- Serial1.println("Init"); 
+ Serial.begin(57600);
+ Serial.println("Init"); 
 }
 
 char protocol_buff[256];
@@ -11,25 +11,28 @@ char protocol_buff[256];
 float yaw = 1.06;
 float pitch = 162.1;
 float roll = -13.28;
+float compass_heading = 17.5;
 
 void loop()
 {
-  int num_bytes = IMUProtocol::encodeYPRUpdate( protocol_buff, yaw, pitch, roll );
-  Serial1.write((byte *)protocol_buff,num_bytes);
+  int num_bytes = IMUProtocol::encodeYPRUpdate( protocol_buff, yaw, pitch, roll, compass_heading );
+  Serial.write((byte *)protocol_buff,num_bytes);
   delay(1000);
-  float decodedyaw, decodedpitch, decodedroll;
-  if ( IMUProtocol::decodeYPRUpdate( protocol_buff, num_bytes, decodedyaw, decodedpitch, decodedroll ) )
+  float decodedyaw, decodedpitch, decodedroll, decodedcompassheading;
+  if ( IMUProtocol::decodeYPRUpdate( protocol_buff, num_bytes, decodedyaw, decodedpitch, decodedroll, decodedcompassheading ) )
   {
-    Serial1.print("Decoded.  Yaw:  "  );
-    Serial1.print(decodedyaw);
-    Serial1.print(" Pitch:  ");
-    Serial1.print(decodedpitch);
-    Serial1.print(" Roll:  " );
-    Serial1.println(decodedroll);
+    Serial.print("Decoded.  Yaw:  "  );
+    Serial.print(decodedyaw);
+    Serial.print(" Pitch:  ");
+    Serial.print(decodedpitch);
+    Serial.print(" Roll:  " );
+    Serial.println(decodedroll);
+    Serial.print(" Heading:  " );
+    Serial.println(decodedcompassheading);
   }
   else
   {
-    Serial1.println("Error Decoding");
+    Serial.println("Error Decoding");
   }
 }
 
