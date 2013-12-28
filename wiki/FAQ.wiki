@@ -3,3 +3,7 @@
 Yes.  Although the National Instruments !RoboRio does not provide a RS-232 Serial Port,  the nav6 can be connected to the National Instruments !RoboRio via one it its 2 USB host ports.  To accomplish this, a RS-232 to USB converter cable is needed.
 
 Note that a RS-232 to USB converter cable is inexpensive, and is also very useful - since with this cable the nav6 IMU can be re-programmed using the Arduino IDE.
+
+*Did Invensense finally publicly release a description of the DMP (Digital  Motion Processor) and interface specs, or are you using what other people reverse engineered a while ago?*
+
+The nav6 firmware uses the officially released Invensense MotionDriver version 5.1. This driver has been modified to work correctly within the Arduino environment.  Therefore, the nav6 uses officially-released and documented software for the Invensense Digital Motion Processor.
