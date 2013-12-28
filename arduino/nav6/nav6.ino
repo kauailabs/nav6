@@ -8,6 +8,7 @@ extern "C" {
   #include "inv_mpu.h"
   #include "inv_mpu_dmp_motion_driver.h"
 }
+#include "IMUProtocol.h"
 
 #include <HMC5883LCalibratable.h>
 
@@ -32,7 +33,6 @@ struct hal_s {
 
 static struct hal_s hal = {0};
 
-#include "IMUProtocol.h"
 char protocol_buffer[64];
 
 /* The sensors can be mounted onto the board in any orientation. The mounting
