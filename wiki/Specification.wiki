@@ -16,7 +16,7 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 ||RS-232 Connector:         ||DB9, Female||
 ||
 
-== nav6 Firmware Key Specifications ==
+== nav6 Official Firmware Key Specifications ==
 
 ||
 ||Startup Calibration Period:     ||20 seconds||
