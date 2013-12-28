@@ -1,228 +1,169 @@
-/* ============================================
-Nav6 source code is placed under the MIT license
-Copyright (c) 2013 Kauai Labs
 
-Portions of this work are based upon the I2C Dev Library by Jeff Rowberg
-(www.i2cdevlib.com) which is open-source licensed under the MIT
-License.  This work is also based upon the Arduino software
-library which is licensed under a Creative Commons license.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-===============================================
-*/
-
-// Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation
-// is used in I2Cdev.h
+#define EMPL_TARGET_ATMEGA328
 #include "Wire.h"
-
-// I2Cdev and MPU6050 must be installed as libraries, or else the .cpp/.h files
-// for both classes must be in the include path of your project
 #include "I2Cdev.h"
+//#include <math.h>
+#include "helper_3dmath.h"
+extern "C" {
+  #include "inv_mpu.h"
+  #include "inv_mpu_dmp_motion_driver.h"
+}
 
-#include "MPU6050_6Axis_MotionApps20.h"
-//#include "MPU6050.h" // not necessary if using MotionApps include file
-#include <HMC5883L.h>
+#include <HMC5883LCalibratable.h>
 
-// class default I2C address is 0x1E
-// specific I2C addresses may be passed as a parameter here
-// this device only supports one I2C address (0x1E)
-HMC5883L compass;
+HMC5883LCalibratable compass;
 
-// class default I2C address is 0x68
-// specific I2C addresses may be passed as a parameter here
-// AD0 low = 0x68 (default for SparkFun breakout and InvenSense evaluation board)
-// AD0 high = 0x69
-MPU6050 mpu;
+struct FloatVectorStruct {
+  float x;
+  float y;
+  float z;
+};
 
-/* =========================================================================
-   NOTE: In addition to connection 3.3v, GND, SDA, and SCL, this sketch
-   depends on the MPU-6050's INT pin being connected to the Arduino's
-   external interrupt #0 pin. On the Arduino Uno and Mega 2560, this is
-   digital I/O pin 2.
- * ========================================================================= */
+struct hal_s {
+    unsigned char sensors;
+    unsigned char dmp_on;
+    unsigned char wait_for_tap;
+    volatile unsigned char new_gyro;
+    unsigned short report;
+    unsigned short dmp_features;
+    unsigned char motion_int_mode;
+    //struct rx_s rx;
+};
 
-/* =========================================================================
-   NOTE: Arduino v1.0.1 with the Leonardo board generates a compile error
-   when using Serial1.write(buf, len). The Teapot output uses this method.
-   The solution requires a modification to the Arduino USBAPI.h file, which
-   is fortunately simple, but annoying. This will be fixed in the next IDE
-   release. For more info, see these links:
+static struct hal_s hal = {0};
 
-   http://arduino.cc/forum/index.php/topic,109987.0.html
-   http://code.google.com/p/arduino/issues/detail?id=958
- * ========================================================================= */
-
-
-
-// uncomment "OUTPUT_READABLE_QUATERNION" if you want to see the actual
-// quaternion components in a [w, x, y, z] format (not best for parsing
-// on a remote host such as Processing or something though)
-//#define OUTPUT_READABLE_QUATERNION
-
-// uncomment "OUTPUT_READABLE_EULER" if you want to see Euler angles
-// (in degrees) calculated from the quaternions coming from the FIFO.
-// Note that Euler angles suffer from gimbal lock (for more info, see
-// http://en.wikipedia.org/wiki/Gimbal_lock)
-//#define OUTPUT_READABLE_EULER
-
-// uncomment "OUTPUT_READABLE_YAWPITCHROLL" if you want to see the yaw/
-// pitch/roll angles (in degrees) calculated from the quaternions coming
-// from the FIFO. Note this also requires gravity vector calculations.
-// Also note that yaw/pitch/roll angles suffer from gimbal lock (for
-// more info, see: http://en.wikipedia.org/wiki/Gimbal_lock)
-//#define OUTPUT_READABLE_YAWPITCHROLL
-
-// uncomment "OUTPUT_READABLE_REALACCEL" if you want to see acceleration
-// components with gravity removed. This acceleration reference frame is
-// not compensated for orientation, so +X is always +X according to the
-// sensor, just without the effects of gravity. If you want acceleration
-// compensated for orientation, us OUTPUT_READABLE_WORLDACCEL instead.
-//#define OUTPUT_READABLE_REALACCEL
-
-// uncomment "OUTPUT_READABLE_WORLDACCEL" if you want to see acceleration
-// components with gravity removed and adjusted for the world frame of
-// reference (yaw is relative to initial orientation, since no magnetometer
-// is present in this case). Could be quite handy in some cases.
-//#define OUTPUT_READABLE_WORLDACCEL
-
-// uncomment "OUTPUT_TEAPOT" if you want output that matches the
-// format used for the InvenSense teapot demo
-//#define OUTPUT_TEAPOT
-
-#define OUTPUT_IMU_PROTOCOL
-#ifdef OUTPUT_IMU_PROTOCOL
 #include "IMUProtocol.h"
 char protocol_buffer[64];
+
+/* The sensors can be mounted onto the board in any orientation. The mounting
+ * matrix seen below tells the MPL how to rotate the raw data from thei
+ * driver(s).
+ * TODO: The following matrices refer to the configuration on an internal test
+ * board at Invensense. If needed, please modify the matrices to match the
+ * chip-to-body matrix for your particular set up.
+ */
+/*static signed char gyro_orientation[9] = {-1, 0, 0,
+                                           0,-1, 0,
+                                           0, 0, 1};
+*/
+#define ACCEL_ON        (0x01)
+#define GYRO_ON         (0x02)
+/* Starting sampling rate. */
+#define DEFAULT_MPU_HZ  (100)
+/* Data requested by client. */
+#define PRINT_ACCEL     (0x01)
+#define PRINT_GYRO      (0x02)
+#define PRINT_QUAT      (0x04)
+
+#ifndef cbi
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
 
 
-#define LED_PIN 13 // (Arduino is 13, Teensy is 11, Teensy++ is 6)
-bool blinkState = false;
-
-// MPU control/status vars
-bool dmpReady = false;  // set true if DMP init was successful
-uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
-uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
-uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
-uint16_t fifoCount;     // count of all bytes currently in FIFO
-uint8_t fifoBuffer[64]; // FIFO storage buffer
-
-// orientation/motion vars
-Quaternion q;           // [w, x, y, z]         quaternion container
-VectorInt16 aa;         // [x, y, z]            accel sensor measurements
-VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
-VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
-VectorFloat gravity;    // [x, y, z]            gravity vector
-float euler[3];         // [psi, theta, phi]    Euler angle container
-float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
-
-// packet structure for InvenSense teapot demo
-uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
+static signed char gyro_orientation[9] = { 1, 0, 0,
+                                           0, 1, 0,
+                                           0, 0, 1};
 
 
-
-// ================================================================
-// ===               INTERRUPT DETECTION ROUTINE                ===
-// ================================================================
-
-volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
-void dmpDataReady() {
-    mpuInterrupt = true;
+volatile boolean compass_data_ready = false;
+void compassDataAvailable() {
+  compass_data_ready = true;
 }
-
-
-
-// ================================================================
-// ===                      INITIAL SETUP                       ===
-// ================================================================
 
 void setup() {
+
     // join I2C bus (I2Cdev library doesn't do this automatically)
     Wire.begin();
+    // Disable internal I2C pull-ups
+    cbi(PORTC, 4);
+    cbi(PORTC, 5);
 
     // initialize serial communication
-    // (115200 chosen because it is required for Teapot Demo output, but it's
-    // really up to you depending on your project)
     Serial.begin(57600);
-    while (!Serial); // wait for Leonardo enumeration, others continue immediately
+    while (!Serial); // wait for Leonardo enumeration, others continue immediately  
 
-    // NOTE: 8MHz or slower host processors, like the Teensy @ 3.3v or Ardunio
-    // Pro Mini running at 3.3v, cannot handle this baud rate reliably due to
-    // the baud timing being too misaligned with processor ticks. You must use
-    // 38400 or slower in these cases, or use some kind of external separate
-    // crystal solution for the UART timer.
+    Serial.println();
+    Serial.println();
+    Serial.println(F("Kauai Labs nav6 firmware."));
+    Serial.print(F("Free Memory:  "));
+    Serial.println(freeMemory());
+    Serial.println();
 
-    // initialize devices
-    Serial.println(F("Initializing I2C devices..."));
-    mpu.initialize();
-    compass.initialize();
+    // Digital Compass Initialization
 
-
-    // verify connection
-    Serial.println(F("Testing device connections..."));
-    Serial.println(mpu.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
-
-    // wait for ready
-    //Serial.println(F("\nSend any character to begin DMP programming and demo: "));
-    //while (Serial.available() && Serial.read()); // empty buffer
-    //while (!Serial.available());                 // wait for data
-    //while (Serial.available() && Serial.read()); // empty buffer again
-
-    // load and configure the DMP
-    Serial.println(F("Initializing DMP..."));
-    devStatus = mpu.dmpInitialize();
-    
-    // make sure it worked (returns 0 if so)
-    if (devStatus == 0) {
-        // turn on the DMP, now that it's ready
-        Serial.println(F("Enabling DMP..."));
-        mpu.setDMPEnabled(true);
-
-        // enable Arduino interrupt detection
-        Serial.println(F("Enabling interrupt detection (Arduino external interrupt 0 on Pin D2)..."));
-        attachInterrupt(0, dmpDataReady, RISING);
-        mpuIntStatus = mpu.getIntStatus();
-
-        // set our DMP Ready flag so the main loop() function knows it's okay to use it
-        Serial.println(F("DMP ready! Waiting for first interrupt..."));
-        dmpReady = true;
-
-        // get expected DMP packet size for later comparison
-        packetSize = mpu.dmpGetFIFOPacketSize();
-    } else {
-        // ERROR!
-        // 1 = initial memory load failed
-        // 2 = DMP configuration updates failed
-        // (if it's going to break, usually the code will be 1)
-        Serial.print(F("DMP Initialization failed (code "));
-        Serial.print(devStatus);
-        Serial.println(F(")"));
+    if ( compass.testConnection() ) {
+      
+      compass.initialize();
+      uint8_t gain = compass.getGain();    
+      Serial.print(F("Compass gain:  "));
+      Serial.println(gain);
+      Serial.print(F("Calibrating Compass..."));
+      Serial.flush();
+      delay(10);
+      if ( compass.calibrate(gain,100) ) {
+        Serial.println(F("Success"));
+      }
+      else {
+        Serial.println(F("Failed"));
+      }
+      
+      compass.initialize();
+      // Set Compass to "Continuous" mode
+      // This makes reading data more efficient, at the expense of some 
+      // additional current draw.
+      // enable the compass interrupt
+      attachInterrupt(1,compassDataAvailable,RISING);
+      // Initiate reading from magnetometer, this should trigger an interrupt.
+      compass.setMode(HMC5883L_MODE_CONTINUOUS);
+      compass.getHeadingX();
+      compass.setMode(HMC5883L_MODE_CONTINUOUS);
     }
+    
+    // MPU-6050 Initialization
 
-    // configure LED for output
-    pinMode(LED_PIN, OUTPUT);
+    // Initialize the MPU:
+    //
+    // Gyro sensitivity:      2000 degrees/sec
+    // Accel sensitivity:     2 g
+    // Gyro Low-pass filter:  42Hz
+    // DMP Update rate:       100Hz
+
+    Serial.print(F("Initializing MPU..."));
+    if ( initialize_mpu() ) {
+      Serial.print(F("Success"));
+      //boolean gyro_ok, accel_ok;
+      //run_mpu_self_test(gyro_ok,accel_ok);
+      enable_mpu();    
+    }
+    else {
+      Serial.print(F("Failed"));    
+    }
+    Serial.println();
 }
 
+unsigned long sensor_timestamp;
+struct FloatVectorStruct gravity;
 
-int calibration_state = 0;  // 0 = Waiting for MPU to complete internal calibration
-                            // 1 = Accumulating angular offsets
-                            // 2 = Normal operation
+float compass_heading_radians = 0.0;
+float compass_heading_degrees = 0.0;
+
+// angle in radians = angle in degrees * Pi / 180 
+const float degrees_to_radians = M_PI / 180.0;
+// angle in degrees = angle in radians * 180 / Pi
+const float radians_to_degrees = 180.0 / M_PI;
+
+/*****************************************
+* MPU Calibration
+*****************************************/
+
+#define STARTUP_CALIBRATION_DELAY_MS        19000
+#define CALIBRATED_OFFSET_AVERAGE_PERIOD_MS  1000
+
+#define MPU_CALIBRATION_STATE_CALIBRATING 0 // Waiting for MPU to complete internal calibration
+#define MPU_CALIBRATION_STATE_ACCUMULATE  1 // Accumulate Yaw/Pitch/Roll offsets
+#define MPU_CALIBRATION_STATE_COMPLETE    2 // Normal Operation
+
+int calibration_state = MPU_CALIBRATION_STATE_CALIBRATING;
                             
 int accumulator_count = 0;
 
@@ -234,45 +175,88 @@ float x_accumulator = 0.0;
 float y_accumulator = 0.0;
 float z_accumulator = 0.0;
 
-// ================================================================
-// ===                    MAIN PROGRAM LOOP                     ===
-// ================================================================
+float ypr[3] = { 0, 0, 0 };
+
+long curr_mpu_temp;
 
 void loop() {
-    // if programming failed, don't try to do anything
-    if (!dmpReady) return;
+  
+    // Read compass heading data if it has been updated recently.
 
-    // wait for MPU interrupt or extra packet(s) available
-    while (!mpuInterrupt && fifoCount < packetSize) {
-        // other program behavior stuff here
-        // .
-        // .
-        // .
-        // if you are really paranoid you can frequently test in between other
-        // stuff to see if mpuInterrupt is true, and if so, "break;" from the
-        // while() loop to immediately process the MPU data
-        // .
-        // .
-        // .
-    }
-
-    boolean accumulate = false;
-    if ( calibration_state == 0 )
+    if ( compass_data_ready ) 
     {
-      if ( millis() >= 17000 )
+      // Read latest heading from compass
+      // Note that the compass heading is tilt compensated based upon
+      // previous pitch/roll readings from the MPU
+      compass_heading_radians = compass.compassHeadingTiltCompensatedRadians(-ypr[1], ypr[2]);
+      //compass_heading_radians = compass.compassHeadingRadians();
+      compass_heading_degrees = compass_heading_radians * radians_to_degrees;
+      
+      // Adjust compass for board orientation,
+      // and modify range from -180-180 to
+      // 0-360 degrees
+      
+      compass_heading_degrees -= 90.0;
+      if ( compass_heading_degrees < 0 ) {
+        compass_heading_degrees += 360; 
+      }
+      compass_data_ready = false;
+      
+      mpu_get_temperature(&curr_mpu_temp, &sensor_timestamp);
+      float temp_centigrade = (float)curr_mpu_temp;
+      temp_centigrade /= 65536.0; 
+      Serial.println( temp_centigrade );
+    }
+  
+  
+  if (hal.new_gyro && hal.dmp_on) {
+
+    short gyro[3], accel[3], sensors;
+    unsigned char more;
+    long quat[4];
+    //float euler[3];
+    /* This function gets new data from the FIFO when the DMP is in
+     * use. The FIFO can contain any combination of gyro, accel,
+     * quaternion, and gesture data. The sensors parameter tells the
+     * caller which data fields were actually populated with new data.
+     * For example, if sensors == (INV_XYZ_GYRO | INV_WXYZ_QUAT), then
+     * the FIFO isn't being filled with accel data.
+     * The driver parses the gesture data to determine if a gesture
+     * event has occurred; on an event, the application will be notified
+     * via a callback (assuming that a callback function was properly
+     * registered). The more parameter is non-zero if there are
+     * leftover packets in the FIFO.
+     */
+    dmp_read_fifo(gyro, accel, quat, &sensor_timestamp, &sensors,
+        &more);
+    if (!more)
+        hal.new_gyro = 0;
+            
+    Quaternion q( (float)(quat[0] >> 16) / 16384.0f,
+                  (float)(quat[1] >> 16) / 16384.0f,
+                  (float)(quat[2] >> 16) / 16384.0f,
+                  (float)(quat[3] >> 16) / 16384.0f);
+    getGravity(&gravity, &q);
+    dmpGetYawPitchRoll(ypr, &q, &gravity);
+          
+    boolean accumulate = false;
+    if ( calibration_state == MPU_CALIBRATION_STATE_CALIBRATING )
+    {
+      if ( millis() >= STARTUP_CALIBRATION_DELAY_MS )
       {
-        calibration_state = 1;
+        calibration_state = MPU_CALIBRATION_STATE_ACCUMULATE;
       }
     }
-    if ( calibration_state == 1 )
+    if ( calibration_state == MPU_CALIBRATION_STATE_ACCUMULATE )
     {
       accumulate = true;
-      if ( millis() >= 18000 )
+      if ( millis() >= (STARTUP_CALIBRATION_DELAY_MS + CALIBRATED_OFFSET_AVERAGE_PERIOD_MS) )
       {
         accumulate = false;
         calibrated_x_offset = x_accumulator / accumulator_count;
-        calibrated_y_offset = y_accumulator / accumulator_count;
-        calibrated_z_offset = z_accumulator / accumulator_count;
+        calibrated_y_offset = 0; // y_accumulator / accumulator_count;
+        calibrated_z_offset = 0; // z_accumulator / accumulator_count;
+        calibration_state = MPU_CALIBRATION_STATE_COMPLETE;
       }
       else
       {
@@ -280,190 +264,279 @@ void loop() {
       }
     }
 
-    // reset interrupt flag and get INT_STATUS byte
-    mpuInterrupt = false;
-    mpuIntStatus = mpu.getIntStatus();
+    float x = ypr[0] * radians_to_degrees;
+    float y = ypr[1] * radians_to_degrees;
+    float z = ypr[2] * radians_to_degrees;
 
-    // get current FIFO count
-    fifoCount = mpu.getFIFOCount();
+    //x *= 2;
 
-    // check for overflow (this should never happen unless our code is too inefficient)
-    if ((mpuIntStatus & 0x10) || fifoCount == 1024) {
-        // reset so we can continue cleanly
-        mpu.resetFIFO();
-        Serial.println(F("FIFO overflow!"));
-
-    // otherwise, check for DMP data ready interrupt (this should happen frequently)
-    } else if (mpuIntStatus & 0x02) {
-        // wait for correct available data length, should be a VERY short wait
-        while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
-
-        // read a packet from FIFO
-        mpu.getFIFOBytes(fifoBuffer, packetSize);
-        
-        // track FIFO count here in case there is > 1 packet available
-        // (this lets us immediately read more without waiting for an interrupt)
-        fifoCount -= packetSize;
-
-        #ifdef OUTPUT_READABLE_QUATERNION
-            // display quaternion values in easy matrix form: w x y z
-            mpu.dmpGetQuaternion(&q, fifoBuffer);
-            Serial.print("quat\t");
-            Serial.print(q.w);
-            Serial.print("\t");
-            Serial.print(q.x);
-            Serial.print("\t");
-            Serial.print(q.y);
-            Serial.print("\t");
-            Serial.println(q.z);
-        #endif
-
-        #ifdef OUTPUT_READABLE_EULER
-            // display Euler angles in degrees
-            mpu.dmpGetQuaternion(&q, fifoBuffer);
-            mpu.dmpGetEuler(euler, &q);
-            
-            float x = euler[0] * 180/M_PI;
-            float y = euler[1] * 180/M_PI;
-            float z = euler[2] * 180/M_PI;
-
-            if ( accumulate )
-            {
-              x_accumulator += x;
-              y_accumulator += y;
-              z_accumulator += z;
-            }
-
-            x -= calibrated_x_offset;
-            y -= calibrated_y_offset;
-            z -= calibrated_z_offset;
-            if ( x < -180 ) x += 360;
-            if ( x > 180 ) x -= 360;
-            if ( y < -180 ) y += 360;
-            if ( y > 180 ) y -= 360;
-            if ( z < -180 ) z += 360;
-            if ( z > 180 ) z -= 360;
-
-            Serial.print("euler\t");
-            Serial.print(x);
-            Serial.print("\t");
-            Serial.print(y);
-            Serial.print("\t");
-            Serial.println(z);
-        #endif
-
-        #ifdef OUTPUT_READABLE_YAWPITCHROLL
-            // display Euler angles in degrees
-            mpu.dmpGetQuaternion(&q, fifoBuffer);
-            mpu.dmpGetGravity(&gravity, &q);
-            mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-
-            float x = ypr[0] * 180/M_PI;
-            float y = ypr[1] * 180/M_PI;
-            float z = ypr[2] * 180/M_PI;
-
-            if ( accumulate )
-            {
-              x_accumulator += x;
-              y_accumulator += y;
-              z_accumulator += z;
-            }
-
-            x -= calibrated_x_offset;
-            y -= calibrated_y_offset;
-            z -= calibrated_z_offset;
-            if ( x < -180 ) x += 360;
-            if ( x > 180 ) x -= 360;
-            if ( y < -180 ) y += 360;
-            if ( y > 180 ) y -= 360;
-            if ( z < -180 ) z += 360;
-            if ( z > 180 ) z -= 360;
-
-            Serial.print("ypr\t");
-            Serial.print(x);
-            Serial.print("\t");
-            Serial.print(y);
-            Serial.print("\t");
-            Serial.println(z);
-        #endif
-
-        #ifdef OUTPUT_READABLE_REALACCEL
-            // display real acceleration, adjusted to remove gravity
-            mpu.dmpGetQuaternion(&q, fifoBuffer);
-            mpu.dmpGetAccel(&aa, fifoBuffer);
-            mpu.dmpGetGravity(&gravity, &q);
-            mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
-            Serial.print("areal\t");
-            Serial.print(aaReal.x);
-            Serial.print("\t");
-            Serial.print(aaReal.y);
-            Serial.print("\t");
-            Serial.println(aaReal.z);
-        #endif
-
-        #ifdef OUTPUT_READABLE_WORLDACCEL
-            // display initial world-frame acceleration, adjusted to remove gravity
-            // and rotated based on known orientation from quaternion
-            mpu.dmpGetQuaternion(&q, fifoBuffer);
-            mpu.dmpGetAccel(&aa, fifoBuffer);
-            mpu.dmpGetGravity(&gravity, &q);
-            mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
-            Serial.print("aworld\t");
-            Serial.print(aaWorld.x);
-            Serial.print("\t");
-            Serial.print(aaWorld.y);
-            Serial.print("\t");
-            Serial.println(aaWorld.z);
-        #endif
-    
-        #ifdef OUTPUT_TEAPOT
-            // display quaternion values in InvenSense Teapot demo format:
-            teapotPacket[2] = fifoBuffer[0];
-            teapotPacket[3] = fifoBuffer[1];
-            teapotPacket[4] = fifoBuffer[4];
-            teapotPacket[5] = fifoBuffer[5];
-            teapotPacket[6] = fifoBuffer[8];
-            teapotPacket[7] = fifoBuffer[9];
-            teapotPacket[8] = fifoBuffer[12];
-            teapotPacket[9] = fifoBuffer[13];
-            Serial.write(teapotPacket, 14);
-            teapotPacket[11]++; // packetCount, loops at 0xFF on purpose
-        #endif
-
-        #ifdef OUTPUT_IMU_PROTOCOL
-            // display Euler angles in degrees
-            mpu.dmpGetQuaternion(&q, fifoBuffer);
-            mpu.dmpGetGravity(&gravity, &q);
-            mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-
-            float yaw_deg = ypr[0] * 180/M_PI;
-            float pitch_deg = ypr[1] * 180/M_PI;
-            float roll_deg = ypr[2] * 180/M_PI;
-
-            if ( accumulate )
-            {
-              x_accumulator += yaw_deg;
-              y_accumulator += pitch_deg;
-              z_accumulator += roll_deg;
-            }
-
-            yaw_deg -= calibrated_x_offset;
-            pitch_deg -= calibrated_y_offset;
-            roll_deg -= calibrated_z_offset;
-            if ( yaw_deg < -180 ) yaw_deg += 360;
-            if ( yaw_deg > 180 ) yaw_deg -= 360;
-            if ( pitch_deg < -180 ) pitch_deg += 360;
-            if ( pitch_deg > 180 ) pitch_deg -= 360;
-            if ( roll_deg < -180 ) roll_deg += 360;
-            if ( roll_deg > 180 ) roll_deg -= 360;
-
-            int num_bytes = IMUProtocol::encodeYPRUpdate(protocol_buffer, yaw_deg, pitch_deg, roll_deg);     
-            Serial.write((unsigned char *)protocol_buffer, num_bytes);
-        #endif
-
-
-        // blink LED to indicate activity
-        blinkState = !blinkState;
-        digitalWrite(LED_PIN, blinkState);
+    if ( accumulate )
+    {
+      x_accumulator += x;
+      y_accumulator += y;
+      z_accumulator += z;
     }
+
+    x -= calibrated_x_offset;
+    y -= calibrated_y_offset;
+    z -= calibrated_z_offset;
+
+    if ( x < -180 ) x += 360;
+    if ( x > 180 ) x -= 360;
+    if ( y < -180 ) y += 360;
+    if ( y > 180 ) y -= 360;
+    if ( z < -180 ) z += 360;
+    if ( z > 180 ) z -= 360;
+
+    int num_bytes = IMUProtocol::encodeYPRUpdate(protocol_buffer, x, y, z,compass_heading_degrees);     
+    Serial.write((unsigned char *)protocol_buffer, num_bytes);
+  }
+}
+
+/* Every time new gyro data is available, this function is called in an
+ * ISR context. In this example, it sets a flag protecting the FIFO read
+ * function.
+ */
+void gyro_data_ready_cb(void)
+{
+    hal.new_gyro = 1;
+}
+
+/* These next two functions converts the orientation matrix (see
+ * gyro_orientation) to a scalar representation for use by the DMP.
+ * NOTE: These functions are borrowed from Invensense's MPL.
+ */
+unsigned short inv_row_2_scale(const signed char *row)
+{
+    unsigned short b;
+
+    if (row[0] > 0)
+        b = 0;
+    else if (row[0] < 0)
+        b = 4;
+    else if (row[1] > 0)
+        b = 1;
+    else if (row[1] < 0)
+        b = 5;
+    else if (row[2] > 0)
+        b = 2;
+    else if (row[2] < 0)
+        b = 6;
+    else
+        b = 7;      // error
+    return b;
+}
+
+
+unsigned short inv_orientation_matrix_to_scalar(
+    const signed char *mtx)
+{
+    unsigned short scalar;
+
+    /*
+       XYZ  010_001_000 Identity Matrix
+       XZY  001_010_000
+       YXZ  010_000_001
+       YZX  000_010_001
+       ZXY  001_000_010
+       ZYX  000_001_010
+     */
+
+    scalar = inv_row_2_scale(mtx);
+    scalar |= inv_row_2_scale(mtx + 3) << 3;
+    scalar |= inv_row_2_scale(mtx + 6) << 6;
+
+
+    return scalar;
+}
+
+boolean initialize_mpu() {
+    int result;
+    unsigned char accel_fsr;
+    unsigned short gyro_rate, gyro_fsr;
+    struct int_param_s int_param;
+
+    /* Set up gyro.
+     * Every function preceded by mpu_ is a driver function and can be found
+     * in inv_mpu.h.
+     */
+    int_param.cb = gyro_data_ready_cb;
+    int_param.pin = 0;
+    result = mpu_init(&int_param);
+
+    if ( result != 0 ) {
+      Serial.print("mpu_init failed!");
+      return false;
+    }
+
+    /* Get/set hardware configuration. Start gyro. */
+    /* Wake up all sensors. */
+    mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL);
+    /* Push both gyro and accel data into the FIFO. */
+    mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL);
+    mpu_set_sample_rate(DEFAULT_MPU_HZ);
+    /* Read back configuration in case it was set improperly. */
+    mpu_get_sample_rate(&gyro_rate);
+    mpu_get_gyro_fsr(&gyro_fsr);
+    mpu_get_accel_fsr(&accel_fsr);
+    Serial.print("Gyro FSR:  ");
+    Serial.println(gyro_fsr);
+    Serial.print("Accel FSR:  ");
+    Serial.println(accel_fsr);
+
+    /* Initialize HAL state variables. */
+    memset(&hal, 0, sizeof(hal));
+    hal.sensors = ACCEL_ON | GYRO_ON;
+    hal.report = PRINT_QUAT;
+
+    /* To initialize the DMP:
+     * 1. Call dmp_load_motion_driver_firmware(). This pushes the DMP image in
+     *    inv_mpu_dmp_motion_driver.h into the MPU memory.
+     * 2. Push the gyro and accel orientation matrix to the DMP.
+     * 3. Register gesture callbacks. Don't worry, these callbacks won't be
+     *    executed unless the corresponding feature is enabled.
+     * 4. Call dmp_enable_feature(mask) to enable different features.
+     * 5. Call dmp_set_fifo_rate(freq) to select a DMP output rate.
+     * 6. Call any feature-specific control functions.
+     *
+     * To enable the DMP, just call mpu_set_dmp_state(1). This function can
+     * be called repeatedly to enable and disable the DMP at runtime.
+     *
+     * The following is a short summary of the features supported in the DMP
+     * image provided in inv_mpu_dmp_motion_driver.c:
+     * DMP_FEATURE_LP_QUAT: Generate a gyro-only quaternion on the DMP at
+     * 200Hz. Integrating the gyro data at higher rates reduces numerical
+     * errors (compared to integration on the MCU at a lower sampling rate).
+     * DMP_FEATURE_6X_LP_QUAT: Generate a gyro/accel quaternion on the DMP at
+     * 200Hz. Cannot be used in combination with DMP_FEATURE_LP_QUAT.
+     * DMP_FEATURE_TAP: Detect taps along the X, Y, and Z axes.
+     * DMP_FEATURE_ANDROID_ORIENT: Google's screen rotation algorithm. Triggers
+     * an event at the four orientations where the screen should rotate.
+     * DMP_FEATURE_GYRO_CAL: Calibrates the gyro data after eight seconds of
+     * no motion.
+     * DMP_FEATURE_SEND_RAW_ACCEL: Add raw accelerometer data to the FIFO.
+     * DMP_FEATURE_SEND_RAW_GYRO: Add raw gyro data to the FIFO.
+     * DMP_FEATURE_SEND_CAL_GYRO: Add calibrated gyro data to the FIFO. Cannot
+     * be used in combination with DMP_FEATURE_SEND_RAW_GYRO.
+     */
+    result = dmp_load_motion_driver_firmware();
+    if ( result != 0 ) {
+      Serial.print("Firmware Load ERROR ");
+      Serial.println(result);
+      return false;
+    }
+    dmp_set_orientation(
+        inv_orientation_matrix_to_scalar(gyro_orientation));
+    
+    unsigned short dmp_features = DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_SEND_RAW_ACCEL | 
+        DMP_FEATURE_SEND_CAL_GYRO | DMP_FEATURE_GYRO_CAL;
+    dmp_enable_feature(dmp_features);
+    dmp_set_fifo_rate(DEFAULT_MPU_HZ);
+    return true;
+}
+
+void enable_mpu() {
+    mpu_set_dmp_state(1);  // This enables the DMP; at this point, interrupts should commence
+    hal.dmp_on = 1;
+}  
+
+boolean run_mpu_self_test(boolean& gyro_ok, boolean& accel_ok) {
+  
+    int result;
+    long gyro[3], accel[3];
+    boolean success = false;
+
+    gyro_ok = false;
+    accel_ok = false;
+    result = mpu_run_self_test(gyro, accel);
+    if ( ( result & 0x1 ) != 0 ) {
+      // Gyro passed self test
+      gyro_ok = true;
+      float sens;
+      mpu_get_gyro_sens(&sens);
+      gyro[0] = (long)(gyro[0] * sens);
+      gyro[1] = (long)(gyro[1] * sens);
+      gyro[2] = (long)(gyro[2] * sens);
+      dmp_set_gyro_bias(gyro);
+    }
+    if ( ( result & 0x2 ) != 0 ) {
+      // Accelerometer passed self test
+      accel_ok = true;
+      unsigned short accel_sens;
+      mpu_get_accel_sens(&accel_sens);
+      accel[0] *= accel_sens;
+      accel[1] *= accel_sens;
+      accel[2] *= accel_sens;
+      dmp_set_accel_bias(accel);
+    }
+
+    success = gyro_ok && accel_ok;
+  
+    return success;
+}
+
+void getEuler(float *data, Quaternion *q) {
+    data[0] = atan2(2*q -> x*q -> y - 2*q -> w*q -> z, 2*q -> w*q -> w + 2*q -> x*q -> x - 1);   // psi
+    data[1] = -asin(2*q -> x*q -> z + 2*q -> w*q -> y);                              // theta
+    data[2] = atan2(2*q -> y*q -> z - 2*q -> w*q -> x, 2*q -> w*q -> w + 2*q -> z*q -> z - 1);   // phi
+}
+
+void getGravity(struct FloatVectorStruct *v, Quaternion *q) {
+    v -> x = 2 * (q -> x*q -> z - q -> w*q -> y);
+    v -> y = 2 * (q -> w*q -> x + q -> y*q -> z);
+    v -> z = q -> w*q -> w - q -> x*q -> x - q -> y*q -> y + q -> z*q -> z;
+}
+
+void dmpGetYawPitchRoll(float *data, Quaternion *q, struct FloatVectorStruct *gravity) {
+    // yaw: (about Z axis)
+    data[0] = atan2(2*q -> x*q -> y - 2*q -> w*q -> z, 2*q -> w*q -> w + 2*q -> x*q -> x - 1);
+    // pitch: (nose up/down, about Y axis)
+    data[1] = atan(gravity -> x / sqrt(gravity -> y*gravity -> y + gravity -> z*gravity -> z));
+    // roll: (tilt left/right, about X axis)
+    data[2] = atan(gravity -> y / sqrt(gravity -> x*gravity -> x + gravity -> z*gravity -> z));
+}
+
+// The following code calculates the amount of free memory.
+
+extern unsigned int __heap_start;
+extern void *__brkval;
+ 
+/*
+  * The free list structure as maintained by the 
+ * avr-libc memory allocation routines.
+  */
+struct __freelist 
+{
+   size_t sz;
+   struct __freelist *nx;
+};
+ 
+/* The head of the free list structure */
+extern struct __freelist *__flp;
+ 
+/* Calculates the size of the free list */
+int freeListSize() 
+{
+   struct __freelist* current;
+   int total = 0;
+ 
+  for (current = __flp; current; current = current->nx) {
+     total += 2; /* Add two bytes for the memory block's header  */
+     total += (int) current->sz;
+   }
+ 
+  return total;
+}
+ 
+int freeMemory() 
+{
+   int free_memory;
+ 
+  if ((int)__brkval == 0) {
+     free_memory = ((int)&free_memory) - ((int)&__heap_start);
+   } else {
+     free_memory = ((int)&free_memory) - ((int)__brkval);
+     free_memory += freeListSize();
+   }
+   return free_memory;
 }

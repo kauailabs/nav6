@@ -157,7 +157,7 @@ void setup() {
   
     Serial.print("MPU-6050 Init:  ");
     
-    if ( initialize_mpu() != 0 ) {
+    if ( !initialize_mpu() ) {
       Serial.println("Failed");
       Serial.flush();
       error_code = ERROR_MPU6050_INIT_FAILED;
