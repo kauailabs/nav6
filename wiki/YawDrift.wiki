@@ -6,7 +6,7 @@ A gyroscope measures the amount of angular rotation about a single axis.  Since 
 
 Any Inertial Measurement Unit (IMU), including the nav6, that integrates a signal from a gyroscope accumulates error over time.   Accumulated error is due to several factors, including:
 
-  * Quantization noise (which occurs when an analog-to-digital converter (ADC) converts a continuous analog value to a discrete integral value)
+  * [http://en.wikipedia.org/wiki/Quantization_(signal_processing) Quantization noise] (which occurs when an analog-to-digital converter (ADC) converts a continuous analog value to a discrete integral value)
   * Scale factor error (which occurs due to manufacturing errors causing a specified scale factor [e.g., 256 bits per unit G] to be incorrect)
   * Temperature instability (which occurs when a sensor is more or less sensitive to an input as temperature changes)
   * Bias error (which occurs because the value the sensor reports at 'zero' is not known well enough to 'subtract' that value out during signal processing)
