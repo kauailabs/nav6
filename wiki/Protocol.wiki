@@ -49,10 +49,10 @@ The Yaw/Pitch/Roll/Compass Heading message indicates the nav6 IMU's current pose
 
 ||
 ||Byte Offset||Element||Data Type||
-||2||Yaw (degrees from -180 to 180)||Float||
-||9||Pitch (degrees from -180 to 180)||Float||
-||16||Roll (degrees from -180 to 180)||Float||
-||23||Compass Heading (degrees from 0 to 360)||Float||
+||0||Yaw (degrees from -180 to 180)||Float||
+||7||Pitch (degrees from -180 to 180)||Float||
+||14||Roll (degrees from -180 to 180)||Float||
+||21||Compass Heading (degrees from 0 to 360)||Float||
 ||
 
 = Message Termination =
