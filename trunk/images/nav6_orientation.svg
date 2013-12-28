@@ -9,8 +9,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="744.09448819"
-   height="1052.3622047"
+   width="643.32367"
+   height="429.17017"
    id="svg3988"
    version="1.1"
    inkscape:version="0.48.4 r9939"
@@ -25,8 +25,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.70311159"
-     inkscape:cx="103.10795"
-     inkscape:cy="513.01991"
+     inkscape:cx="91.754088"
+     inkscape:cy="255.78975"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -34,7 +34,11 @@
      inkscape:window-height="838"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
   <metadata
      id="metadata3993">
     <rdf:RDF>
@@ -49,7 +53,8 @@
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(-11.353862,-365.96185)">
     <rect
        style="fill:#ffffff;stroke:#000000;stroke-width:1.62931061;stroke-opacity:1"
        id="rect3755-7"
@@ -235,23 +240,23 @@
       <g
          id="g4199"
          transform="matrix(1.1172737,0,0,1,-63.143194,0)"
-         style="stroke-width:2.83819001;stroke-miterlimit:4;stroke-dasharray:none">
+         style="stroke-width:2.83819008;stroke-miterlimit:4;stroke-dasharray:none">
         <path
            inkscape:connector-curvature="0"
            id="path4177"
            d="m 521.64361,226.47176 c 0.58668,0.0369 4.44269,1.8158 8.56892,3.9531 l 7.50223,3.88599 -7.8893,3.86928 c -4.33912,2.1281 -8.19513,3.86928 -8.56892,3.86928 -0.37379,0 -0.67962,-3.52007 -0.67962,-7.82237 0,-4.30231 0.48001,-7.79218 1.06669,-7.75528 z"
-           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.83819001;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
+           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.83819008;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
         <path
            inkscape:connector-curvature="0"
            id="path4177-3"
            d="m 288.40081,240.5986 c -0.58668,-0.0369 -4.4427,-1.8158 -8.56893,-3.9531 l -7.50223,-3.88599 7.8893,-3.86928 c 4.33912,-2.12811 8.19514,-3.86928 8.56893,-3.86928 0.37379,0 0.67962,3.52007 0.67962,7.82237 0,4.30231 -0.48001,7.79218 -1.06669,7.75528 z"
-           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.83819001;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
+           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.83819008;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
         <path
            transform="matrix(0,1,-1,0,929.34195,156.00845)"
            inkscape:connector-curvature="0"
            id="path4197"
            d="m 78.223714,402.39423 -1.42225,247.47139 1.42225,0"
-           style="fill:none;stroke:#000000;stroke-width:2.83819001;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
+           style="fill:none;stroke:#000000;stroke-width:2.83819008;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       </g>
       <path
          style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -270,7 +275,7 @@
          inkscape:connector-curvature="0" />
       <path
          sodipodi:type="spiral"
-         style="fill:none;stroke:#000000;stroke-width:13.425962;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         style="fill:none;stroke:#000000;stroke-width:13.42596245;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          id="path4231"
          sodipodi:cx="318.58386"
          sodipodi:cy="847.55829"
