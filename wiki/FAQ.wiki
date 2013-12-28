@@ -10,8 +10,8 @@ The nav6 firmware uses the officially released Invensense !MotionDriver version 
 
 * Since many robots use the 1 serial port on the cRIO for CAN, what other interfaces options will be available for NAV6? (I2C)? *
 
-As noted above, the nav6 will work with the new !RoboRio via one of the USB Host interfaces.
-
 For 2014, the RS-232 Serial port interface is the only method for connecting the nav6 to the CRio.
 
 One possible approach is to replace the existing serial port interface to the CAN bus with an ethernet-based CAN bridge such as the [http://www.crosstheroadelectronics.com/2CAN.htm 2CAN].
+
+As noted above, the nav6 will work with the new !RoboRio via one of the USB Host interfaces.
