@@ -22,6 +22,8 @@
 
 * Customization and Troubleshooting
 
+  * [https://code.google.com/p/nav6/wiki/Enclosure Enclosure]
+
   * [https://code.google.com/p/nav6/wiki/Customization Customization]
 
   * [https://code.google.com/p/nav6/wiki/FactoryTestProcedure Factory Test Procedure]
