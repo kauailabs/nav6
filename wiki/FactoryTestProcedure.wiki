@@ -2,7 +2,7 @@
 
 = Introduction =
 
-The nav6 Factory Test Procedure verifies correct operation of the circuit board and it's key components.  The nav6 Factory Test Procedure is performed in the factory to verify initial correct operation, and may be run at a later point in time to re-verify correct option.  Source code for the nav6 Factory Test is available on this site.
+The nav6 Factory Test Procedure verifies correct operation of the circuit board and it's key components.  The nav6 Factory Test Procedure is performed in the factory to verify initial correct operation, and may be run at a later point in time to re-verify correct option.  See the [Customization] page for instructions on loading the Factory Test firmware onto the nav6.
 
 = Test Procedure =
 
@@ -39,4 +39,3 @@ The nav6 Factory Test Procedure verifies correct operation of the circuit board 
 ||9	||HMC5883L Interrupt not Received	||Interrupt Line between HMC5883L and ATMEGA328 not connected; MPU-6050 malfunctioning||
 
 8) NOTE:  In certain circumstances, the Factory test will "hang" after step 4.  This occurs because one of the devices on the I2C buses is in a bad state, or the I2C bus communication is "flaky" (as when a solder connection on the circuit board is less than ideal).  When this "hang" occurs, all of the green LEDs on the nav6 will be off and will not light up again until the device is reset.
-
