@@ -14,4 +14,4 @@ For 2014, the RS-232 Serial port interface is the only method for connecting the
 
 One possible approach is to replace the existing serial port interface to the CAN bus with an ethernet-based CAN bridge such as the [http://www.crosstheroadelectronics.com/2CAN.htm 2CAN].
 
-As noted above, the nav6 will work with the new !RoboRio via one of the USB Host interfaces.
+As noted above, the nav6 will work with the new !RoboRio (which will used in FIRST robotics starting in 2015) via one of the USB Host interfaces.
