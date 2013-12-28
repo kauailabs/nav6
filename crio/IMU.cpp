@@ -43,7 +43,8 @@ static void imuTask(IMU *imu)
 
 	float yaw = 0.0;
 	float pitch = 0.0;
-	float roll = 0.0;	
+	float roll = 0.0;
+	float compass_heading = 0.0;	
 	
 	while (!stop)
 	{ 
@@ -59,7 +60,7 @@ static void imuTask(IMU *imu)
 				while ( i < bytes_read )
 				{
 					int bytes_remaining = bytes_read - i;
-					int packet_length = IMUProtocol::decodeYPRUpdate( &protocol_buffer[i], bytes_remaining, yaw, pitch, roll ); 
+					int packet_length = IMUProtocol::decodeYPRUpdate( &protocol_buffer[i], bytes_remaining, yaw, pitch, roll, compass_heading ); 
 					if ( packet_length > 0 )
 					{
 						update_count++;
@@ -178,6 +179,12 @@ float IMU::GetRoll( void )
 	return this->roll;
 }
 
+float IMU::GetRoll( void )
+{
+	Synchronized sync(cIMUStateSemaphore);
+	return this->compass_heading;
+}
+
 /**
  * Get the angle in degrees for the PIDSource base object.
  * 
@@ -215,7 +222,7 @@ ITable * IMU::GetTable() {
 	return m_table;
 }
 
-void IMU::SetYawPitchRoll(float yaw, float pitch, float roll)
+void IMU::SetYawPitchRoll(float yaw, float pitch, float roll, float compass_heading)
 {
 	{
 		Synchronized sync(cIMUStateSemaphore);
@@ -223,6 +230,7 @@ void IMU::SetYawPitchRoll(float yaw, float pitch, float roll)
 		this->yaw = yaw;
 		this->pitch = pitch;
 		this->roll = roll;
+		this->compass_heading = compass_heading;
 	}
 	UpdateYawHistory(this->yaw);
 }

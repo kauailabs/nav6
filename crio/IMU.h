@@ -37,6 +37,7 @@ public:
 	virtual float GetPitch();	// Pitch, in units of degrees (-180 to 180)
 	virtual float GetRoll();	// Roll, in units of degrees (-180 to 180)
 	virtual float GetYaw();		// Yaw, in units of degrees (-180 to 180)
+	virtual float CompassHeading(); // CompassHeading, in units of degrees (0 to 360)
 	
 	bool IsConnected();
 	void ZeroYaw();
@@ -68,6 +69,7 @@ private:
 	float 	yaw;
 	float 	pitch; 
 	float 	roll;
+	float   compass_heading;
 	float 	yaw_history[YAW_HISTORY_LENGTH];
 	int 	next_yaw_history_index;
 	double 	last_update_time;
