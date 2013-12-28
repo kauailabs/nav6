@@ -19,9 +19,11 @@ Things are not as simple when it comes to correcting for integration error in th
 
 To deal with this, several different algorithms have been developed, including:
 
-  a) Complementary filter
-  b) Extended Kalman filter (EKF)
-  c) Direction Cosine Matrix filter (DCM)
+  * Complementary filter
+  * Extended Kalman filter (EKF)
+  * Direction Cosine Matrix filter (DCM)
+
+_Note:  See the [References] page for links to more information on these algorithms._
 
 The Complementary and EKF filter algorithms are designed to process 3-axis accelerometer and 3-axis gyroscope values and yield yaw/pitch/roll values.
 
