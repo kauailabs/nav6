@@ -7,7 +7,7 @@ Connecting the nav6 IMU to the CRio on a FIRST FRC robot is a very simple proces
 The following are needed to accomplish this integration:
 
   * nav6 IMU Circuit Board
-  * nav6 Power Wire harness(with 2-pin JST "PH" style connector)
+  * 2-pin JST "PH" style connector and wire harness
   * DB9 Male-to-female straight-through serial cable
 
 Note that the DB9 Male-to-female cable is a "straight-through" cable, NOT a "crossover" cable.
