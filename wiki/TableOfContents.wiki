@@ -29,3 +29,5 @@
   * [https://code.google.com/p/nav6/wiki/Customization Software Customization]
 
   * [https://code.google.com/p/nav6/wiki/FactoryTestProcedure Factory Test Procedure]
+
+  * [https://code.google.com/p/nav6/wiki/Support Support]
