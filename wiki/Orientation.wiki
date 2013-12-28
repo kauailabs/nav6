@@ -13,7 +13,7 @@ The standard nav6 board orientation is with the nav6 logo on the _Rear Left_.
 ||Axis||AKA||Points to||Increases as||
 ||X||Pitch||Right side of the nav6||the nav6 right side lifts||
 ||Y||Roll||Front of the nav6||the nav6 front side lifts||
-||Z||Yaw||Up from the top of the nav6||the nav6 rotates to the left.||
+||Z||Yaw||Up from the top of the nav6||the nav6 rotates to the right.||
 ||
 
 
