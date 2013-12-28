@@ -1,3 +1,36 @@
+/* =============================================================================
+Nav6 source code is placed under the MIT license
+
+Copyright (c) 2013 Kauai Labs
+
+Portions of this work are based upon the I2C Dev Library by Jeff Rowberg
+(www.i2cdevlib.com) which is open-source licensed under the MIT
+License.  This work is also based upon the Arduino software
+library which is licensed under a Creative Commons license.
+
+This work also incorporates a version of the official Invensense Motion
+Driver v. 5.1 library, which has been ported by Kauai Labs to the Arduino
+libraries.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+=============================================================================
+*/
 
 #define EMPL_TARGET_ATMEGA328
 #include "Wire.h"
@@ -37,15 +70,14 @@ char protocol_buffer[64];
 
 /* The sensors can be mounted onto the board in any orientation. The mounting
  * matrix seen below tells the MPL how to rotate the raw data from thei
- * driver(s).
- * TODO: The following matrices refer to the configuration on an internal test
- * board at Invensense. If needed, please modify the matrices to match the
+ * driver(s). If needed, please modify the matrices to match the
  * chip-to-body matrix for your particular set up.
  */
-/*static signed char gyro_orientation[9] = {-1, 0, 0,
-                                           0,-1, 0,
+
+static signed char gyro_orientation[9] = { 1, 0, 0,
+                                           0, 1, 0,
                                            0, 0, 1};
-*/
+
 #define ACCEL_ON        (0x01)
 #define GYRO_ON         (0x02)
 /* Starting sampling rate. */
@@ -58,12 +90,6 @@ char protocol_buffer[64];
 #ifndef cbi
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
-
-
-static signed char gyro_orientation[9] = { 1, 0, 0,
-                                           0, 1, 0,
-                                           0, 0, 1};
-
 
 volatile boolean compass_data_ready = false;
 void compassDataAvailable() {
