@@ -23,7 +23,7 @@ In keeping with the ASCII encoding of the nav6 IMU protocol, the following encod
 
 ||
 ||Data Type||Encoding||Example||
-||Float||[!Sign][!100s][!10s][!1s].[!10ths][!100ths]||-132.96||
+||Float||![Sign][!100s][!10s][!1s].[!10ths][!100ths]||-132.96||
 ||8-bit Integer||[!HighNibble][!LowNibble]||'E9'||
 ||16-bit Integer||[!HighByte,!HighNibble][!HighByte,!LowNibble][!LowByte,!HighNibble][!LowByte,!LowNibble]||'1A0F'||
 ||
