@@ -16,4 +16,5 @@ The standard nav6 board orientation is with the nav6 logo on the _Rear Left_.
 ||Z||Yaw||Up from the top of the nav6||the nav6 rotates to the left.||
 ||
 
+
 <img src="https://nav6.googlecode.com/svn/trunk/images/nav6_orientation.png">
