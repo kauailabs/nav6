@@ -1,3 +1,5 @@
+= nav6 Wiki =
+
 * Getting Started
 
   * [https://code.google.com/p/nav6/wiki/FRCRobotInstallation Installation]
