@@ -8,12 +8,11 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 
 == nav6 Key Features ==
 
-
-* Yaw, Pitch and Roll Angles
-* Tilt-compensated Compass Heading
-* 100Hz Update Rate
-* Automatic Accelerometer/Gyroscope Calibration
-* Automatic Hard-Iron Magnetometer Calibration
+  * Yaw, Pitch and Roll Angles
+  * Tilt-compensated Compass Heading
+  * 100Hz Update Rate
+  * Automatic Accelerometer/Gyroscope Calibration
+  * Automatic Hard-Iron Magnetometer Calibration
 
 == nav6 Electrical/Interface Specifications ==
 
