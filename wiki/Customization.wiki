@@ -24,8 +24,6 @@ NOTE: To interface the Arduino IDE to the nav6 from a computer without a RS-232 
 
 *NOTES:  
 
-  * At any time you can re-load the latest official IMU firmware using this same process.  The latest official IMU firmware source code is located at 
+  * At any time you can re-load the latest [http://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Farduino/nav6 official IMU firmware] using this same process.
 
-http://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Farduino
-
-  * Alternatively, if you suspect the nav6 may be malfunctioning, you may load and run the "Factory Test" software, which is located at this same location.
+  * Alternatively, if you suspect the nav6 may be malfunctioning, you may load and run the [http://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Farduino/nav6FactoryTest "Factory Test" firmware].
