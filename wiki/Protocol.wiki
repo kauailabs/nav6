@@ -6,7 +6,7 @@ In order to communicate sensor data to a client (e.g., a robot controller) the n
 
 In order to enhance readability during debugging, the nav6 IMU protocol uses ASCII characters.
 
-[https://code.google.com/p/nav6/source/browse/trunk/arduino/nav6/IMUProtocol.h Source code] that implements the nav6 IMU protocol is provided to simplify adding support for the nav6 IMU protocol to a software project.  The source code is contained within a single .h file.  As of the date of this writing, this source code is portable to both the Arduino platform and the VxWorks operating system.
+[https://code.google.com/p/nav6/source/browse/trunk/arduino/nav6/IMUProtocol.h Source code] that implements the nav6 IMU protocol is provided to simplify adding support for the nav6 IMU protocol to a software project.  The source code is contained within a single .h file.  As of the date of this writing, this source code is portable to both the Arduino platform and the !VxWorks operating system.
 
 = Message Structure =
 
@@ -25,7 +25,7 @@ In keeping with the ASCII encoding of the nav6 IMU protocol, the following encod
 ||Data Type||Encoding||Example||
 ||Float||[!Sign][!100s][!10s][!1s].[!10ths][!100ths]||-132.96||
 ||8-bit Integer||[!HighNibble][!LowNibble]||'E9'||
-||16-bit Integer||[!HighByte,HighNibble][!HighByte,LowNibble][!LowByte,HighNibble][!LowByte,LowNibble]||'1A0F'||
+||16-bit Integer||[!HighByte,!HighNibble][!HighByte,!LowNibble][!LowByte,!HighNibble][!LowByte,!LowNibble]||'1A0F'||
 ||
 
 = Start of Message =
