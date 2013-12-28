@@ -1,1 +1,1 @@
-Enclosure
+<img src="https://nav6.googlecode.com/svn/trunk/enclosure/enclosure.png">
