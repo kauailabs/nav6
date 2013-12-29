@@ -18,6 +18,8 @@
 
   * [https://code.google.com/p/nav6/wiki/Protocol Protocol (Basic)]
 
+  * [FieldOrientedDriveExample Example:  Field-oriented Drive]
+
   * [https://code.google.com/p/nav6/wiki/YawDrift Yaw Drift]
 
   * [https://code.google.com/p/nav6/wiki/ProtocolAdvanced Protocol (Advanced)]
