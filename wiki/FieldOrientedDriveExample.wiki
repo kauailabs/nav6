@@ -1,4 +1,4 @@
-An easy-to-use, highly-maneuverable drive system is at the heart of a successful FIRST Robotics Challenge (FRC) robot.  Omnidirectional drive systems (e.g., omniwheel, mecanum, swerve) are typically employed to provide enhanced maneuverability, yet introduce a new challenge:  increased driving complexity, related to the requirement that the driver “put their head in the robot”.  The nav6 IMU can be used to add Field-Oriented Drive to omnidirectional drive robots - reducing driver training time, enabling driver/shooter delegation in turret-less shooting robotis, and allowing drivers to fully focus on the game rather than the drive system. 
+An easy-to-use, highly-maneuverable drive system is at the heart of a successful FIRST Robotics Challenge (FRC) robot.  Omnidirectional drive systems (e.g., omniwheel, mecanum, swerve) are typically employed to provide enhanced maneuverability, yet introduce a new challenge:  _increased driving complexity, related to the requirement that the driver “put their head in the robot”_.  The nav6 IMU can be used to add Field-Oriented Drive to omnidirectional drive robots - reducing driver training time, enabling driver/shooter delegation in turret-less shooting robotis, and allowing drivers to fully focus on the game rather than the drive system. 
 
 Omnidirectional drive systems provide drivers a highly-maneuverable robot that can move in the Y axis (forward-backward), X-axis (strafe), and Z axis (rotating about it's center axis).  Each degree of freedom is independent, meaning that the overall robot motion is comprised of a “mix” of motion in each of the X, Y and Z axes, control of which is easily provided with a 3-degree of freedom joystick.
 This resulting maneuverability is quite useful during FRC competitions to avoid other robots, pick up and place game pieces, line up for shooting to a target, etc.
@@ -51,8 +51,5 @@ Solving this challenge is conceptually straightforward.  First, the current angl
         fwd = temp;
 
         // At this point, the strafe and fwd vectors have been
-        // adjusted, and can be provided to your drive system.
-        // This works well with an omnidirectional drive system,
-        // such as Mecanum or Crab/Swerve drive.
-
+        // adjusted, and can be provided to the drive system.
 }}}
