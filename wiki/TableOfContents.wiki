@@ -16,7 +16,9 @@
 
   * [https://code.google.com/p/nav6/wiki/FAQ Frequently Asked Questions]
 
-* Learning more
+* Digging Deeper
+
+  * [https://code.google.com/p/nav6/wiki/ProtocolAdvanced Protocol (Advanced)]
 
   * [https://code.google.com/p/nav6/wiki/References References]
 
