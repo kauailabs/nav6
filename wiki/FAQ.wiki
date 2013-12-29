@@ -1,14 +1,14 @@
-*Will nav6 work with the new National Instruments !RoboRio that will be used starting in the 2015 FRC Season?*
+*_Will nav6 work with the new National Instruments !RoboRio that will be used starting in the 2015 FRC Season?_*
 
 Yes.  Although the National Instruments !RoboRio does not provide a RS-232 Serial Port,  the nav6 can be connected to the National Instruments !RoboRio via one it its 2 USB host ports.  To accomplish this, a RS-232 to USB converter cable is needed.
 
 Note that a RS-232 to USB converter cable is inexpensive, and is also very useful - since with this cable the nav6 IMU can be re-programmed using the Arduino IDE.
 
-*Did Invensense finally publicly release a description of the DMP (Digital  Motion Processor) and interface specs, or are you using what other people reverse engineered a while ago?*
+*_Did Invensense finally publicly release a description of the DMP (Digital  Motion Processor) and interface specs, or are you using what other people reverse engineered a while ago?_*
 
 The nav6 firmware uses the officially released Invensense !MotionDriver version 5.1.  Kauai Labs has ported this driver to work correctly on the nav6 ATMEGA328 micro-controller.
 
-* Since many robots use the 1 serial port on the cRIO for CAN, what other interfaces options will be available for NAV6? (I2C)? *
+*_Since many robots use the 1 serial port on the cRIO for CAN, what other interfaces options will be available for NAV6? (I2C)?_*
 
 For 2014, the RS-232 Serial port interface is the only method for connecting the nav6 to the CRio.
 
@@ -16,7 +16,7 @@ One possible approach is to replace the existing serial port interface to the CA
 
 As noted above, the nav6 will work with the new !RoboRio (which will used in FIRST robotics starting in 2015) via one of the USB Host interfaces.
 
-*Aren't the magnetometer (compass heading) readings unreliable when the nav6 is used on a Robot with powerful motors?*
+*_Aren't the magnetometer (compass heading) readings unreliable when the nav6 is used on a Robot with powerful motors?_*
 
 This is correct.  If the nav6 is mounted nearby any motors, the magnetometer's ability to measure the (weak) earth's magnetic field is severely diminished.  
 
