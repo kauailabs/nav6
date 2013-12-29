@@ -23,7 +23,7 @@ The Raw Sensor Data update message communications notifications of raw sensors r
 
 == Stream Configuration Command ==
 
-The Stream Configuration Command is sent to the nav6 in order to change the type of Streaming Update message the nav6 will transmit to the client.
+By default, the nav6 IMU begins transmitting YPR Updates upon power up.  The Stream Configuration Command is sent to the nav6 in order to change the type of Streaming Update message the nav6 will transmit to the client.
 
 ||
 ||Byte Offset||Element||Data Type||
