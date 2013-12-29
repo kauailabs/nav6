@@ -37,7 +37,7 @@ public:
 	virtual float GetPitch();	// Pitch, in units of degrees (-180 to 180)
 	virtual float GetRoll();	// Roll, in units of degrees (-180 to 180)
 	virtual float GetYaw();		// Yaw, in units of degrees (-180 to 180)
-	virtual float CompassHeading(); // CompassHeading, in units of degrees (0 to 360)
+	virtual float GetCompassHeading(); // CompassHeading, in units of degrees (0 to 360)
 	
 	bool IsConnected();
 	void ZeroYaw();
@@ -53,7 +53,7 @@ public:
 	ITable * GetTable();
 
 	SerialPort *GetSerialPort() { return pserial_port; }
-	void SetYawPitchRoll(float yaw, float pitch, float roll);
+	void SetYawPitchRoll(float yaw, float pitch, float roll, float compass_heading);
 	double GetYawOffset() { return yaw_offset; }
 	double GetByteCount();
 	double GetUpdateCount();
