@@ -91,6 +91,8 @@ static signed char gyro_orientation[9] = { 1, 0, 0,
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
 
+boolean raw_update = false;
+
 volatile boolean compass_data_ready = false;
 void compassDataAvailable() {
   compass_data_ready = true;
@@ -201,6 +203,12 @@ float x_accumulator = 0.0;
 float y_accumulator = 0.0;
 float z_accumulator = 0.0;
 
+int16_t mag_x = 0;
+int16_t mag_y = 0;
+int16_t mag_z = 0;
+
+float temp_centigrade = 0.0;
+
 float ypr[3] = { 0, 0, 0 };
 
 long curr_mpu_temp;
@@ -211,27 +219,33 @@ void loop() {
 
     if ( compass_data_ready ) 
     {
-      // Read latest heading from compass
-      // Note that the compass heading is tilt compensated based upon
-      // previous pitch/roll readings from the MPU
-      compass_heading_radians = compass.compassHeadingTiltCompensatedRadians(-ypr[1], ypr[2]);
-      //compass_heading_radians = compass.compassHeadingRadians();
-      compass_heading_degrees = compass_heading_radians * radians_to_degrees;
-      
-      // Adjust compass for board orientation,
-      // and modify range from -180-180 to
-      // 0-360 degrees
-      
-      compass_heading_degrees -= 90.0;
-      if ( compass_heading_degrees < 0 ) {
-        compass_heading_degrees += 360; 
+      if ( raw_update ) 
+      {
+        compass.getHeading(&mag_x, &mag_y, &mag_z);
       }
-      compass_data_ready = false;
-      
-      mpu_get_temperature(&curr_mpu_temp, &sensor_timestamp);
-      float temp_centigrade = (float)curr_mpu_temp;
-      temp_centigrade /= 65536.0; 
-      Serial.println( temp_centigrade );
+      else
+      {
+        // Read latest heading from compass
+        // Note that the compass heading is tilt compensated based upon
+        // previous pitch/roll readings from the MPU
+        compass_heading_radians = compass.compassHeadingTiltCompensatedRadians(-ypr[1], ypr[2]);
+        //compass_heading_radians = compass.compassHeadingRadians();
+        compass_heading_degrees = compass_heading_radians * radians_to_degrees;
+        
+        // Adjust compass for board orientation,
+        // and modify range from -180-180 to
+        // 0-360 degrees
+        
+        compass_heading_degrees -= 90.0;
+        if ( compass_heading_degrees < 0 ) {
+          compass_heading_degrees += 360; 
+        }
+        compass_data_ready = false;
+        
+        mpu_get_temperature(&curr_mpu_temp, &sensor_timestamp);
+        temp_centigrade = (float)curr_mpu_temp;
+        temp_centigrade /= 65536.0; 
+      }
     }
   
   
@@ -253,69 +267,152 @@ void loop() {
      * registered). The more parameter is non-zero if there are
      * leftover packets in the FIFO.
      */
-    dmp_read_fifo(gyro, accel, quat, &sensor_timestamp, &sensors,
+    int success = dmp_read_fifo(gyro, accel, quat, &sensor_timestamp, &sensors,
         &more);
     if (!more)
         hal.new_gyro = 0;
-            
-    Quaternion q( (float)(quat[0] >> 16) / 16384.0f,
-                  (float)(quat[1] >> 16) / 16384.0f,
-                  (float)(quat[2] >> 16) / 16384.0f,
-                  (float)(quat[3] >> 16) / 16384.0f);
-    getGravity(&gravity, &q);
-    dmpGetYawPitchRoll(ypr, &q, &gravity);
-          
-    boolean accumulate = false;
-    if ( calibration_state == MPU_CALIBRATION_STATE_CALIBRATING )
+    
+    if ( success == 0 )
     {
-      if ( millis() >= STARTUP_CALIBRATION_DELAY_MS )
+      Quaternion q( (float)(quat[0] >> 16) / 16384.0f,
+                    (float)(quat[1] >> 16) / 16384.0f,
+                    (float)(quat[2] >> 16) / 16384.0f,
+                    (float)(quat[3] >> 16) / 16384.0f);
+  
+      if ( raw_update ) 
       {
-        calibration_state = MPU_CALIBRATION_STATE_ACCUMULATE;
-      }
-    }
-    if ( calibration_state == MPU_CALIBRATION_STATE_ACCUMULATE )
-    {
-      accumulate = true;
-      if ( millis() >= (STARTUP_CALIBRATION_DELAY_MS + CALIBRATED_OFFSET_AVERAGE_PERIOD_MS) )
-      {
-        accumulate = false;
-        calibrated_x_offset = x_accumulator / accumulator_count;
-        calibrated_y_offset = 0; // y_accumulator / accumulator_count;
-        calibrated_z_offset = 0; // z_accumulator / accumulator_count;
-        calibration_state = MPU_CALIBRATION_STATE_COMPLETE;
+        // Update client with raw sensor data
+        
+        int num_bytes = IMUProtocol::encodeRawUpdate(  protocol_buffer, 
+                                                       quat[0] >> 16, quat[1] >> 16, quat[2] >> 16, quat[3] >> 16,
+                                                       accel[0], accel[1], accel[2],
+                                                       mag_x, mag_y, mag_z,
+                                                       temp_centigrade);     
+        Serial.write((unsigned char *)protocol_buffer, num_bytes);
       }
       else
-      {
-        accumulator_count++;
+      {       
+        // Calculate Yaw/Pitch/Roll
+        // Update client with yaw/pitch/roll and tilt-compensated magnetometer data
+        
+        getGravity(&gravity, &q);
+        dmpGetYawPitchRoll(ypr, &q, &gravity);
+              
+        boolean accumulate = false;
+        if ( calibration_state == MPU_CALIBRATION_STATE_CALIBRATING )
+        {
+          if ( millis() >= STARTUP_CALIBRATION_DELAY_MS )
+          {
+            calibration_state = MPU_CALIBRATION_STATE_ACCUMULATE;
+          }
+        }
+        if ( calibration_state == MPU_CALIBRATION_STATE_ACCUMULATE )
+        {
+          accumulate = true;
+          if ( millis() >= (STARTUP_CALIBRATION_DELAY_MS + CALIBRATED_OFFSET_AVERAGE_PERIOD_MS) )
+          {
+            accumulate = false;
+            calibrated_x_offset = x_accumulator / accumulator_count;
+            calibrated_y_offset = 0; // y_accumulator / accumulator_count;
+            calibrated_z_offset = 0; // z_accumulator / accumulator_count;
+            calibration_state = MPU_CALIBRATION_STATE_COMPLETE;
+          }
+          else
+          {
+            accumulator_count++;
+          }
+        }
+    
+        float x = ypr[0] * radians_to_degrees;
+        float y = ypr[1] * radians_to_degrees;
+        float z = ypr[2] * radians_to_degrees;
+    
+        //x *= 2;
+    
+        if ( accumulate )
+        {
+          x_accumulator += x;
+          y_accumulator += y;
+          z_accumulator += z;
+        }
+    
+        x -= calibrated_x_offset;
+        y -= calibrated_y_offset;
+        z -= calibrated_z_offset;
+    
+        if ( x < -180 ) x += 360;
+        if ( x > 180 ) x -= 360;
+        if ( y < -180 ) y += 360;
+        if ( y > 180 ) y -= 360;
+        if ( z < -180 ) z += 360;
+        if ( z > 180 ) z -= 360;
+    
+        int num_bytes = IMUProtocol::encodeYPRUpdate(protocol_buffer, x, y, z,compass_heading_degrees);     
+        Serial.write((unsigned char *)protocol_buffer, num_bytes);
       }
     }
-
-    float x = ypr[0] * radians_to_degrees;
-    float y = ypr[1] * radians_to_degrees;
-    float z = ypr[2] * radians_to_degrees;
-
-    //x *= 2;
-
-    if ( accumulate )
-    {
-      x_accumulator += x;
-      y_accumulator += y;
-      z_accumulator += z;
+  }
+  
+  // If any serial bytes are received, scan to see if a start
+  // of message has been received.  Remove any bytes that precede
+  // the start of a message.
+ 
+  bool found_start_of_message = false;
+  while ( Serial.available() > 0 ) {
+    char rcv_byte = Serial.peek();
+    if ( rcv_byte != PACKET_START_CHAR ) {
+      Serial.read();
     }
-
-    x -= calibrated_x_offset;
-    y -= calibrated_y_offset;
-    z -= calibrated_z_offset;
-
-    if ( x < -180 ) x += 360;
-    if ( x > 180 ) x -= 360;
-    if ( y < -180 ) y += 360;
-    if ( y > 180 ) y -= 360;
-    if ( z < -180 ) z += 360;
-    if ( z > 180 ) z -= 360;
-
-    int num_bytes = IMUProtocol::encodeYPRUpdate(protocol_buffer, x, y, z,compass_heading_degrees);     
-    Serial.write((unsigned char *)protocol_buffer, num_bytes);
+    else {
+      delay(2);
+      found_start_of_message = true;
+      break;
+    }
+  }
+  
+  // If sufficient bytes have been received, process the data and
+  // if a valid message is received, handle it.
+  
+  boolean send_stream_response = false;
+  if( found_start_of_message && ( Serial.available() >= STREAM_CMD_MESSAGE_LENGTH ) ) {
+    int bytes_read = 0;
+    while ( Serial.available() ) {
+      if ( bytes_read >= sizeof(protocol_buffer) ) {
+        break;
+      }
+      protocol_buffer[bytes_read++] = Serial.read();
+    }
+    int i = 0;
+    // Scan the buffer looking for valid packets
+    while ( i < bytes_read )
+    {
+      int bytes_remaining = bytes_read - i;
+      char stream_type;
+      int packet_length = IMUProtocol::decodeStreamCommand( &protocol_buffer[i], bytes_remaining, stream_type ); 
+      if ( packet_length > 0 )
+      {
+        send_stream_response = true;
+        if ( stream_type == MSGID_RAW_UPDATE )
+        {
+          raw_update = true;
+        }
+        else
+        {
+          raw_update = false;
+        }
+        i += packet_length;
+      }
+      else // current index is not the start of a valid packet; increment
+      {
+        i++;
+      }
+    }
+  }
+  
+  if ( send_stream_response ) {
+      int num_bytes = IMUProtocol::encodeStreamResponse(  protocol_buffer, raw_update ? MSGID_RAW_UPDATE : MSGID_YPR_UPDATE,
+                                                            2000, 2, 100, calibrated_z_offset, 0 );
+      Serial.write((unsigned char *)protocol_buffer, num_bytes);
   }
 }
 

@@ -64,7 +64,7 @@ static void imuTask(IMU *imu)
 					if ( packet_length > 0 )
 					{
 						update_count++;
-						imu->SetYawPitchRoll(yaw,pitch,roll);
+						imu->SetYawPitchRoll(yaw,pitch,roll,compass_heading);
 						i += packet_length;
 					}
 					else // current index is not the start of a valid packet; increment
