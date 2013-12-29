@@ -28,4 +28,4 @@ Note that the nav6 firmware's automatic magnetometer calibration feature does no
 
 Soft Iron calibration must be performed after the magnetometer has been installed, since the soft iron effects are impacted by soft metals in the environment near the sensor.
 
-Soft Iron calibration may be implemented in the robot control software by using the nav6 "Raw" update mode.  In this mode, the IMU yaw angle value and the corresponding magnetometer X and Y values can be correlated and a correction factor can be applied, as described in this document.
+Soft Iron calibration may be implemented in the robot control software by using the nav6 "Raw" update mode.  In this mode, the IMU yaw angle value and the corresponding magnetometer X and Y values can be correlated and a correction factor can be applied, as described in [http://www.sensorsmag.com/sensors/motion-velocity-displacement/compensating-tilt-hard-iron-and-soft-iron-effects-6475 this document].
