@@ -1,5 +1,3 @@
-IMU Class Documentation
-
 To integrate the nav6 IMU into your robot control software, source code for a C++ class named IMU, which is based upon the WPI Library, is provided.
 
 = Instantiating an IMU object =
