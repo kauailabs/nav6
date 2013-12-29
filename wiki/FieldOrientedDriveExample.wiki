@@ -8,8 +8,6 @@ Yet the driver who remains in a fixed position is now presented a new challenge:
 Solving this challenge is conceptually straightforward.  First, the current angle (θ) of rotation between the head of the field, and the head of the robot must be measured; secondly, the joystick X/Y coordinates are transformed by θ, as shown in following C++ code:
 
 {{{
-        bool fod_enable = true; // Set to TRUE to enable field-oriented drive
-
         // Get Current Joystick values
 
 	double rotate = protatestick->GetTwist();
@@ -24,22 +22,18 @@ Solving this challenge is conceptually straightforward.  First, the current angl
 
         float pi = 3.1415926;
         
-        double imu_angle_degrees = imu->GetYaw();
-        
-        bool imu_connected = imu->IsConnected();
-        
-        // Update dashboard with latest IMU values
-
-        SmartDashboard::PutNumber(  "IMU_Yaw",       imu_angle_degrees);
-        SmartDashboard::PutBoolean( "FOD_Enabled",   fod_enable);
-        SmartDashboard::PutNumber( "IMU Yaw Offset", imu->GetYawOffset());
-                
         // Field-oriented drive - Adjust input angle for gyro offset angle
         
         float curr_gyro_angle_degrees = 0;
-        if ( fod_enable && imu_connected ) 
+        if ( imu->IsConnected() ) 
         {
             curr_gyro_angle_degrees = imu->GetYaw();
+
+            // Update dashboard with latest IMU values
+
+            SmartDashboard::PutNumber(  "IMU_Yaw",       imu_angle_degrees);
+            SmartDashboard::PutNumber( "IMU Yaw Offset", imu->GetYawOffset());
+                
         }
 
         float curr_gyro_angle_radians = curr_gyro_angle_degrees * pi/180;       
