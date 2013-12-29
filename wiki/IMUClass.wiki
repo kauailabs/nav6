@@ -1,1 +1,25 @@
 IMU Class Documentation
+
+To integrate the nav6 IMU into your robot control software, source code for a C++ named IMU, which is based upon the WPI Library, is provided.
+
+To instantiate the IMU, the IMU constructor must be provided a pointer to an instance of the WPI Library *!SerialPort* class.
+
+{{{
+    // Instantiate Serial Port object
+
+    // Serial settings are:
+    // - Baud Rate:  57600
+    // - Data Bits:  8
+    // - Stop Bits:  1
+    // - Parity:     None
+
+    SerialPort *imu_serial_port = new SerialPort(57600);
+
+    // Instantiate IMU object
+
+    IMU *imu = new IMU(imu_serial_port);
+}}}
+
+The IMU::IsConnected() method indicates whether data is successfully being received from the IMU.  At this point, the IMU::GetPitch(), IMU::GetRoll() and IMU::GetYaw() methods can be used to access the latest values received from the IMU.
+
+The IMU::GetUpdateCount() can be used to determine if new yaw/pitch/roll values have arrived.
