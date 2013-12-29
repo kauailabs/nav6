@@ -12,11 +12,11 @@
 
   * [https://code.google.com/p/nav6/wiki/SensorCalibration Calibration]
 
-  * [https://code.google.com/p/nav6/wiki/YawDrift Yaw Drift]
-
   * [https://code.google.com/p/nav6/wiki/FAQ Frequently Asked Questions]
 
 * Digging Deeper
+
+  * [https://code.google.com/p/nav6/wiki/YawDrift Yaw Drift]
 
   * [https://code.google.com/p/nav6/wiki/ProtocolAdvanced Protocol (Advanced)]
 
