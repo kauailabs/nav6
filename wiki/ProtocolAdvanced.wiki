@@ -1,1 +1,51 @@
-Description of Advanced
+In addition to the Basic [Protocol], the nav6 firmware implements several messages which may be useful to more advanced users. 
+
+= Advanced Messages =
+
+== Raw Sensor Data Update Message ==
+
+The Raw Sensor Data update message communications notifications of raw sensors readings; this update message may be useful when the Yaw/Pitch/Roll/Compass Heading provides insufficient information.
+
+||
+||Byte Offset||Element||Data Type||
+||0||Quaternion W (14 bits)||16-bit Integer||
+||4||Quaternion X (14 bits)||16-bit Integer||
+||8||Quaternion Y (14 bits)||16-bit Integer||
+||12||Quaternion Z (14 bits)||16-bit Integer||
+||16||Acceleration X||16-bit Integer||
+||20||Acceleration Y||16-bit Integer||
+||24||Acceleration Z||16-bit Integer||
+||28||Magnetometer X (12 bits)||16-bit Integer||
+||32||Magnetometer X (12 bits)||16-bit Integer||
+||36||Magnetometer X (12 bits)||16-bit Integer||
+||40||Temperature (Centigrade degrees)||Float||
+||
+
+== Stream Configuration Command ==
+
+The Stream Configuration Command is sent to the nav6 in order to change the type of Streaming Update message the nav6 will transmit to the client.
+
+||
+||Byte Offset||Element||Data Type||
+||0||Stream Type (YPR or Raw)||8-bit ASCII Character||
+||
+
+||
+||Stream Type||Description||
+||'y'||Yaw, Pitch, Roll & Compass Heading Update||
+||'r'||Raw Sensor Data Update||
+||
+
+== Stream Configuration Response ==
+
+Whenever a Stream Configuration Command is received by the nav6, the nav6 responds by sending a Stream Configuration Response message, which is formatted as follows:
+
+||
+||Byte Offset||Element||Data Type||
+||0||Stream Type (YPR or Raw)||8-bit ASCII Character||
+||1||Gyroscope Full Scale Range (Degrees/sec)||16-bit Integer||
+||5||Accelerometer Full Scale Range (G)||16-bit Integer||
+||9||Update Rate (Hz)||16-bit Integer||
+||13||Calibrated Yaw Offset||Float||
+||17||Flags||16-bit Integer||
+||
