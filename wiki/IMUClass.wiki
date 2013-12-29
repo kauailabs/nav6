@@ -24,9 +24,9 @@ To instantiate the IMU, the IMU constructor must be provided a pointer to an ins
 
 = Verifying Connection =
 
-The IMU::!IsConnected() method indicates whether data is successfully being received from the IMU.  
+The IMU::!IsConnected() method indicates whether data is successfully being received from the IMU.  Given the default update rate of 100Hz, the IMU::!IsConnected() method should return true within about 10 ms after the IMU object is instantiated.
 
-The IMU::!GetUpdateCount() can be used to determine if new yaw/pitch/roll values have been received from the nav6 IMU since the last time this method was invoked.
+The IMU::!GetUpdateCount() can be used to determine if new yaw/pitch/roll values have been received from the nav6 IMU since the last time this method was invoked.  Given the default update rate of 100Hz, the value returned from IMU::!GetUpdatedCount() should increment once every 10 milliseconds.
 
 = Accessing Yaw, Pitch, Roll and Compass Heading values =
 
@@ -36,7 +36,6 @@ Four methods are provided to access the most recent Yaw, Pitch, Roll and Compass
   * IMU::!GetPitch()
   * IMU::!GetRoll()
   * IMU::!GetCompassHeading()
-
 
 = Zeroing the Yaw Angle =
 
