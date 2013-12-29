@@ -18,6 +18,14 @@ To instantiate the IMU, the IMU constructor must be provided a pointer to an ins
     // Instantiate IMU object
 
     IMU *imu = new IMU(imu_serial_port);
+
+    // Add the IMU to the Live Window
+    // Since the IMU inherits from LiveWindowSendable,
+    // the live window will automatically be updated with
+    // the current Yaw angle
+
+    lw->AddSensor("DriveSystem", "Gyro", imu);
+
 }}}
 
 = Verifying Connection =
@@ -25,6 +33,8 @@ To instantiate the IMU, the IMU constructor must be provided a pointer to an ins
 The IMU::!IsConnected() method indicates whether data is successfully being received from the IMU.  Given the default update rate of 100Hz, the IMU::!IsConnected() method should return true within about 10 ms after the IMU object is instantiated.
 
 The IMU::!GetUpdateCount() can be used to determine if new yaw/pitch/roll values have been received from the nav6 IMU since the last time this method was invoked.  Given the default update rate of 100Hz, the value returned from IMU::!GetUpdatedCount() should increment once every 10 milliseconds.
+
+The IMU::!GetByteCount() can be used to determine if any bytes are being received over the SerialPort from the nav6.  The value returned from IMU::!GetByteCount() indicates the number of bytes received over the serial port since the IMU object was instantiated.
 
 = Accessing Yaw, Pitch, Roll and Compass Heading values =
 
@@ -38,3 +48,23 @@ Four methods are provided to access the most recent Yaw, Pitch, Roll and Compass
 = Zeroing the Yaw Angle =
 
 To set the yaw value to the current angle the nav6 IMU is currently pointing, invoke the IMU::ZeroYaw() method.  Once this invoked, the IMU::!GetYaw() method will return 0 until the IMU is rotated, at which point the changes will be relative to the newly set "zero" heading.
+
+= Using the nav6 IMU data for PID Control =
+
+The IMU Class inherits from the WPI Library PIDSource class, and the current yaw angle is returned from the PIDGet() method.  By using the nav6 IMU as a PID Source, software can be written that would, for instance, turn the robot to a particular angle.
+
+= Viewing nav6 value/status on the Smart Dashboard =
+
+{{{
+        // Display IMU Status
+
+	bool imu_connected = imu->IsConnected();
+	SmartDashboard::PutBoolean( "IMU_Connected", imu_connected);
+	SmartDashboard::PutNumber("IMU_Update_Count", imu->GetUpdateCount());
+	SmartDashboard::PutNumber("IMU_Byte_Count", imu->GetByteCount());
+
+        // Display IMU Values
+
+	SmartDashboard::PutNumber("PitchAngle", imu->GetPitch());
+	SmartDashboard::PutNumber("RollAngle", imu->GetRoll());
+}}}
