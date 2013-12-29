@@ -22,4 +22,4 @@
 
   However, at the beginning of each FIRST FRC match, the robot is turned on for about a minute before the match begins.  During this time period, the motors are not energized and thus do not add magnetic interference that would disturb the magnetometer readings.
 
-Magnetometer readings taken at the beginning of a match, when combined with the IMU yaw measurements, can allow the robot's pose to be maintained throughout the match.
+  Magnetometer readings taken at the beginning of a match, when combined with the IMU yaw measurements, can allow the robot's pose to be maintained throughout the match.
