@@ -179,7 +179,7 @@ float IMU::GetRoll( void )
 	return this->roll;
 }
 
-float IMU::GetRoll( void )
+float IMU::GetCompassHeading( void )
 {
 	Synchronized sync(cIMUStateSemaphore);
 	return this->compass_heading;
