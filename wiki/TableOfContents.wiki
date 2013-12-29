@@ -2,7 +2,9 @@
 
 * Getting Started
 
-  * [https://code.google.com/p/nav6/wiki/FRCRobotInstallation Installation]
+  * [https://code.google.com/p/nav6/wiki/FRCRobotInstallation Installation on a FRC Robot]
+
+  * [IMUClass Integrating into FRC Robot Software]
 
   * [https://code.google.com/p/nav6/wiki/Protocol Protocol (Basic)]
 
