@@ -2,6 +2,8 @@ IMU Class Documentation
 
 To integrate the nav6 IMU into your robot control software, source code for a C++ class named IMU, which is based upon the WPI Library, is provided.
 
+= Instantiating an IMU objecd =
+
 To instantiate the IMU, the IMU constructor must be provided a pointer to an instance of the WPI Library *!SerialPort* class.
 
 {{{
@@ -20,6 +22,22 @@ To instantiate the IMU, the IMU constructor must be provided a pointer to an ins
     IMU *imu = new IMU(imu_serial_port);
 }}}
 
-The IMU::IsConnected() method indicates whether data is successfully being received from the IMU.  At this point, the IMU::GetPitch(), IMU::GetRoll() and IMU::GetYaw() methods can be used to access the latest values received from the IMU.
+= Verifying Connection =
 
-The IMU::GetUpdateCount() can be used to determine if new yaw/pitch/roll values have arrived.
+The IMU::!IsConnected() method indicates whether data is successfully being received from the IMU.  
+
+The IMU::!GetUpdateCount() can be used to determine if new yaw/pitch/roll values have been received from the nav6 IMU since the last time this method was invoked.
+
+= Accessing Yaw, Pitch, Roll and Compass Heading values =
+
+Four methods are provided to access the most recent Yaw, Pitch, Roll and Compass Heading values from the nav6 IMU:
+
+  * IMU::!GetYaw()
+  * IMU::!GetPitch()
+  * IMU::!GetRoll()
+  * IMU::!GetCompassHeading()
+
+
+= Zeroing the Yaw Angle =
+
+To set the yaw value to the current angle the nav6 IMU is currently pointing, invoke the IMU::ZeroYaw() method.  Once this invoked, the IMU::!GetYaw() method will return 0 until the IMU is rotated, at which point the changes will be relative to the newly set "zero" heading.
