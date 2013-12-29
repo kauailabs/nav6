@@ -1,4 +1,4 @@
-In addition to the Basic [Protocol], the nav6 firmware implements several messages which may be useful to more advanced users. 
+In addition to the Basic nav6 [Protocol], the nav6 firmware implements several messages which may be useful to more advanced users. 
 
 = Advanced Messages =
 
