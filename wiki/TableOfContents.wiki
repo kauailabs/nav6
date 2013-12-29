@@ -6,8 +6,6 @@
 
   * [IMUClass Software Integration]
 
-  * [https://code.google.com/p/nav6/wiki/Protocol Protocol (Basic)]
-
   * [https://code.google.com/p/nav6/wiki/Orientation Orientation]
 
   * [https://code.google.com/p/nav6/wiki/Specification Specifications]
@@ -17,6 +15,8 @@
   * [https://code.google.com/p/nav6/wiki/FAQ Frequently Asked Questions]
 
 * Digging Deeper
+
+  * [https://code.google.com/p/nav6/wiki/Protocol Protocol (Basic)]
 
   * [https://code.google.com/p/nav6/wiki/YawDrift Yaw Drift]
 
