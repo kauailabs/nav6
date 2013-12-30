@@ -18,9 +18,9 @@
 
   * [FieldOrientedDriveExample Field-oriented Drive]
 
-  * [AutoBalancing Automatic Balancing]
+  * [AutoBalancingExample Automatic Balancing]
 
-  * [RotateToAngle Rotating to a given Angle]
+  * [RotateToAngleExample Rotating to a given Angle]
 
 * Digging Deeper
 
