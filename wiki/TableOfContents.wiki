@@ -2,6 +2,8 @@
 
 * Getting Started
 
+  * [Purchasing Where to order a nav6 IMU]
+
   * [https://code.google.com/p/nav6/wiki/FRCRobotInstallation Installation on a FRC Robot]
 
   * [https://code.google.com/p/nav6/wiki/Enclosure Creating an Enclosure]
