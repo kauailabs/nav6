@@ -49,7 +49,7 @@ Four methods are provided to access the most recent Yaw, Pitch, Roll and Compass
 
 = Zeroing the Yaw Angle =
 
-To set the yaw value to the current angle the nav6 IMU is currently pointing, invoke the IMU::ZeroYaw() method.  Once this invoked, the IMU::!GetYaw() method will return 0 until the IMU is rotated, at which point the changes will be relative to the newly set "zero" heading.
+To reset the yaw value to the current angle the nav6 IMU is currently pointing, invoke the IMU::ZeroYaw() method.  Once invoked, the IMU::!GetYaw() method will return 0 until the IMU is rotated, at which point the changes will be relative to the newly set "zero" heading.
 
 = Using the nav6 IMU data for PID Control =
 
