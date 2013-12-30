@@ -1,6 +1,6 @@
 {{{
 
-void turnToAngle( double angle ) {
+void turnToAngle( double angle_degrees ) {
 
   IMU *imu;         // Initialized previously; PID Controller Input
   PIDRotate rotate; // This is the PID Controller Output
@@ -13,7 +13,7 @@ void turnToAngle( double angle ) {
   // Configure the PID Controller settings
 
   turn->setTolerance(2.0); // OnTarget -> within 2% of desired angle
-  turn->setSetpoint(angle);
+  turn->setSetpoint(angle_degrees);
   turn->setContinuous();
   turn->enable();
 
