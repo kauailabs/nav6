@@ -10,7 +10,7 @@ Solving this challenge is conceptually straightforward.  First, the current angl
 {{{
         // Get Current Joystick values
 
-	double rotate = protatestick->GetTwist();
+	double rotate = pstick->GetTwist();
 	double y = pstick->GetY();
 	double x = pstick->GetX();
 	
