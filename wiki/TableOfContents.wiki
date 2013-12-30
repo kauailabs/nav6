@@ -18,6 +18,10 @@
 
   * [FieldOrientedDriveExample Field-oriented Drive]
 
+  * [AutoBalancing Automatic Balancing]
+
+  * [RotateToAngle Rotating to a given Angle]
+
 * Digging Deeper
 
   * [https://code.google.com/p/nav6/wiki/Protocol Protocol (Basic)]
