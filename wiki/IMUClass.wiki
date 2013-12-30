@@ -53,7 +53,7 @@ To set the yaw value to the current angle the nav6 IMU is currently pointing, in
 
 = Using the nav6 IMU data for PID Control =
 
-The IMU Class inherits from the WPI Library PIDSource class, and the current yaw angle is returned from the PIDGet() method.  By using the nav6 IMU as a PID Source, software can be written that would, for instance, turn the robot to a particular angle.
+The IMU Class inherits from the WPI Library PIDSource class, and the current yaw angle is returned from the PIDGet() method.  By using the nav6 IMU as a PID Source, software can be written that would, for instance, [RotateToAngleExample turn the robot to a particular angle].
 
 = Viewing nav6 value/status on the Smart Dashboard =
 
