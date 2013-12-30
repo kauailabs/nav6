@@ -9,7 +9,7 @@ const double onBalancePitchGyroAngleThresholdDegrees  = 5;
 pitchAngleDegrees = imu->GetPitch();
                 
 // Determine whether assisted balance mode is in effect;
-if ( !m_bAutoBalanceMode && ( pitchAngle > offBalancePitchGyroAngleThresholdDegrees ) ) {
+if ( !m_bAutoBalanceMode && ( pitchAngle >= offBalancePitchGyroAngleThresholdDegrees ) ) {
   m_bAutoBalanceMode = true;
 }
 else if ( m_bAutoBalanceMode && ( pitchAngle <= (-onBalancePitchGyroAngleThresholdDegrees))) {
