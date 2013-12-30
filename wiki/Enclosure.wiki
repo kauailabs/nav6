@@ -3,3 +3,10 @@
 The enclosure is comprised of two parts:  a "base" and a "lid".
 
 <img src="https://nav6.googlecode.com/svn/trunk/enclosure/enclosure.png">
+
+Alternatively, an enclosure can be fashioned from existing items, such as a plastic tool box.  The key features of a well-designed enclosure include:
+
+  * The enclosure protects its contents from damage.
+  * The enclosure can be securely mounted (e.g., to a robot chassis).
+  * The enclosure can provide strain relief for any cables which enter/exit the enclosure.
+  * The enclosure can be opened if necessary to service its contents.
