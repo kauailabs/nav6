@@ -20,4 +20,6 @@ First, connect the nav6 Power wire harness to one of the unregulated 12-volt con
 
 Next, connect the male DB9 connector to the nav6 circuit board, and the female DB9 connector to the CRio.
 
-At this point, [IMUClass integration into the robot control software] can begin.
+NOTE:  Housing the nav6 IMU in some form of [Enclosure protective enclosure] is highly recommended, to protect it from damage.
+
+Once installation is complete, [IMUClass integration into the robot control software] can begin.
