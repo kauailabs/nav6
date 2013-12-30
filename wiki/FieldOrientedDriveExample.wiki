@@ -14,7 +14,7 @@ Solving this challenge is conceptually straightforward.  First, the current angl
 	double y = pstick->GetY();
 	double x = pstick->GetX();
 	
-	y = -y;	// Invert joystick (by default, joystick "forward" is negative
+	y = -y;	// Invert joystick (by default, joystick "forward" is negative)
 
         float strafe = x;
         float fwd = y;
