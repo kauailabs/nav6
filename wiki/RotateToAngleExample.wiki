@@ -8,7 +8,7 @@ void turnToAngle( double angle ) {
   // Create the PIDController object.   Note that the DRIVE_P/I/D
   // values will need to be determined by the user.
 
-  PIDController *turn = new PIDController(DRIVE_P, DRIVE_I, DRIVE_D, imu, rotate);
+  PIDController *turn = new PIDController(DRIVE_P, DRIVE_I, DRIVE_D, imu, &rotate);
 
   // Configure the PID Controller settings
 
