@@ -1,3 +1,7 @@
+The example below demonstrates how to implement automatic balance of a robot.  In this example, if the nav6 IMU indicates the current pitch angle exceeds a threshold, an "automatic balancing mode" is entered until the nav6 IMU indicates the current pitch angle is below another threshold. 
+
+During "automatic balancing mode", the drive system's Y axis is driven in the reverse direction with a magnitude equal to the sign of the pitch angle.
+
 {{{
 double pitchAngle, rollAngle, yawAngle, compassHeading;                
 
