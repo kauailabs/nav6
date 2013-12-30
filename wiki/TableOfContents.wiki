@@ -16,7 +16,7 @@
 
 * Application Examples
 
-  * [FieldOrientedDriveExample Example:  Field-oriented Drive]
+  * [FieldOrientedDriveExample Field-oriented Drive]
 
 * Digging Deeper
 
