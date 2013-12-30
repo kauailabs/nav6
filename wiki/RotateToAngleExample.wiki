@@ -59,3 +59,5 @@ public class PIDRotate implements PIDOutput {
 }
 
 }}}
+
+_NOTE:  For more details on this approach, please visit Chief Delphi, including this [http://www.chiefdelphi.com/forums/archive/index.php/t-95382.html helpful post].
