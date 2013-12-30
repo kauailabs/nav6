@@ -48,4 +48,4 @@ Solving this challenge is conceptually straightforward.  First, the current angl
         // adjusted, and can be provided to the drive system.
 }}}
 
-_NOTE:  For details on field-oriented drive algorithms, please see this [http://www.chiefdelphi.com/media/papers/2390 excellent post on Chief Delphi by Ether] which provides a wealth of helpful, well written information.
+_NOTE:  For details on field-oriented drive algorithms, please see this [http://www.chiefdelphi.com/media/papers/2390 excellent post on Chief Delphi by Ether] which provides a wealth of helpful, well written information on implementing field-oriented drive on various types of drive system._
