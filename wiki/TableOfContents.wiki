@@ -4,6 +4,8 @@
 
   * [https://code.google.com/p/nav6/wiki/FRCRobotInstallation Installation on a FRC Robot]
 
+  * [https://code.google.com/p/nav6/wiki/Enclosure Creating an Enclosure]
+
   * [IMUClass Software Integration]
 
   * [https://code.google.com/p/nav6/wiki/Orientation Orientation]
@@ -35,8 +37,6 @@
   * [https://code.google.com/p/nav6/wiki/Datasheets Component Datasheets]
 
 * Customization and Troubleshooting
-
-  * [https://code.google.com/p/nav6/wiki/Enclosure Creating an Enclosure]
 
   * [https://code.google.com/p/nav6/wiki/Customization Customizing the firmware]
 
