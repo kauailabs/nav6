@@ -14,11 +14,13 @@
 
   * [https://code.google.com/p/nav6/wiki/FAQ Frequently Asked Questions]
 
+* Application Examples
+
+  * [FieldOrientedDriveExample Example:  Field-oriented Drive]
+
 * Digging Deeper
 
   * [https://code.google.com/p/nav6/wiki/Protocol Protocol (Basic)]
-
-  * [FieldOrientedDriveExample Example:  Field-oriented Drive]
 
   * [https://code.google.com/p/nav6/wiki/YawDrift Yaw Drift]
 
