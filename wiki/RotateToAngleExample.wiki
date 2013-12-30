@@ -1,3 +1,5 @@
+Automatically rotating a robot to an angle using the nav6 IMU and a PIDController is simple and can be very useful.  Example source code for rotating to a given angle is shown below:
+
 {{{
 
 void turnToAngle( double angle_degrees ) {
