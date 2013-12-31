@@ -4,7 +4,7 @@ The provided enclosure design is comprised of two parts - a "base" and a "lid" -
 
 <img src="https://nav6.googlecode.com/svn/trunk/enclosure/enclosure.png">
 
-Alternatively, an enclosure can be fashioned from existing items, such as a plastic tool box.  The key features of a well-designed enclosure include:
+Alternatively, an enclosure can be fashioned from existing items, such as a small plastic tool box.  The key features of a well-designed enclosure include:
 
   * The enclosure protects its contents from damage.
   * The enclosure can be securely mounted (e.g., to a robot chassis).
