@@ -2,7 +2,7 @@
 
 = nav6 Components =
 
-The nav6 IMU contains several integrated circuits:
+The nav6 IMU contains the following integrated circuits:
 
   * [https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&ved=0CDMQFjAB&url=http%3A%2F%2Fwww.atmel.com%2Fimages%2Fatmel-8271-8-bit-avr-microcontroller-atmega48a-48pa-88a-88pa-168a-168pa-328-328p_datasheet.pdf&ei=XEKzUp_MFJLkoATOvoCAAg&usg=AFQjCNG11iPfTyE8Bo48itJKyz_DwRYClg&sig2=Sfl8nCw1F9EZuvA3DVCyZQ&bvm=bv.58187178,d.cGU Atmel ATMEGA328P Microcontroller]
   * [http://www.invensense.com/mems/gyro/documents/PS-MPU-6000A-00v3.4.pdf Invensense MPU-6050 3-axis gyro, 3-axis accelerometer and motion processor]
