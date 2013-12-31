@@ -1,7 +1,5 @@
 #summary How to run the nav6 Factory Test Procedure.
 
-= Introduction =
-
 The nav6 Factory Test Procedure verifies correct operation of the circuit board and it's key components.  The nav6 Factory Test Procedure is performed in the factory to verify initial correct operation, and may be run at a later point in time to re-verify correct option.  
 
 = Test Procedure =
