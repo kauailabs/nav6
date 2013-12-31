@@ -4,7 +4,7 @@ _Note:  the example code on this page demonstrates using the C++ version of the 
 
 = Instantiating an IMU object =
 
-To instantiate the IMU, the IMU constructor must be provided a pointer to an instance of the WPI Library *!SerialPort* class.
+To instantiate an IMU object, the IMU constructor must be invoked and provided a pointer to an instance of the WPI Library *!SerialPort* class.
 
 {{{
     // Instantiate Serial Port object
