@@ -1,5 +1,3 @@
-= nav6 Wiki =
-
 * Getting Started
 
   * [Purchasing How to purchase a nav6 IMU]
