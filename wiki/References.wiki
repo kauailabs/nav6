@@ -1,6 +1,6 @@
 #summary Useful references for better understanding the nav6 IMU.
 
-The references on this page are provided to help students gain a deeper understanding of the algorithms, technologies and tools used within the nav6 IMU, in addition to the provided source code and schematics.  Additionally, links to other notable works which could be adapted to work on the nav6 are included.
+The references on this page are provided to help students gain a deeper understanding of the algorithms, technologies and tools used within the nav6 IMU, in addition to the provided source code and schematics.  Additionally, links to other notable open-source works which could be adapted to work on the nav6 are included.
 
 = Algorithms =
 
@@ -36,5 +36,8 @@ The references on this page are provided to help students gain a deeper understa
 
 [http://learn.adafruit.com/downloads/pdf/memories-of-an-arduino.pdf Arduino Memory Issues and Tips]
 
-= Other Notable Works =
+= Other Notable Open Source Works =
+
 [http://freeimu.varesano.net/ Free IMU]
+
+[https://code.google.com/p/aeroquad/ AeroQuad]
