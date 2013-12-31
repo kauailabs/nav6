@@ -1,7 +1,5 @@
 #summary How to calibrate the nav6 IMU
 
-= Introduction =
-
 The nav6 includes automatic calibration of the gyroscopes/accelerometers, the yaw offset, and also "Hard Iron" calibration of the magnetometer.  This calibration occurs when power is applied to the nav6, and is subject to certain limitations.
 
 = Gyroscope/Accelerometer Calibration =
