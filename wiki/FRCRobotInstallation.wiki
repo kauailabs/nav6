@@ -10,7 +10,7 @@ The following are needed to accomplish this integration:
   * 2-pin JST "PH" style connector and wire harness
   * DB9 Male-to-female straight-through serial cable
 
-Note that the DB9 Male-to-female cable is a "straight-through" cable, NOT a "crossover" cable.
+_Note that the DB9 Male-to-female cable is a "straight-through" cable, NOT a "crossover" cable._
 
 <img src="https://nav6.googlecode.com/svn/trunk/images/FRCMounting.png" height=700px width=400px>
 
