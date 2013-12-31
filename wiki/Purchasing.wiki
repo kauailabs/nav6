@@ -1,1 +1,3 @@
 nav6 units are currently being asssembled at [http://www.myropcb.com the factory], and are expected the first week of January.  At that time, orders will be taken at the [http://www.kauailabs.com/store KauaiLabs store].
+
+_NOTE:  All profits from the sale of the nav6 IMU will be used to support FIRST FRC Team 2465 (Kauaibots)._
