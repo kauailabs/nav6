@@ -23,3 +23,9 @@
   However, at the beginning of each FIRST FRC match, the robot is turned on for about a minute before the match begins.  During this time period, the motors are not energized and thus do not add magnetic interference that would disturb the magnetometer readings.
 
   Magnetometer readings taken at the beginning of a match, when combined with the IMU yaw measurements, can allow the robot's pose to be maintained throughout the match.
+
+*_Why do the Yaw angles provided by the nav6 IMU drift over time?_*
+
+The short answer is that the yaw angle is calculated from a gyroscope which measures changes in rotation, rather than absolute angles.  Over time, small errors in the rotation measurements build up over time.  The nav6 IMU features sophisticated digital motion processing that limits this error in the yaw angle of about 1 degree per minute.
+
+For further details, please see the [YawDrift Yaw Drift] wiki page.
