@@ -47,7 +47,12 @@ Four methods are provided to access the most recent Yaw, Pitch, Roll and Compass
   * IMU::!GetYaw()
   * IMU::!GetPitch()
   * IMU::!GetRoll()
+
+    These methods return the latest angle from the Digital Motion Processor (DMP).  The returned value is a floating point number from -180.0 to 180.0.
+
   * IMU::!GetCompassHeading()
+
+    The !GetCompassHeading() method returns the latest angle from the Magnetometer.  The returned value is a floating point number from 0 to 360.
 
 = Zeroing the Yaw Angle =
 
