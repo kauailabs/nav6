@@ -43,9 +43,9 @@ Immediately following the "start of message", a one-byte Message ID character, w
 
 = Message Body =
 
-== Yaw/Pitch/Roll/Compass Heading Message ==
+== Yaw/Pitch/Roll/Compass Heading Update Message ==
 
-The Yaw/Pitch/Roll/Compass Heading message indicates the nav6 IMU's current pose, in units of degrees, as follows:
+The Yaw/Pitch/Roll/Compass Heading Update message indicates the nav6 IMU's current pose and heading, in units of degrees, as follows:
 
 ||
 ||Byte Offset||Element||Data Type||
