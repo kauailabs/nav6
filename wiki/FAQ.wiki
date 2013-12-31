@@ -26,6 +26,6 @@
 
 *_Why do the Yaw angles provided by the nav6 IMU drift over time?_*
 
-The short answer is that the yaw angle is calculated from a gyroscope which measures changes in rotation, rather than absolute angles.  Over time, small errors in the rotation measurements build up over time.  The nav6 IMU features sophisticated digital motion processing that limits this error in the yaw angle of about 1 degree per minute.
+  The short answer is that the yaw angle is calculated from a gyroscope which measures changes in rotation, rather than absolute angles.  Over time, small errors in the rotation measurements build up over time.  The nav6 IMU features sophisticated digital motion processing that limits this error in the yaw angle of about 1 degree per minute.
 
-For further details, please see the [YawDrift Yaw Drift] wiki page.
+  For further details, please see the [YawDrift Yaw Drift] wiki page.
