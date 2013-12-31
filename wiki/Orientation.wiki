@@ -1,7 +1,5 @@
 #summary Summary of nav6 board axes orientation and polarity.
 
-= Introduction =
-
 The nav6 IMU can measure a total of 9 axes (3 gyroscope axes, 3 accelerometer axes and 3 magnetometer axes).  In order to effectively use the values reported by the nav6, the orientation and polarity of axes must be understood.
 
 
