@@ -1,6 +1,6 @@
 *_Will nav6 work with the new National Instruments !RoboRio that will be used starting in the 2015 FRC Season?_*
 
-  Yes.  Although the National Instruments !RoboRio does not provide a RS-232 Serial Port,  the nav6 can be connected to the National Instruments !RoboRio via one it its 2 USB host ports.  To accomplish this, a RS-232 to USB converter cable is needed.
+  Yes.  The documentation currently available for the National Instruments !RoboRio indicates a RS-232 Serial Port is provided (although a DB9 connector is not used).  Additionally,  the nav6 can be connected to the National Instruments !RoboRio via one it its 2 USB host ports.  To accomplish this, a RS-232 to USB converter cable is needed.
 
   Note that a RS-232 to USB converter cable is inexpensive, and is also very useful - since with this cable the nav6 IMU can be re-programmed using the Arduino IDE.
 
