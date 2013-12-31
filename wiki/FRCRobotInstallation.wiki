@@ -1,7 +1,5 @@
 #summary How to connect the nav6 IMU to a cRio-based system (e.g., a FIRST FRC competition robot)
 
-= Introduction =
-
 Connecting the nav6 IMU to the cRio processor on a FIRST FRC robot is a very simple process and can be accomplished in just a few minutes.
 
 The following are needed to accomplish this integration:
@@ -14,7 +12,7 @@ _Note that the DB9 Male-to-female cable is a "straight-through" cable, NOT a "cr
 
 <img src="https://nav6.googlecode.com/svn/trunk/images/FRCMounting.png" height=700px width=400px>
 
-= Details =
+= Installation Process =
 
 First, connect the nav6 Power wire harness to one of the unregulated 12-volt connections on the power distribution board.  The nav6 consumes approximately 200 milliamps of current and thus can be connected to any of the 12-Volt power distribution board connections.  The nav6 requires a  minimum voltage of 5.5 volts.
 
