@@ -1,4 +1,4 @@
-= nav6 Wiki =
+= KauaiLabs nav6 Wiki =
 
 * Getting Started
 
