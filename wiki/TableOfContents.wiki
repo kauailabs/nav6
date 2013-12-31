@@ -2,7 +2,7 @@
 
 * Getting Started
 
-  * [Purchasing Where to order a nav6 IMU]
+  * [Purchasing How to purchase a nav6 IMU]
 
   * [https://code.google.com/p/nav6/wiki/FRCRobotInstallation Installation on a FRC Robot]
 
