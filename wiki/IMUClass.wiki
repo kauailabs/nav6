@@ -34,11 +34,11 @@ To instantiate an IMU object, the IMU constructor must be invoked and provided a
 
 Several methods are provided to help verify proper communication with the nav6 IMU:
 
-  *IMU::!IsConnected()* - indicates whether data is successfully being received from the IMU.  Given the default update rate of 100Hz, the IMU::!IsConnected() method should return true within about 10 ms after the IMU object is instantiated.
+  IMU::!IsConnected() - indicates whether data is successfully being received from the IMU.  Given the default update rate of 100Hz, the IMU::!IsConnected() method should return true within about 10 ms after the IMU object is instantiated.
 
-  *IMU::!GetUpdateCount()* - can be used to determine if new yaw/pitch/roll values have been received from the nav6 IMU since the last time this method was invoked.  Given the default update rate of 100Hz, the value returned from IMU::!GetUpdatedCount() should increment once every 10 milliseconds.
+  IMU::!GetUpdateCount() - can be used to determine if new yaw/pitch/roll values have been received from the nav6 IMU since the last time this method was invoked.  Given the default update rate of 100Hz, the value returned from IMU::!GetUpdatedCount() should increment once every 10 milliseconds.
 
-  *IMU::!GetByteCount()* - can be used to determine if any bytes are being received over the SerialPort from the nav6.  The value returned from IMU::!GetByteCount() indicates the number of bytes received over the serial port since the IMU object was instantiated.
+  IMU::!GetByteCount() - can be used to determine if any bytes are being received over the SerialPort from the nav6.  The value returned from IMU::!GetByteCount() indicates the number of bytes received over the serial port since the IMU object was instantiated.
 
 = Accessing Yaw, Pitch, Roll and Compass Heading values =
 
