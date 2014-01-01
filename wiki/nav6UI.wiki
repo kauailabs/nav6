@@ -1,1 +1,3 @@
 All about the processing-based nav6UI demonstration application.
+
+[https://nav6.googlecode.com/svn/trunk/images/nav6UI.png]
