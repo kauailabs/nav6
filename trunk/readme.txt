@@ -28,6 +28,10 @@ enclosure:
 
 - This directory contains design files for a 3d-printed enclosure for the nav6 IMU.
 
+processing:
+
+- This directory contains utility applications developed in the Processing 2.0 language - including the nav6UI demonstration application.  These apps are cross-platform and can be compiled by downloading the open source Processing 2.0 development environment.
+
 production:
 
 - This directory contains files need for production of the nav6 IMU.
