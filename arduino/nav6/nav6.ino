@@ -112,7 +112,7 @@ void setup() {
 
     Serial.println();
     Serial.println();
-    Serial.println(F("Kauai Labs nav6 firmware."));
+    Serial.println(F("Kauai Labs nav6 IMU firmware"));
     Serial.print(F("Free Memory:  "));
     Serial.println(freeMemory());
     Serial.println();
@@ -167,6 +167,7 @@ void setup() {
       Serial.print(F("Failed"));    
     }
     Serial.println();
+    Serial.println(F("Initialization Complete"));
 }
 
 unsigned long sensor_timestamp;
@@ -221,7 +222,7 @@ void loop() {
     {
       if ( raw_update ) 
       {
-        compass.getHeading(&mag_x, &mag_y, &mag_z);
+        compass.getValues(&mag_x, &mag_y, &mag_z);
       }
       else
       {
@@ -502,10 +503,6 @@ boolean initialize_mpu() {
     mpu_get_sample_rate(&gyro_rate);
     mpu_get_gyro_fsr(&gyro_fsr);
     mpu_get_accel_fsr(&accel_fsr);
-    Serial.print("Gyro FSR:  ");
-    Serial.println(gyro_fsr);
-    Serial.print("Accel FSR:  ");
-    Serial.println(accel_fsr);
 
     /* Initialize HAL state variables. */
     memset(&hal, 0, sizeof(hal));
