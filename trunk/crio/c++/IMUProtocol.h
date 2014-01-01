@@ -191,8 +191,9 @@ static int decodeStreamResponse( char *buffer, int length,
     update_rate_hz 		= decodeProtocolUint16( &buffer[STREAM_RESPONSE_UPDATE_RATE_HZ] );
     yaw_offset_degrees 	= decodeProtocolFloat( &buffer[STREAM_RESPONSE_YAW_OFFSET_DEGREES] );
     flags				= decodeProtocolUint16( &buffer[STREAM_RESPONSE_FLAGS] );
+	return STREAM_RESPONSE_MESSAGE_LENGTH;
   }
-  return STREAM_RESPONSE_MESSAGE_LENGTH;
+  return 0;
 }
 
 
@@ -204,8 +205,9 @@ static int decodeStreamCommand( char *buffer, int length, char& stream_type )
     if ( !verifyChecksum( buffer, STREAM_CMD_CHECKSUM_INDEX ) ) return 0;
 
     stream_type = buffer[STREAM_CMD_STREAM_TYPE_INDEX];
+    return STREAM_CMD_MESSAGE_LENGTH;
   }
-  return STREAM_CMD_MESSAGE_LENGTH;
+  return 0;
 }
 
 static int decodeYPRUpdate( char *buffer, int length, float& yaw, float& pitch, float& roll, float& compass_heading )
@@ -219,8 +221,9 @@ static int decodeYPRUpdate( char *buffer, int length, float& yaw, float& pitch, 
     pitch = decodeProtocolFloat( &buffer[YPR_UPDATE_PITCH_VALUE_INDEX] );
     roll  = decodeProtocolFloat( &buffer[YPR_UPDATE_ROLL_VALUE_INDEX] );
 	compass_heading = decodeProtocolFloat( &buffer[YPR_UPDATE_COMPASS_VALUE_INDEX] );
+	return YPR_UPDATE_MESSAGE_LENGTH;
   }
-  return YPR_UPDATE_MESSAGE_LENGTH;
+  return 0;
 }
 
 static int decodeRawUpdate( char *buffer, int length, 
@@ -245,8 +248,9 @@ static int decodeRawUpdate( char *buffer, int length,
     mag_y	= (int16_t)decodeProtocolUint16( &buffer[RAW_UPDATE_MAG_Y_VALUE_INDEX] );
     mag_z	= (int16_t)decodeProtocolUint16( &buffer[RAW_UPDATE_MAG_Z_VALUE_INDEX] );
 	temp_c  = decodeProtocolFloat(  &buffer[RAW_UPDATE_TEMP_VALUE_INDEX] );
+	return RAW_UPDATE_MESSAGE_LENGTH;
   }
-  return RAW_UPDATE_MESSAGE_LENGTH;
+  return 0;
 }
 
 protected:
