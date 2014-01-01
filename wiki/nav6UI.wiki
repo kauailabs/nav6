@@ -1,5 +1,7 @@
 The nav6UI user interface application is a great way to visualize the data provided by the nav6 IMU.  This application is developed in the Processing 2.0 language and is cross-platform.  
 
+To run the nav6UI, the nav6 IMU must be connected to a PC (Windows, Mac or Linux) via a serial cable or a USB/Serial converter cable.
+
 [https://nav6.googlecode.com/svn/trunk/images/nav6UI.png]
 
 To build the nav6UI, follow these steps:
