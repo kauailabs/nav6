@@ -20,8 +20,4 @@ To build the nav6UI, follow these steps:
     
     * Locate the output of the Export Application operation.  A batch or script file (depending upon your operating system) will have been created.  Edit the script file to add the following to the end of the java line, as follows:
 
-         <Existing java line> port=<PortToUse>
-
-     For example:
-
          java -Djava.ext.dirs=lib -Djava.library.path=lib nav6UI *port=COM12*
