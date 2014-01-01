@@ -24,7 +24,9 @@
 
   * [RotateToAngleExample Rotating to a given Angle]
 
-* Digging Deeper
+* Advanced Topics
+
+  * [nav6UI The nav6UI Demo Application]
 
   * [https://code.google.com/p/nav6/wiki/Protocol Protocol (Basic)]
 
