@@ -87,6 +87,9 @@ static signed char gyro_orientation[9] = { 1, 0, 0,
 #define PRINT_GYRO      (0x02)
 #define PRINT_QUAT      (0x04)
 
+#define SDA_PIN A4
+#define SCL_PIN A5
+
 #ifndef cbi
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
@@ -99,6 +102,25 @@ void compassDataAvailable() {
 }
 
 void setup() {
+
+    // reset I2C bus
+    // This ensures that if the nav6 was reset, but the devices
+    // on the I2C bus were not, that any transfer in progress do
+    // not hang the device/bus.
+    
+    pinMode(SDA_PIN,INPUT);
+    pinMode(SCL_PIN,OUTPUT);
+    
+    // Clock through up to 1000 bits
+    for ( int i = 0; i < 1000; i++ ) 
+    {
+      digitalWrite(SCL_PIN,HIGH);
+      digitalWrite(SCL_PIN,LOW);
+      digitalWrite(SCL_PIN,HIGH);
+    }
+    // send a stop
+    digitalWrite(SDA_PIN,HIGH);
+    digitalWrite(SDA_PIN,LOW);
 
     // join I2C bus (I2Cdev library doesn't do this automatically)
     Wire.begin();
@@ -115,7 +137,6 @@ void setup() {
     Serial.println(F("Kauai Labs nav6 IMU firmware"));
     Serial.print(F("Free Memory:  "));
     Serial.println(freeMemory());
-    Serial.println();
 
     // Digital Compass Initialization
 
