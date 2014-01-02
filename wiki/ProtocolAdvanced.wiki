@@ -47,5 +47,9 @@ Whenever a Stream Configuration Command is received by the nav6, the nav6 respon
 ||5||Accelerometer Full Scale Range (G)||16-bit Integer||
 ||9||Update Rate (Hz)||16-bit Integer||
 ||13||Calibrated Yaw Offset||Float||
-||17||Flags||16-bit Integer||
+||20||Calibrated Quaternion W Offset||16-bit Integer||
+||24||Calibrated Quaternion X Offset||16-bit Integer||
+||28||Calibrated Quaternion Y Offset||16-bit Integer||
+||32||Calibrated Quaternion Z Offset||16-bit Integer||
+||36||Flags||16-bit Integer||
 ||
