@@ -8,16 +8,16 @@ The Raw Sensor Data update message communications notifications of raw sensors r
 
 ||
 ||Byte Offset||Element||Data Type||
-||0||Quaternion W (14 bits)||16-bit Integer||
-||4||Quaternion X (14 bits)||16-bit Integer||
-||8||Quaternion Y (14 bits)||16-bit Integer||
-||12||Quaternion Z (14 bits)||16-bit Integer||
+||0||Quaternion W||16-bit Integer||
+||4||Quaternion X||16-bit Integer||
+||8||Quaternion Y||16-bit Integer||
+||12||Quaternion Z||16-bit Integer||
 ||16||Acceleration X||16-bit Integer||
 ||20||Acceleration Y||16-bit Integer||
 ||24||Acceleration Z||16-bit Integer||
 ||28||Magnetometer X (12 bits)||16-bit Integer||
-||32||Magnetometer X (12 bits)||16-bit Integer||
-||36||Magnetometer X (12 bits)||16-bit Integer||
+||32||Magnetometer Y (12 bits)||16-bit Integer||
+||36||Magnetometer Z (12 bits)||16-bit Integer||
 ||40||Temperature (Centigrade degrees)||Float||
 ||
 
