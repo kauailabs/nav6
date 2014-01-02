@@ -12,16 +12,16 @@ The Raw Sensor Data update message communications notifications of raw sensors r
 
 ||
 ||Byte Offset||Element||Data Type||
-||0||Quaternion W||16-bit Integer||
-||4||Quaternion X||16-bit Integer||
-||8||Quaternion Y||16-bit Integer||
-||12||Quaternion Z||16-bit Integer||
-||16||Acceleration X||16-bit Integer||
-||20||Acceleration Y||16-bit Integer||
-||24||Acceleration Z||16-bit Integer||
-||28||Magnetometer X (12 bits)||16-bit Integer||
-||32||Magnetometer Y (12 bits)||16-bit Integer||
-||36||Magnetometer Z (12 bits)||16-bit Integer||
+||0||Quaternion W (15-bits, signed)||16-bit Integer||
+||4||Quaternion X (15-bits, signed)||16-bit Integer||
+||8||Quaternion Y (15-bits, signed)||16-bit Integer||
+||12||Quaternion Z (15-bits, signed)||16-bit Integer||
+||16||Acceleration X (16-bits, signed)||16-bit Integer||
+||20||Acceleration Y (16-bits, signed)||16-bit Integer||
+||24||Acceleration Z (16-bits, signed)||16-bit Integer||
+||28||Magnetometer X (12 bits, signed)||16-bit Integer||
+||32||Magnetometer Y (12 bits, signed)||16-bit Integer||
+||36||Magnetometer Z (12 bits, signed)||16-bit Integer||
 ||40||Temperature (Centigrade degrees)||Float||
 ||
 
@@ -51,9 +51,9 @@ Whenever a Stream Configuration Command is received by the nav6, the nav6 respon
 ||5||Accelerometer Full Scale Range (G)||16-bit Integer||
 ||9||Update Rate (Hz)||16-bit Integer||
 ||13||Calibrated Yaw Offset||Float||
-||20||Calibrated Quaternion W Offset||16-bit Integer||
-||24||Calibrated Quaternion X Offset||16-bit Integer||
-||28||Calibrated Quaternion Y Offset||16-bit Integer||
-||32||Calibrated Quaternion Z Offset||16-bit Integer||
+||20||Calibrated Quaternion W Offset (15-bits, signed)||16-bit Integer||
+||24||Calibrated Quaternion X Offset (15-bits, signed)||16-bit Integer||
+||28||Calibrated Quaternion Y Offset (15-bits, signed)||16-bit Integer||
+||32||Calibrated Quaternion Z Offset (15-bits, signed)||16-bit Integer||
 ||36||Flags||16-bit Integer||
 ||
