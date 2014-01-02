@@ -71,17 +71,21 @@ THE SOFTWARE.
 #define STREAM_CMD_CHECKSUM_INDEX 3
 #define STREAM_CMD_TERMINATOR_INDEX 5
 
-// EnableStream Response Packet - e.g., !s[stream type][gyro full scale range][accel full scale range][update rate hz][yaw_offset_degrees][flags][checksum][cr][lf]
+// EnableStream Response Packet - e.g., !s[stream type][gyro full scale range][accel full scale range][update rate hz][yaw_offset_degrees][q1/2/3/4 offsets][flags][checksum][cr][lf]
 #define MSG_ID_STREAM_RESPONSE 's'
-#define STREAM_RESPONSE_MESSAGE_LENGTH 30
+#define STREAM_RESPONSE_MESSAGE_LENGTH 46
 #define STREAM_RESPONSE_STREAM_TYPE_INDEX 2
 #define STREAM_RESPONSE_GYRO_FULL_SCALE_DPS_RANGE 3
 #define STREAM_RESPONSE_ACCEL_FULL_SCALE_G_RANGE 7
 #define STREAM_RESPONSE_UPDATE_RATE_HZ 11
 #define STREAM_RESPONSE_YAW_OFFSET_DEGREES 15
-#define STREAM_RESPONSE_FLAGS 22
-#define STREAM_RESPONSE_CHECKSUM_INDEX 26
-#define STREAM_RESPONSE_TERMINATOR_INDEX 28
+#define STREAM_RESPONSE_QUAT1_OFFSET          22
+#define STREAM_RESPONSE_QUAT2_OFFSET          26
+#define STREAM_RESPONSE_QUAT3_OFFSET          30
+#define STREAM_RESPONSE_QUAT4_OFFSET          34
+#define STREAM_RESPONSE_FLAGS 		      38
+#define STREAM_RESPONSE_CHECKSUM_INDEX 	      42
+#define STREAM_RESPONSE_TERMINATOR_INDEX      44
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -156,7 +160,10 @@ static int encodeStreamCommand( char *protocol_buffer, char stream_type)
 }
 
 static int encodeStreamResponse( char *protocol_buffer, char stream_type, 
-									uint16_t gyro_fsr_dps, uint16_t accel_fsr_g, uint16_t update_rate_hz, float yaw_offset_degrees, uint16_t flags)
+					uint16_t gyro_fsr_dps, uint16_t accel_fsr_g, uint16_t update_rate_hz, 
+					float yaw_offset_degrees, 
+					uint16_t q1_offset, uint16_t q2_offset, uint16_t q3_offset, uint16_t q4_offset,
+					uint16_t flags)
 {
   // Header
   protocol_buffer[0] = PACKET_START_CHAR;
@@ -168,6 +175,10 @@ static int encodeStreamResponse( char *protocol_buffer, char stream_type,
   encodeProtocolUint16( accel_fsr_g, &protocol_buffer[STREAM_RESPONSE_ACCEL_FULL_SCALE_G_RANGE] );
   encodeProtocolUint16( update_rate_hz, &protocol_buffer[STREAM_RESPONSE_UPDATE_RATE_HZ] );
   encodeProtocolFloat(  yaw_offset_degrees, &protocol_buffer[STREAM_RESPONSE_YAW_OFFSET_DEGREES] );
+  encodeProtocolUint16(  q1_offset, &protocol_buffer[STREAM_RESPONSE_QUAT1_OFFSET]);
+  encodeProtocolUint16(  q2_offset, &protocol_buffer[STREAM_RESPONSE_QUAT2_OFFSET]);
+  encodeProtocolUint16(  q3_offset, &protocol_buffer[STREAM_RESPONSE_QUAT3_OFFSET]);
+  encodeProtocolUint16(  q4_offset, &protocol_buffer[STREAM_RESPONSE_QUAT4_OFFSET]);
   encodeProtocolUint16(  flags, &protocol_buffer[STREAM_RESPONSE_FLAGS] );
  
   // Footer
@@ -177,8 +188,10 @@ static int encodeStreamResponse( char *protocol_buffer, char stream_type,
 }
 
 static int decodeStreamResponse( char *buffer, int length, 
-									char& stream_type, uint16_t& gyro_fsr_dps, uint16_t& accel_fsr_g, uint16_t& update_rate_hz,
-									float& yaw_offset_degrees, uint16_t& flags )
+					char& stream_type, uint16_t& gyro_fsr_dps, uint16_t& accel_fsr_g, uint16_t& update_rate_hz,
+					float& yaw_offset_degrees, 
+					uint16_t& q1_offset, uint16_t& q2_offset, uint16_t& q3_offset, uint16_t& q4_offset,
+					uint16_t& flags )
 {
   if ( length < STREAM_RESPONSE_MESSAGE_LENGTH ) return 0;
   if ( ( buffer[0] == PACKET_START_CHAR ) && ( buffer[1] == MSG_ID_STREAM_RESPONSE ) )
@@ -189,9 +202,13 @@ static int decodeStreamResponse( char *buffer, int length,
     gyro_fsr_dps   		= decodeProtocolUint16( &buffer[STREAM_RESPONSE_GYRO_FULL_SCALE_DPS_RANGE] );
     accel_fsr_g   		= decodeProtocolUint16( &buffer[STREAM_RESPONSE_ACCEL_FULL_SCALE_G_RANGE] );
     update_rate_hz 		= decodeProtocolUint16( &buffer[STREAM_RESPONSE_UPDATE_RATE_HZ] );
-    yaw_offset_degrees 	= decodeProtocolFloat( &buffer[STREAM_RESPONSE_YAW_OFFSET_DEGREES] );
+    yaw_offset_degrees 		= decodeProtocolFloat( &buffer[STREAM_RESPONSE_YAW_OFFSET_DEGREES] );
+    q1_offset			= decodeProtocolUint16(  &buffer[STREAM_RESPONSE_QUAT1_OFFSET]);
+    q2_offset 			= decodeProtocolUint16(  &buffer[STREAM_RESPONSE_QUAT2_OFFSET]);
+    q3_offset 			= decodeProtocolUint16(  &buffer[STREAM_RESPONSE_QUAT3_OFFSET]);
+    q4_offset 			= decodeProtocolUint16(  &buffer[STREAM_RESPONSE_QUAT4_OFFSET]);
     flags				= decodeProtocolUint16( &buffer[STREAM_RESPONSE_FLAGS] );
-	return STREAM_RESPONSE_MESSAGE_LENGTH;
+    return STREAM_RESPONSE_MESSAGE_LENGTH;
   }
   return 0;
 }
