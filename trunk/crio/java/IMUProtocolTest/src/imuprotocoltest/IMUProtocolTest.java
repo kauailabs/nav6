@@ -16,7 +16,7 @@ public class IMUProtocolTest {
 
     private static final String ypr_update_message = "!y-000.10 006.64 001.92 352.11C8\r\n";
     private static final String raw_update_message = "!r3FDDFEDFFCF5FD71085C02104424FFFC0095FF29 030.032E\r\n";
-    private static final String stream_response_message = "!sy07D000020064 000.00000072\r\n";
+    private static final String stream_response_message = "!sr07D000020064 001.973FDC027FFCDDFEC8000274\r\n";
 
     /**
      * @param args the command line arguments
@@ -108,6 +108,14 @@ public class IMUProtocolTest {
             System.out.print(response.yaw_offset_degrees);
             System.out.print(" Flags:  ");
             System.out.print(response.flags);
+            System.out.print(" Offset Q1:  ");
+            System.out.print(response.q1_offset);
+            System.out.print(" Q2:  ");
+            System.out.print(response.q2_offset);
+            System.out.print(" Q3:  ");
+            System.out.print(response.q3_offset);
+            System.out.print(" Q4:  ");
+            System.out.print(response.q4_offset);
             System.out.println();
         } else {
             System.out.println("Error decoding YPR Update Message");

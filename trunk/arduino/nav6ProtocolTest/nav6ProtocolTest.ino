@@ -103,12 +103,13 @@ void loop()
   {
     Serial.println("Error Decoding Stream Command");
   } 
-  num_bytes = IMUProtocol::encodeStreamResponse(protocol_buff,MSGID_RAW_UPDATE,2000,2,100,123.45,0xABCD);
+  num_bytes = IMUProtocol::encodeStreamResponse(protocol_buff,MSGID_RAW_UPDATE,2000,2,100,123.45,(uint16_t)(0.1*16384),(uint16_t)(0.2*16384),(uint16_t)(0.3*16384),(uint16_t)(0.4*16384),0xABCD);
   Serial.write((byte *)protocol_buff,num_bytes);
   delay(1000);
   uint16_t decoded_gyro_fsr_dps, decoded_accel_fsr_g, decoded_update_rate_hz, decoded_flags;
   float decoded_yaw_offset_degrees;
-  if ( IMUProtocol::decodeStreamResponse( protocol_buff, num_bytes, decoded_stream_id,decoded_gyro_fsr_dps, decoded_accel_fsr_g, decoded_update_rate_hz, decoded_yaw_offset_degrees,decoded_flags ) )
+  if ( IMUProtocol::decodeStreamResponse( protocol_buff, num_bytes, decoded_stream_id,decoded_gyro_fsr_dps, decoded_accel_fsr_g, decoded_update_rate_hz, 
+        decoded_yaw_offset_degrees, decoded_q1, decoded_q2, decoded_q3, decoded_q4, decoded_flags ) )
   {
     Serial.print("Stream type:  ");
     Serial.print(decoded_stream_id);
@@ -120,6 +121,14 @@ void loop()
     Serial.print(decoded_update_rate_hz);
     Serial.print(" Yaw Offset (Degrees):  ");
     Serial.print(decoded_yaw_offset_degrees);
+    Serial.print(" Q1:  ");
+    Serial.print(decoded_q1);
+    Serial.print(" Q2:  ");
+    Serial.print(decoded_q2);
+    Serial.print(" Q3:  ");
+    Serial.print(decoded_q3);
+    Serial.print(" Q4:  ");
+    Serial.print(decoded_q4);
     Serial.print(" Flags:  ");
     Serial.print(decoded_flags);
     Serial.println();

@@ -214,16 +214,13 @@ const float radians_to_degrees = 180.0 / M_PI;
 #define MPU_CALIBRATION_STATE_COMPLETE    2 // Normal Operation
 
 int calibration_state = MPU_CALIBRATION_STATE_CALIBRATING;
+                         
                             
-int accumulator_count = 0;
-
-float calibrated_x_offset = 0.0;
-float calibrated_y_offset = 0.0;
-float calibrated_z_offset = 0.0;
-
-float x_accumulator = 0.0;
-float y_accumulator = 0.0;
-float z_accumulator = 0.0;
+int calibration_accumulator_count = 0;
+float yaw_accumulator = 0.0;
+float quaternion_accumulator[4] = { 0.0, 0.0, 0.0, 0.0 };
+float calibrated_yaw_offset = 0.0;
+float calibrated_quaternion_offset[4] = { 0.0, 0.0, 0.0, 0.0 }; 
 
 int16_t mag_x = 0;
 int16_t mag_y = 0;
@@ -244,6 +241,10 @@ void loop() {
       if ( raw_update ) 
       {
         compass.getValues(&mag_x, &mag_y, &mag_z);
+
+        mpu_get_temperature(&curr_mpu_temp, &sensor_timestamp);
+        temp_centigrade = (float)curr_mpu_temp;
+        temp_centigrade /= 65536.0; 
       }
       else
       {
@@ -262,12 +263,8 @@ void loop() {
         if ( compass_heading_degrees < 0 ) {
           compass_heading_degrees += 360; 
         }
-        compass_data_ready = false;
-        
-        mpu_get_temperature(&curr_mpu_temp, &sensor_timestamp);
-        temp_centigrade = (float)curr_mpu_temp;
-        temp_centigrade /= 65536.0; 
       }
+      compass_data_ready = false;        
     }
   
   
@@ -299,8 +296,65 @@ void loop() {
       Quaternion q( (float)(quat[0] >> 16) / 16384.0f,
                     (float)(quat[1] >> 16) / 16384.0f,
                     (float)(quat[2] >> 16) / 16384.0f,
-                    (float)(quat[3] >> 16) / 16384.0f);
+                    (float)(quat[3] >> 16) / 16384.0f);  
+
+      // Calculate Yaw/Pitch/Roll
+      // Update client with yaw/pitch/roll and tilt-compensated magnetometer data
+      
+      getGravity(&gravity, &q);
+      dmpGetYawPitchRoll(ypr, &q, &gravity);
+            
+      boolean accumulate = false;
+      if ( calibration_state == MPU_CALIBRATION_STATE_CALIBRATING )
+      {
+        if ( millis() >= STARTUP_CALIBRATION_DELAY_MS )
+        {
+          calibration_state = MPU_CALIBRATION_STATE_ACCUMULATE;
+        }
+      }
+      if ( calibration_state == MPU_CALIBRATION_STATE_ACCUMULATE )
+      {
+        accumulate = true;
+        if ( millis() >= (STARTUP_CALIBRATION_DELAY_MS + CALIBRATED_OFFSET_AVERAGE_PERIOD_MS) )
+        {
+          accumulate = false;
+          calibrated_yaw_offset = yaw_accumulator / calibration_accumulator_count;
+          calibrated_quaternion_offset[0] = quaternion_accumulator[0] / calibration_accumulator_count;
+          calibrated_quaternion_offset[1] = quaternion_accumulator[1] / calibration_accumulator_count;
+          calibrated_quaternion_offset[2] = quaternion_accumulator[2] / calibration_accumulator_count;
+          calibrated_quaternion_offset[3] = quaternion_accumulator[3] / calibration_accumulator_count;
+          calibration_state = MPU_CALIBRATION_STATE_COMPLETE;
+          
+          // Since calibration data has likely changed, send an update
+          
+          int num_bytes = IMUProtocol::encodeStreamResponse(  protocol_buffer, raw_update ? MSGID_RAW_UPDATE : MSGID_YPR_UPDATE,
+                                                                2000, 2, 100, calibrated_yaw_offset, 
+                                                                (uint16_t)(calibrated_quaternion_offset[0] * 16384),
+                                                                (uint16_t)(calibrated_quaternion_offset[1] * 16384),
+                                                                (uint16_t)(calibrated_quaternion_offset[2] * 16384),
+                                                                (uint16_t)(calibrated_quaternion_offset[3] * 16384),
+                                                                calibration_state );
+          Serial.write((unsigned char *)protocol_buffer, num_bytes);         
+        }
+        else
+        {
+          calibration_accumulator_count++;
+        }
+      }
+    
+      float x = ypr[0] * radians_to_degrees;
+      float y = ypr[1] * radians_to_degrees;
+      float z = ypr[2] * radians_to_degrees;
   
+      if ( accumulate )
+      {
+        yaw_accumulator += x;
+        quaternion_accumulator[0] += q.w;
+        quaternion_accumulator[1] += q.x;
+        quaternion_accumulator[2] += q.y;
+        quaternion_accumulator[3] += q.z;
+      }    
+    
       if ( raw_update ) 
       {
         // Update client with raw sensor data
@@ -313,54 +367,8 @@ void loop() {
         Serial.write((unsigned char *)protocol_buffer, num_bytes);
       }
       else
-      {       
-        // Calculate Yaw/Pitch/Roll
-        // Update client with yaw/pitch/roll and tilt-compensated magnetometer data
-        
-        getGravity(&gravity, &q);
-        dmpGetYawPitchRoll(ypr, &q, &gravity);
-              
-        boolean accumulate = false;
-        if ( calibration_state == MPU_CALIBRATION_STATE_CALIBRATING )
-        {
-          if ( millis() >= STARTUP_CALIBRATION_DELAY_MS )
-          {
-            calibration_state = MPU_CALIBRATION_STATE_ACCUMULATE;
-          }
-        }
-        if ( calibration_state == MPU_CALIBRATION_STATE_ACCUMULATE )
-        {
-          accumulate = true;
-          if ( millis() >= (STARTUP_CALIBRATION_DELAY_MS + CALIBRATED_OFFSET_AVERAGE_PERIOD_MS) )
-          {
-            accumulate = false;
-            calibrated_x_offset = x_accumulator / accumulator_count;
-            calibrated_y_offset = 0; // y_accumulator / accumulator_count;
-            calibrated_z_offset = 0; // z_accumulator / accumulator_count;
-            calibration_state = MPU_CALIBRATION_STATE_COMPLETE;
-          }
-          else
-          {
-            accumulator_count++;
-          }
-        }
-    
-        float x = ypr[0] * radians_to_degrees;
-        float y = ypr[1] * radians_to_degrees;
-        float z = ypr[2] * radians_to_degrees;
-    
-        //x *= 2;
-    
-        if ( accumulate )
-        {
-          x_accumulator += x;
-          y_accumulator += y;
-          z_accumulator += z;
-        }
-    
-        x -= calibrated_x_offset;
-        y -= calibrated_y_offset;
-        z -= calibrated_z_offset;
+      {           
+        x -= calibrated_yaw_offset;
     
         if ( x < -180 ) x += 360;
         if ( x > 180 ) x -= 360;
@@ -432,8 +440,13 @@ void loop() {
   }
   
   if ( send_stream_response ) {
-      int num_bytes = IMUProtocol::encodeStreamResponse(  protocol_buffer, raw_update ? MSGID_RAW_UPDATE : MSGID_YPR_UPDATE,
-                                                            2000, 2, 100, calibrated_z_offset, 0 );
+        int num_bytes = IMUProtocol::encodeStreamResponse(  protocol_buffer, raw_update ? MSGID_RAW_UPDATE : MSGID_YPR_UPDATE,
+                                                              2000, 2, 100, calibrated_yaw_offset, 
+                                                              (uint16_t)(calibrated_quaternion_offset[0] * 16384),
+                                                              (uint16_t)(calibrated_quaternion_offset[1] * 16384),
+                                                              (uint16_t)(calibrated_quaternion_offset[2] * 16384),
+                                                              (uint16_t)(calibrated_quaternion_offset[3] * 16384),
+                                                              calibration_state );
       Serial.write((unsigned char *)protocol_buffer, num_bytes);
   }
 }

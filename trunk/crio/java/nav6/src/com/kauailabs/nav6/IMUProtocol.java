@@ -25,13 +25,13 @@ package com.kauailabs.nav6;
 
 public class IMUProtocol {
 
-    final static byte PACKET_START_CHAR = '!';
+    public final static byte PACKET_START_CHAR = '!';
     final static int PROTOCOL_FLOAT_LENGTH = 7;
     final static int CHECKSUM_LENGTH = 2;
     final static int TERMINATOR_LENGTH = 2;
 
     // Yaw/Pitch/Roll (YPR) Update Packet - e.g., !y[yaw][pitch][roll][checksum][cr][lf]
-    final static byte MSGID_YPR_UPDATE = 'y';
+    public final static byte MSGID_YPR_UPDATE = 'y';
     final static int YPR_UPDATE_MESSAGE_LENGTH = 34;
     final static int YPR_UPDATE_YAW_VALUE_INDEX = 2;
     final static int YPR_UPDATE_PITCH_VALUE_INDEX = 9;
@@ -41,7 +41,7 @@ public class IMUProtocol {
     final static int YPR_UPDATE_TERMINATOR_INDEX = 32;
 
     // Raw Data Update Packet - e.g., !r[q1][q2][q3][q4][accelx][accely][accelz][magx][magy][magz][checksum][cr][lf]
-    final static byte MSGID_RAW_UPDATE = 'r';
+    public final static byte MSGID_RAW_UPDATE = 'r';
     final static int RAW_UPDATE_MESSAGE_LENGTH = 53;
     final static int RAW_UPDATE_QUAT1_VALUE_INDEX = 2;
     final static int RAW_UPDATE_QUAT2_VALUE_INDEX = 6;
@@ -58,7 +58,7 @@ public class IMUProtocol {
     final static int RAW_UPDATE_TERMINATOR_INDEX = 51;
 
     // EnableStream Command Packet - e.g., !S[stream type][checksum][cr][lf]
-    final static byte MSGID_STREAM_CMD = 'S';
+    public final static byte MSGID_STREAM_CMD = 'S';
     final static int STREAM_CMD_MESSAGE_LENGTH = 7;
     public final static int STREAM_CMD_STREAM_TYPE_YPR = MSGID_YPR_UPDATE;
     public final static int STREAM_CMD_STREAM_TYPE_RAW = MSGID_RAW_UPDATE;
@@ -67,17 +67,23 @@ public class IMUProtocol {
     final static int STREAM_CMD_TERMINATOR_INDEX = 5;
 
     // EnableStream Response Packet - e.g., !s[stream type][gyro full scale range][accel full scale range][update rate hz][yaw_offset_degrees][flags][checksum][cr][lf]
-    final static byte MSG_ID_STREAM_RESPONSE = 's';
-    final static int STREAM_RESPONSE_MESSAGE_LENGTH = 30;
+    public final static byte MSG_ID_STREAM_RESPONSE = 's';
+    final static int STREAM_RESPONSE_MESSAGE_LENGTH = 46;
     final static int STREAM_RESPONSE_STREAM_TYPE_INDEX = 2;
     final static int STREAM_RESPONSE_GYRO_FULL_SCALE_DPS_RANGE = 3;
     final static int STREAM_RESPONSE_ACCEL_FULL_SCALE_G_RANGE = 7;
     final static int STREAM_RESPONSE_UPDATE_RATE_HZ = 11;
     final static int STREAM_RESPONSE_YAW_OFFSET_DEGREES = 15;
-    final static int STREAM_RESPONSE_FLAGS = 22;
-    final static int STREAM_RESPONSE_CHECKSUM_INDEX = 26;
-    final static int STREAM_RESPONSE_TERMINATOR_INDEX = 28;
-
+    final static int STREAM_RESPONSE_QUAT1_OFFSET = 22;
+    final static int STREAM_RESPONSE_QUAT2_OFFSET = 26;
+    final static int STREAM_RESPONSE_QUAT3_OFFSET = 30;
+    final static int STREAM_RESPONSE_QUAT4_OFFSET = 34;
+    final static int STREAM_RESPONSE_FLAGS        = 38;
+    final static int STREAM_RESPONSE_CHECKSUM_INDEX = 42;
+    final static int STREAM_RESPONSE_TERMINATOR_INDEX = 44;
+    
+    public final static byte STREAM_MSG_TERMINATION_CHAR = (byte)'\n';
+    
     public final static int IMU_PROTOCOL_MAX_MESSAGE_LENGTH = RAW_UPDATE_MESSAGE_LENGTH;
 
     static public class YPRUpdate {
@@ -100,6 +106,10 @@ public class IMUProtocol {
         public short accel_fsr_g;
         public short update_rate_hz;
         public float yaw_offset_degrees;
+        public short q1_offset;
+        public short q2_offset;
+        public short q3_offset;
+        public short q4_offset;
         public short flags;
     }
 
@@ -147,9 +157,15 @@ public class IMUProtocol {
             r.accel_fsr_g = decodeProtocolUint16(buffer, STREAM_RESPONSE_ACCEL_FULL_SCALE_G_RANGE);
             r.update_rate_hz = decodeProtocolUint16(buffer, STREAM_RESPONSE_UPDATE_RATE_HZ);
             r.yaw_offset_degrees = decodeProtocolFloat(buffer, STREAM_RESPONSE_YAW_OFFSET_DEGREES);
+            r.q1_offset = decodeProtocolUint16(buffer, STREAM_RESPONSE_QUAT1_OFFSET);
+            r.q2_offset = decodeProtocolUint16(buffer, STREAM_RESPONSE_QUAT2_OFFSET);
+            r.q3_offset = decodeProtocolUint16(buffer, STREAM_RESPONSE_QUAT3_OFFSET);
+            r.q4_offset = decodeProtocolUint16(buffer, STREAM_RESPONSE_QUAT4_OFFSET);
             r.flags = decodeProtocolUint16(buffer, STREAM_RESPONSE_FLAGS);
+
+            return STREAM_RESPONSE_MESSAGE_LENGTH;
         }
-        return STREAM_RESPONSE_MESSAGE_LENGTH;
+        return 0;
     }
 
     public static int decodeStreamCommand(byte[] buffer, int length, StreamCommand c) {
@@ -162,8 +178,9 @@ public class IMUProtocol {
             }
 
             c.stream_type = buffer[STREAM_CMD_STREAM_TYPE_INDEX];
+            return STREAM_CMD_MESSAGE_LENGTH;
         }
-        return STREAM_CMD_MESSAGE_LENGTH;
+        return 0;
     }
 
     public static int decodeYPRUpdate(byte[] buffer, int length, YPRUpdate u) {
@@ -179,8 +196,9 @@ public class IMUProtocol {
             u.pitch = decodeProtocolFloat(buffer, YPR_UPDATE_PITCH_VALUE_INDEX);
             u.roll = decodeProtocolFloat(buffer, YPR_UPDATE_ROLL_VALUE_INDEX);
             u.compass_heading = decodeProtocolFloat(buffer, YPR_UPDATE_COMPASS_VALUE_INDEX);
+            return YPR_UPDATE_MESSAGE_LENGTH;
         }
-        return YPR_UPDATE_MESSAGE_LENGTH;
+        return 0;
     }
 
     public static int decodeRawUpdate(byte[] buffer, int length,
@@ -204,8 +222,9 @@ public class IMUProtocol {
             u.mag_y = decodeProtocolUint16(buffer, RAW_UPDATE_MAG_Y_VALUE_INDEX);
             u.mag_z = decodeProtocolUint16(buffer, RAW_UPDATE_MAG_Z_VALUE_INDEX);
             u.temp_c = decodeProtocolFloat(buffer, RAW_UPDATE_TEMP_VALUE_INDEX);
+            return RAW_UPDATE_MESSAGE_LENGTH;
         }
-        return RAW_UPDATE_MESSAGE_LENGTH;
+        return 0;
     }
 
     public static void encodeTermination(byte[] buffer, int total_length, int content_length) {
