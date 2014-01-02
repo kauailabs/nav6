@@ -4,7 +4,11 @@ In addition to the Basic nav6 [Protocol], the nav6 firmware implements several m
 
 == Raw Sensor Data Update Message ==
 
-The Raw Sensor Data update message communications notifications of raw sensors readings; this update message may be useful when the Yaw/Pitch/Roll/Compass Heading provides insufficient information.
+The Raw Sensor Data update message communications notifications of raw sensors readings; this update message may be useful when the Yaw/Pitch/Roll/Compass Heading provides insufficient information:
+
+  * With the quaternions and the raw acceleration data, the world linear acceleration (the true acceleration, with the gravity component removed) can be calculated.
+
+  * Additionally, with the raw magnetometer data, it is possible to implement soft iron calibration.  Note that the raw magnetometer data has already had hard iron calibration applied.
 
 ||
 ||Byte Offset||Element||Data Type||
