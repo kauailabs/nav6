@@ -50,7 +50,7 @@ Whenever a Stream Configuration Command is received by the nav6, the nav6 respon
 ||1||Gyroscope Full Scale Range (Degrees/sec)||16-bit Integer||
 ||5||Accelerometer Full Scale Range (G)||16-bit Integer||
 ||9||Update Rate (Hz)||16-bit Integer||
-||13||Calibrated Yaw Offset||Float||
+||13||Calibrated Yaw Offset (Degrees)||Float||
 ||20||Calibrated Quaternion W Offset (15-bits, signed)||16-bit Integer||
 ||24||Calibrated Quaternion X Offset (15-bits, signed)||16-bit Integer||
 ||28||Calibrated Quaternion Y Offset (15-bits, signed)||16-bit Integer||
