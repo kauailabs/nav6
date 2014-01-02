@@ -57,3 +57,9 @@ Whenever a Stream Configuration Command is received by the nav6, the nav6 respon
 ||32||Calibrated Quaternion Z Offset (15-bits, signed)||16-bit Integer||
 ||36||Flags||16-bit Integer||
 ||
+
+||
+||Flag value||Desription||
+||0, 1||Initial Calibration in progress||
+||2||Startup calibration complete||
+||
