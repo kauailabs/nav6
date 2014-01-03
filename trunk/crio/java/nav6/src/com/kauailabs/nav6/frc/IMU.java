@@ -57,7 +57,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
         m_thread.start();
     }
 
-    private void initIMU() {
+    protected void initIMU() {
         // The IMU serial port configuration is 8 data bits, no parity, one stop bit. 
         // No flow control is used.
         // Conveniently, these are the defaults used by the WPILib's SerialPort class.
