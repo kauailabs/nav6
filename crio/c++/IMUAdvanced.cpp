@@ -175,7 +175,8 @@ bool  IMUAdvanced::IsMoving()
 bool IMUAdvanced::IsCalibrating()
 {
 	Synchronized sync(cIMUStateSemaphore);
-	return (this->flags >= 2);
+	uint16_t calibration_state = this->flags & NAV6_FLAG_MASK_CALIBRATION_STATE;
+	return (calibration_state != NAV6_CALIBRATION_STATE_COMPLETE);
 }
 
 float IMUAdvanced::GetTempC()

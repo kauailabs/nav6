@@ -212,11 +212,11 @@ const float radians_to_degrees = 180.0 / M_PI;
 #define STARTUP_CALIBRATION_DELAY_MS        19000
 #define CALIBRATED_OFFSET_AVERAGE_PERIOD_MS  1000
 
-#define MPU_CALIBRATION_STATE_CALIBRATING 0 // Waiting for MPU to complete internal calibration
-#define MPU_CALIBRATION_STATE_ACCUMULATE  1 // Accumulate Yaw/Pitch/Roll offsets
-#define MPU_CALIBRATION_STATE_COMPLETE    2 // Normal Operation
+#define NAV6_CALIBRATION_STATE_WAIT 0 // Waiting for MPU to complete internal calibration
+#define NAV6_CALIBRATION_STATE_ACCUMULATE  1 // Accumulate Yaw/Pitch/Roll offsets
+#define NAV6_CALIBRATION_STATE_COMPLETE    2 // Normal Operation
 
-int calibration_state = MPU_CALIBRATION_STATE_CALIBRATING;
+int calibration_state = NAV6_CALIBRATION_STATE_WAIT;
                          
                             
 int calibration_accumulator_count = 0;
@@ -308,14 +308,14 @@ void loop() {
       dmpGetYawPitchRoll(ypr, &q, &gravity);
             
       boolean accumulate = false;
-      if ( calibration_state == MPU_CALIBRATION_STATE_CALIBRATING )
+      if ( calibration_state == NAV6_CALIBRATION_STATE_WAIT )
       {
         if ( millis() >= STARTUP_CALIBRATION_DELAY_MS )
         {
-          calibration_state = MPU_CALIBRATION_STATE_ACCUMULATE;
+          calibration_state = NAV6_CALIBRATION_STATE_ACCUMULATE;
         }
       }
-      if ( calibration_state == MPU_CALIBRATION_STATE_ACCUMULATE )
+      if ( calibration_state == NAV6_CALIBRATION_STATE_ACCUMULATE )
       {
         accumulate = true;
         if ( millis() >= (STARTUP_CALIBRATION_DELAY_MS + CALIBRATED_OFFSET_AVERAGE_PERIOD_MS) )
@@ -326,7 +326,7 @@ void loop() {
           calibrated_quaternion_offset[1] = quaternion_accumulator[1] / calibration_accumulator_count;
           calibrated_quaternion_offset[2] = quaternion_accumulator[2] / calibration_accumulator_count;
           calibrated_quaternion_offset[3] = quaternion_accumulator[3] / calibration_accumulator_count;
-          calibration_state = MPU_CALIBRATION_STATE_COMPLETE;
+          calibration_state = NAV6_CALIBRATION_STATE_COMPLETE;
           
           // Since calibration data has likely changed, send an update
           
