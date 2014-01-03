@@ -2,6 +2,8 @@ To integrate the nav6 IMU into cRio-based robot control software, source code fo
 
 _Note:  the example code on this page demonstrates using the C++ version of the IMU class, however the Java version is identical, except that the first word of each Java class method is lower case._
 
+_Note:  if you need access to advanced features enabled by the nav6 IMU, such as access to the raw sensor data, world linear acceleration with gravity removed, motion/no-motion detection and access to the sensors temperature data, you can use the IMUAdvanced class instead of the IMU class._
+
 = Instantiating an IMU object =
 
 To instantiate an IMU object, the IMU constructor must be invoked and provided a pointer to an instance of the WPI Library *!SerialPort* class.
