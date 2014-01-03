@@ -1,5 +1,8 @@
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) Kauai Labs 2013. All Rights Reserved.                       */
+/*                                                                            */
+/* Created in support of Team 2465 (Kauaibots).  Go Thunderchicken!           */
+/*                                                                            */
 /* Open Source Software - may be modified and shared by FRC teams. Any        */
 /* modifications to this code must be accompanied by the nav6_License.txt file*/ 
 /* in the root directory of the project.                                      */
@@ -49,7 +52,8 @@ public class IMUAdvanced extends IMU {
     boolean IsCalibrating()
     {
         synchronized (this) { // synchronized block
-            return (this.flags >= 2);
+            short calibration_state = (short)(this.flags & IMUProtocol.NAV6_FLAG_MASK_CALIBRATION_STATE);
+            return (calibration_state != IMUProtocol.NAV6_CALIBRATION_STATE_COMPLETE);
         }
     }
 

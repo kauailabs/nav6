@@ -84,6 +84,12 @@ public class IMUProtocol {
     
     public final static byte STREAM_MSG_TERMINATION_CHAR = (byte)'\n';
     
+    public final static short NAV6_FLAG_MASK_CALIBRATION_STATE = 0x03;
+    
+    public final static short NAV6_CALIBRATION_STATE_WAIT =         0x00;
+    public final static short NAV6_CALIBRATION_STATE_ACCUMULATE =   0x01;
+    public final static short NAV6_CALIBRATION_STATE_COMPLETE =     0x02;
+    
     public final static int IMU_PROTOCOL_MAX_MESSAGE_LENGTH = RAW_UPDATE_MESSAGE_LENGTH;
 
     static public class YPRUpdate {
