@@ -24,6 +24,8 @@
 
   * [RotateToAngleExample Rotating to a given Angle]
 
+  * [MotionDetection Motion/No-Motion Detection]
+
 * Advanced Topics
 
   * [nav6UI The nav6UI Demo Application]
