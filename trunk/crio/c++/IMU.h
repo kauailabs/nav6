@@ -28,7 +28,10 @@
 
 class IMU : public SensorBase, public PIDSource, public LiveWindowSendable
 {
+protected:
 	SerialPort *pserial_port;
+	IMU(SerialPort *pport, bool internal);
+	void InitIMU();
 	
 public:
 
@@ -60,12 +63,12 @@ public:
 	void Restart();
 	
 private:
-	void InitIMU();
 	void InitializeYawHistory();
 	void UpdateYawHistory(float curr_yaw );
 	double GetAverageFromYawHistory();
 
-    Task 	m_task;
+protected:
+    Task *	m_task;
 	float 	yaw;
 	float 	pitch; 
 	float 	roll;
