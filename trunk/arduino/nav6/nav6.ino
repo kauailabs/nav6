@@ -10,7 +10,10 @@ library which is licensed under a Creative Commons license.
 
 This work also incorporates a version of the official Invensense Motion
 Driver v. 5.1 library, which has been ported by Kauai Labs to the Arduino
-libraries.
+libraries.  This library has a separate license.  The nav6 MIT license does
+not extended to the Motion Driver 5.1 Library; anyone intending to modify
+this library source code should contact Invensense and register as a 
+developer at their website.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
