@@ -20,8 +20,12 @@ Next, connect the male DB9 connector to the nav6 circuit board, and the female D
 
 = Mounting =
 
-The nav6 IMU should be mounted such that it is firmly attached to the robot chassis.  _*The quality of this mounting will be directly reflected in the quality of the inertial measurements provided by the nav6.*_
+The nav6 IMU should be mounted such that it is firmly attached to the robot chassis.  _*The quality of this mounting will be directly reflected in the quality of the inertial measurements provided by the nav6.*_  To ensure quality, carefully follow these guidelines:
 
-NOTE:  Housing the nav6 IMU in some form of [Enclosure protective enclosure] is highly recommended, to protect it from damage.
+  * The nav6 should be tightly mounted; it should be a part of the chassis mass, and should move exactly as the chassis moves.  Avoid mounting the nav6 in an area of the chassis that might be flexible, as this could introduce vibration to the IMU that does not represent the chassis inertial properties.
+
+  * The nav6 IMU should be mounted in the center of the chassis, which ensures the origin of the yaw/pitch/roll axes truly represent the chassis center.
+
+  * Housing the nav6 IMU in some form of [Enclosure protective enclosure] is highly recommended, to protect it from damage.  This should both protect the circuit board from damage, and provide strain relief for the cables that connect to the nav6 IMU.
 
 Once installation is complete, [IMUClass integration into the robot control software] can begin.
