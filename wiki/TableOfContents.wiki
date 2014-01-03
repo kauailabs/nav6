@@ -30,6 +30,8 @@
 
   * [nav6UI The nav6UI Demo Application]
 
+  * [IMUAdvancedClass The IMUAdvanced class]
+
   * [https://code.google.com/p/nav6/wiki/Protocol Protocol (Basic)]
 
   * [https://code.google.com/p/nav6/wiki/YawDrift Yaw Drift]
