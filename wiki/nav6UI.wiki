@@ -2,7 +2,7 @@ The nav6UI user interface application is a great way to visualize the data provi
 
 To run the nav6UI, the nav6 IMU must be connected to a PC (Windows, Mac or Linux) via a serial cable or a USB/Serial converter cable.
 
-_Note:  if you are running Windows, you will need to also install ensure that a USB driver is installed, in order to communicate over USB to the nav6 IMU.  This installation is most easily accomplished by installing the Arduino IDE, which also installs the correct USB driver on your computer._
+_Note:  if you are running Windows, you will need to also install ensure that a USB driver is installed, in order to communicate over USB to the nav6 IMU.  This installation is most easily accomplished by installing the Arduino IDE, which also installs the correct USB driver on your computer.  For details, please see the [http://arduino.cc/en/guide/windows#toc4 Arduino for Windows driver installation instructions]._
 
 [https://nav6.googlecode.com/svn/trunk/images/nav6UI.png]
 
