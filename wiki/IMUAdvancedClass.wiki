@@ -1,1 +1,11 @@
-Describes features of the IMU Advanced class
+If you need access to advanced features enabled by the nav6 IMU, such as access to the raw sensor data, world linear acceleration with gravity removed, motion/no-motion detection and access to the sensors temperature data, you can use the IMUAdvanced class instead of the IMU class.
+
+The capabilities of the IMUAdvanced class do come at a cost - additional computation on the processor executing the IMUAdvanced class, as compared to the IMU class.
+
+The IMUAdvanced class adds the following methods:
+
+float IMUAdvanced::GetWorldAccelX()
+float IMUAdvanced::GetWorldAccelY()
+bool  IMUAdvanced::IsMoving()
+bool IMUAdvanced::IsCalibrating()
+float IMUAdvanced::GetTempC()
