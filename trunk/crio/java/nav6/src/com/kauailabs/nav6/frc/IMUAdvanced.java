@@ -1,13 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) Kauai Labs 2013. All Rights Reserved.                       */
+/* Open Source Software - may be modified and shared by FRC teams. Any        */
+/* modifications to this code must be accompanied by the nav6_License.txt file*/ 
+/* in the root directory of the project.                                      */
+/*----------------------------------------------------------------------------*/
 
 package com.kauailabs.nav6.frc;
 import com.kauailabs.nav6.IMUProtocol;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.visa.VisaException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -116,6 +119,14 @@ public class IMUAdvanced extends IMU {
     protected void initIMU() {
         super.initIMU();
         initWorldLinearAccelHistory();
+        	// set the nav6 into "Raw" update mode
+	byte stream_command_buffer[] = new byte[256];
+	int packet_length = IMUProtocol.encodeStreamCommand( stream_command_buffer, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_RAW ); 
+        try {
+            serial_port.write( stream_command_buffer, packet_length );
+        } catch (VisaException ex) {
+        }
+
     }
     void initWorldLinearAccelHistory(){
         for (int i = 0; i < WORLD_LINEAR_ACCEL_HISTORY_LENGTH; i++) {
