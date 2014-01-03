@@ -1,0 +1,1 @@
+Describes features of the IMU Advanced class
