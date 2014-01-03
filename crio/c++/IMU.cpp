@@ -77,16 +77,26 @@ static void imuTask(IMU *imu)
 	}
 }
 
-IMU::IMU( SerialPort *pport ) :
-	m_task ("IMU", (FUNCPTR)imuTask,Task::kDefaultPriority+1)  
+IMU::IMU( SerialPort *pport, bool internal )
 {
 	yaw = 0.0;
 	pitch = 0.0;
 	roll = 0.0;
 	pserial_port = pport;
 	pserial_port->Reset();
+	InitIMU();	
+}
+
+IMU::IMU( SerialPort *pport )
+{
+	m_task = new Task("IMU", (FUNCPTR)imuTask,Task::kDefaultPriority+1);
+	yaw = 0.0;
+	pitch = 0.0;
+	roll = 0.0;
+	pserial_port = pport;
+	pserial_port->Reset();
 	InitIMU();
-	m_task.Start((UINT32)this);
+	m_task->Start((UINT32)this);
 }
 
 /**
@@ -112,20 +122,22 @@ void IMU::InitIMU()
  */
 IMU::~IMU()
 {
-	m_task.Stop();
+	m_task->Stop();
+	delete m_task;
+	m_task = 0;
 }
 
 void IMU::Restart()
 {
 	stop = true;
 	pserial_port->Reset();
-	m_task.Stop();
+	m_task->Stop();
 	
 	pserial_port->Reset();
 	InitializeYawHistory();
 	update_count = 0;
 	byte_count = 0;
-	m_task.Restart();
+	m_task->Restart();
 }
 
 bool IMU::IsConnected()
