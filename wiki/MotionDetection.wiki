@@ -1,6 +1,6 @@
 Detecting motion/no-motion can be simply detected by determining if a body's linear acceleration exceeds a small threshold.
 
-With accelerometers, this is not as easy as it seems, since accelerometer readings contain both acceleration due to gravity as well as acceleration due to a body's motion.
+Using the data from accelerometers, this is not as easy as it seems, since accelerometer readings contain both acceleration due to gravity as well as acceleration due to a body's motion.
 
 One method for detecting motion is to use a high-pass filter, which lets quickly-changing information through but blocks information that doesn't change frequently.
 
