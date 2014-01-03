@@ -28,7 +28,7 @@ The nav6 IMU should be mounted such that it is firmly attached to the robot chas
 
   * The nav6 IMU should be mounted in the center of the chassis, which ensures the origin of the yaw/pitch/roll axes truly represent the chassis center.
 
-  * Be sure to understand the [Orientation orientation] of the nav6 IMU, relative to the robot.
+  * Be sure to understand the [Orientation orientation] of the nav6 IMU, relative to the chassis.
 
   * Housing the nav6 IMU in some form of [Enclosure protective enclosure] is highly recommended, to protect it from damage.  This should both protect the circuit board from damage, and provide strain relief for the cables that connect to the nav6 IMU.
 
