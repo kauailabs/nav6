@@ -5,7 +5,11 @@ The capabilities of the IMUAdvanced class do come at a cost - additional computa
 The IMUAdvanced class adds the following methods:
 
 float IMUAdvanced::GetWorldAccelX()
+
 float IMUAdvanced::GetWorldAccelY()
+
 bool  IMUAdvanced::IsMoving()
+
 bool IMUAdvanced::IsCalibrating()
+
 float IMUAdvanced::GetTempC()
