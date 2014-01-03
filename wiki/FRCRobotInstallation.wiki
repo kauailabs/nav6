@@ -7,12 +7,14 @@ The following are needed to accomplish this integration:
   * nav6 IMU Circuit Board
   * 2-pin JST "PH" style connector and wire harness
   * DB9 Male-to-female straight-through serial cable
+  * A protective enclosure
+  * Screws or other mounting hardware
 
 _Note that the DB9 Male-to-female cable is a "straight-through" cable, NOT a "crossover" cable._
 
 <img src="https://nav6.googlecode.com/svn/trunk/images/FRCMounting.png" height=700px width=400px>
 
-= Electrical Installation =
+= Electrical Connections =
 
 First, connect the nav6 Power wire harness to one of the unregulated 12-volt connections on the power distribution board.  The nav6 consumes approximately 200 milliamps of current and thus can be connected to any of the 12-Volt power distribution board connections.  The nav6 requires a  minimum voltage of 5.5 volts.
 
