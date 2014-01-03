@@ -1,8 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) Kauai Labs 2013. All Rights Reserved.                       */
+/* Open Source Software - may be modified and shared by FRC teams. Any        */
+/* modifications to this code must be accompanied by the nav6_License.txt file*/ 
+/* in the root directory of the project.                                      */
+/*----------------------------------------------------------------------------*/
+
 package com.kauailabs.nav6.frc;
 
 import com.kauailabs.nav6.IMUProtocol;
