@@ -88,8 +88,6 @@ int updateRateHz = 0;
 int gyroFSRDPS = 0;
 int accelFSRG = 0;
 float yaw_offset_degrees = 0.0;
-short nav6_flags;
-
 boolean initial_calibration_in_process = false;
 
 boolean multiple_serial_ports = false;
@@ -281,9 +279,11 @@ void draw() {
     fill(255,0,0);
 
     String linear_accel_x = "Accel X:  " + nfp(world_linear_acceleration_x,1,2) + " G";
-    text(linear_accel_x,20,height-60);
+    text(linear_accel_x,20,height-80);
     String linear_accel_y = "Accel Y:  " + nfp(world_linear_acceleration_y,1,2) + " G";
-    text(linear_accel_y,20,height-40);
+    text(linear_accel_y,20,height-60);
+    String linear_accel_z = "Accel Z:  " + nfp(world_linear_acceleration_z,1,2) + " G";
+    text(linear_accel_z,20,height-40);
       
     String temp = "Temp:  " + current_temp_c;
     temp += " C";
@@ -387,7 +387,7 @@ void serialEvent(Serial port) {
             q[1] = ((float)raw_update.q2) / 16384.0f;
             q[2] = ((float)raw_update.q3) / 16384.0f;
             q[3] = ((float)raw_update.q4) / 16384.0f;
-            for (int i = 0; i < 4; i++) if (q[i] >= 2) q[i] = -4 + q[i]; // ???
+            for (int i = 0; i < 4; i++) if (q[i] >= 2) q[i] = -4 + q[i]; // Range-check quaternion values
             
             // set our toxilibs quaternion to new data
             quat.set(q[0], q[1], q[2], q[3]);
@@ -424,9 +424,11 @@ void serialEvent(Serial port) {
             // calculate linear acceleration by 
             // removing the gravity component (+1g = +4096 in standard DMP FIFO packet)
              
-            linear_acceleration_x = (((float)raw_update.accel_x) / 16384.0) - gravity[0];
-            linear_acceleration_y = (((float)raw_update.accel_y) / 16384.0) - gravity[1];
-            linear_acceleration_z = (((float)raw_update.accel_z) / 16384.0) - gravity[2]; 
+            linear_acceleration_x = (((float)raw_update.accel_x) / (32768.0/accelFSRG)) - gravity[0];
+            linear_acceleration_y = (((float)raw_update.accel_y) / (32768.0/accelFSRG)) - gravity[1];
+            linear_acceleration_z = (((float)raw_update.accel_z) / (32768.0/accelFSRG)) - gravity[2]; 
+            
+            // Calculate world-frame acceleration
             
             float q2[] = new float[4];
             q2[0] = 0;
@@ -527,13 +529,8 @@ void serialEvent(Serial port) {
                 gyroFSRDPS = stream_response.gyro_fsr_dps;
                 accelFSRG = stream_response.accel_fsr_g;
                 yaw_offset_degrees = stream_response.yaw_offset_degrees;
-                nav6_flags = stream_response.flags;
-                if ( (nav6_flags & 0x03) < 2 ) {
-                  initial_calibration_in_process = true;
-                }              
-                else {
-                  initial_calibration_in_process = false;
-                }
+                short calibration_state = (short)(stream_response.flags & IMUProtocol.NAV6_FLAG_MASK_CALIBRATION_STATE);
+                initial_calibration_in_process = (calibration_state != IMUProtocol.NAV6_CALIBRATION_STATE_COMPLETE);
               }
             }
           }        
