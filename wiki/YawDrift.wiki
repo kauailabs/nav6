@@ -1,6 +1,6 @@
 #summary Tips on dealing with "yaw drift"
 
-A gyroscope measures the amount of angular rotation about a single axis.  Since the gyroscope measures changes in angular rotation, rather than an  absolute angle, calculation of the actual current angle of that axis is an estimate rather than an exact measurement.
+A gyroscope measures the amount of angular rotation about a single axis.  Since the gyroscope measures changes in angular rotation, rather than an  absolute angle, calculation of the actual current angle of that axis is estimated via [http://en.wikipedia.org/wiki/Numerical_integration numerical integration] rather than an exact measurement.
 
 Any Inertial Measurement Unit (IMU), including the nav6, that integrates a signal from a gyroscope will also accumulate error over time.   Accumulated error is due to several factors, including:
 
