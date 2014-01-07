@@ -36,7 +36,7 @@ The references on this page are provided to help students gain a deeper understa
 
 [http://learn.adafruit.com/downloads/pdf/memories-of-an-arduino.pdf Arduino Memory Issues and Tips]
 
-= Other Notable Open Source Works =
+= Other Notable Open Source IMU Projects =
 
 [http://freeimu.varesano.net/ Free IMU]
 
