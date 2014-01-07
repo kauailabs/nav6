@@ -2,7 +2,7 @@
 
 A gyroscope measures the amount of angular rotation about a single axis.  Since the gyroscope measures changes in angular rotation, rather than an  absolute angle, calculation of the actual current angle of that axis is an estimate rather than an exact measurement.
 
-Any Inertial Measurement Unit (IMU), including the nav6, that integrates a signal from a gyroscope accumulates error over time.   Accumulated error is due to several factors, including:
+Any Inertial Measurement Unit (IMU), including the nav6, that integrates a signal from a gyroscope will also accumulate error over time.   Accumulated error is due to several factors, including:
 
   * [http://en.wikipedia.org/wiki/Quantization_(signal_processing) Quantization noise] (which occurs when an analog-to-digital converter (ADC) converts a continuous analog value to a discrete integral value)
   * Scale factor error (which occurs due to manufacturing errors causing a specified scale factor [e.g., 256 bits per unit G] to be incorrect)
