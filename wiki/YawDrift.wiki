@@ -39,7 +39,7 @@ What follows are some tips on how to deal with the yaw drift within the context 
 
 = Tips =
 
-1)  Even though the nav6 magnetometer will likely give erroneous readings once the robot motors are energized, the magnetometer can potentially provide a stable reading during the moments before a FRC competition round.  Combined with the 1 degree per minute of drift in the yaw angles, it is possible to calculate the robots absolute orientation and maintain it through a match, subject to an accuracy limit of approximately 2-3 degrees over the 2 minute, 30 second match.
+1)  Even though the nav6 magnetometer will likely give erroneous readings once the robot motors are energized, the magnetometer can potentially provide a stable reading during the moments before a FRC competition round.  Combined with the 1 degree per minute of drift in the yaw angles, it is possible to calculate the robots absolute orientation and maintain it through a match, subject to an accuracy limit of approximately 3 degrees over the 2 minute, 30 second match.
 
   yaw drift(degrees) at end of match = yaw drift (~1 degree/minute) x match length (2.5 minute) = *~3 degrees*
 
