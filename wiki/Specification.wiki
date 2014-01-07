@@ -22,6 +22,13 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 ||RS-232 Connector:         ||DB9, Female||
 ||
 
+== nav6 Microcontroller Specifications ==
+
+||
+||Model:                    ||Atmel ATMEGA328P||
+||Clock Frequency:          ||16 Mhz||
+||
+
 == nav6 Official Firmware Key Specifications ==
 
 ||
