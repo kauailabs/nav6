@@ -689,6 +689,35 @@ int mpu_read_reg(unsigned char reg, unsigned char *data)
     return i2c_read(st.hw->addr, reg, 1, data);
 }
 
+void mpu_force_reset()
+{
+    unsigned char data[6];
+	data[0] = BIT_RESET;
+	int i;
+    for ( i = 0; i < 100; i++ )
+	{
+		if (i2c_write(st.hw->addr, st.reg->pwr_mgmt_1, 1, data) == 0) 
+		{
+			delay_ms(100);
+
+			/* Wake up chip. */
+			data[0] = 0x00;
+			if (i2c_write(st.hw->addr, st.reg->pwr_mgmt_1, 1, data)==0)
+			{
+				break;
+			}
+			else
+			{
+				delay_ms(10);
+			}
+		}
+		else
+		{
+			delay_ms(10);
+		}
+	}
+}
+
 /**
  *  @brief      Initialize hardware.
  *  Initial configuration:\n
@@ -1641,7 +1670,7 @@ int mpu_get_int_status(short *status)
  *  @param[out] timestamp   Timestamp in milliseconds.
  *  @param[out] sensors     Mask of sensors read from FIFO.
  *  @param[out] more        Number of remaining packets.
- *  @return     0 if successful.
+ *  @return     0 if successful.  Negative if error:  -1:  Misconfigured; -2:  I2C read error; -3:  Fifo Overflow
  */
 int mpu_read_fifo(short *gyro, short *accel, unsigned long *timestamp,
         unsigned char *sensors, unsigned char *more)
@@ -1656,9 +1685,9 @@ int mpu_read_fifo(short *gyro, short *accel, unsigned long *timestamp,
 
     sensors[0] = 0;
     if (!st.chip_cfg.sensors)
-        return -1;
+        return -5;
     if (!st.chip_cfg.fifo_enable)
-        return -1;
+        return -6;
 
     if (st.chip_cfg.fifo_enable & INV_X_GYRO)
         packet_size += 2;
@@ -1670,7 +1699,7 @@ int mpu_read_fifo(short *gyro, short *accel, unsigned long *timestamp,
         packet_size += 6;
 
     if (i2c_read(st.hw->addr, st.reg->fifo_count_h, 2, data))
-        return -1;
+        return -2;
     fifo_count = (data[0] << 8) | data[1];
     if (fifo_count < packet_size)
         return 0;
@@ -1678,16 +1707,16 @@ int mpu_read_fifo(short *gyro, short *accel, unsigned long *timestamp,
     if (fifo_count > (st.hw->max_fifo >> 1)) {
         /* FIFO is 50% full, better check overflow bit. */
         if (i2c_read(st.hw->addr, st.reg->int_status, 1, data))
-            return -1;
+            return -2;
         if (data[0] & BIT_FIFO_OVERFLOW) {
             mpu_reset_fifo();
-            return -2;
+            return -3;
         }
     }
     get_ms((unsigned long*)timestamp);
 
     if (i2c_read(st.hw->addr, st.reg->fifo_r_w, packet_size, data))
-        return -1;
+        return -2;
     more[0] = fifo_count / packet_size - 1;
     sensors[0] = 0;
 
@@ -1723,7 +1752,8 @@ int mpu_read_fifo(short *gyro, short *accel, unsigned long *timestamp,
  *  @param[in]  length  Length of one FIFO packet.
  *  @param[in]  data    FIFO packet.
  *  @param[in]  more    Number of remaining packets.
- */
+ *  @return     0 if successful.  Negative if error:  -1:  DMP Not On; -2:  I2C read error; -3:  Fifo Overflow -4: No Sensors -5: No more data available
+*/
 int mpu_read_fifo_stream(unsigned short length, unsigned char *data,
     unsigned char *more)
 {
@@ -1732,27 +1762,27 @@ int mpu_read_fifo_stream(unsigned short length, unsigned char *data,
     if (!st.chip_cfg.dmp_on)
         return -1;
     if (!st.chip_cfg.sensors)
-        return -1;
+        return -4;
 
     if (i2c_read(st.hw->addr, st.reg->fifo_count_h, 2, tmp))
-        return -1;
+        return -2;
     fifo_count = (tmp[0] << 8) | tmp[1];
     if (fifo_count < length) {
         more[0] = 0;
-        return -1;
+        return -5;
     }
     if (fifo_count > (st.hw->max_fifo >> 1)) {
         /* FIFO is 50% full, better check overflow bit. */
         if (i2c_read(st.hw->addr, st.reg->int_status, 1, tmp))
-            return -1;
+            return -2;
         if (tmp[0] & BIT_FIFO_OVERFLOW) {
             mpu_reset_fifo();
-            return -2;
+            return -3;
         }
     }
 
     if (i2c_read(st.hw->addr, st.reg->fifo_r_w, length, data))
-        return -1;
+        return -2;
     more[0] = fifo_count / length - 1;
     return 0;
 }

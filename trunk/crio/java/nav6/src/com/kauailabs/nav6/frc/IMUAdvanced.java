@@ -28,17 +28,24 @@ public class IMUAdvanced extends IMU {
         world_linear_accel_history = new float[WORLD_LINEAR_ACCEL_HISTORY_LENGTH];
     }
 
-    float GetWorldAccelX()
+    float GetWorldLinearAccelX()
     {
         synchronized (this) { // synchronized block
-            return this.world_accel_x;
+            return this.world_linear_accel_x;
         }
     }
 
-    float GetWorldAccelY()
+    float GetWorldLinearAccelY()
     {
         synchronized (this) { // synchronized block
-            return this.world_accel_y;
+            return this.world_linear_accel_y;
+        }
+    }
+
+    float GetWorldLinearAccelZ()
+    {
+        synchronized (this) { // synchronized block
+            return this.world_linear_accel_z;
         }
     }
 
@@ -139,7 +146,7 @@ public class IMUAdvanced extends IMU {
         next_world_linear_accel_history_index = 0;
         world_linear_acceleration_recent_avg = (float) 0.0;
     }
-    void updateWorldLinearAccelHistory( float x, float y ){
+    void updateWorldLinearAccelHistory( float x, float y, float z ){
         if (next_world_linear_accel_history_index >= WORLD_LINEAR_ACCEL_HISTORY_LENGTH) {
             next_world_linear_accel_history_index = 0;
         }
@@ -212,9 +219,9 @@ public class IMUAdvanced extends IMU {
             // calculate linear acceleration by 
             // removing the gravity component (+1g = +4096 in standard DMP FIFO packet)
              
-            linear_acceleration_x = (float) ((((float)raw_update.accel_x) / 16384.0) - gravity[0]);
-            linear_acceleration_y = (float) ((((float)raw_update.accel_y) / 16384.0) - gravity[1]);
-            linear_acceleration_z = (float) ((((float)raw_update.accel_z) / 16384.0) - gravity[2]); 
+            linear_acceleration_x = (float) ((((float)raw_update.accel_x) / (32768.0 / accel_fsr_g)) - gravity[0]);
+            linear_acceleration_y = (float) ((((float)raw_update.accel_y) / (32768.0 / accel_fsr_g)) - gravity[1]);
+            linear_acceleration_z = (float) ((((float)raw_update.accel_z) / (32768.0 / accel_fsr_g)) - gravity[2]); 
             
             // Calculate world-frame acceleration
             
@@ -267,7 +274,7 @@ public class IMUAdvanced extends IMU {
             world_linear_acceleration_y = q_final[2];
             world_linear_acceleration_z = q_final[3];
              
-            updateWorldLinearAccelHistory(world_linear_acceleration_x,world_linear_acceleration_y);
+            updateWorldLinearAccelHistory(world_linear_acceleration_x,world_linear_acceleration_y, world_linear_acceleration_z);
              
             // Calculate tilt-compensated compass heading
             
@@ -298,8 +305,9 @@ public class IMUAdvanced extends IMU {
             this.roll = roll_degrees;
             this.compass_heading = tilt_compensated_heading_degrees;
             
-            this.world_accel_x = world_linear_acceleration_x;
-            this.world_accel_y = world_linear_acceleration_y;
+            this.world_linear_accel_x = world_linear_acceleration_x;
+            this.world_linear_accel_y = world_linear_acceleration_y;
+            this.world_linear_accel_z = world_linear_acceleration_z;
         }
     }
 
@@ -308,13 +316,20 @@ public class IMUAdvanced extends IMU {
         synchronized (this) { // synchronized block
             this.flags = response.flags;
             this.yaw_offset_degrees = response.yaw_offset_degrees;
+            this.accel_fsr_g = response.accel_fsr_g;
+            this.gyro_fsr_dps = response.gyro_fsr_dps;
+            this.update_rate_hz = response.update_rate_hz;
         }
     }
     
     float yaw_offset_degrees;
-    float world_accel_x;
-    float world_accel_y;
+    float world_linear_accel_x;
+    float world_linear_accel_y;
+    float world_linear_accel_z;
     float temp_c;
+    short accel_fsr_g;
+    short gyro_fsr_dps;
+    short update_rate_hz;
     short flags;
     float world_linear_accel_history[];
     int   next_world_linear_accel_history_index;
