@@ -118,7 +118,7 @@ void IMUAdvanced::InitWorldLinearAccelHistory()
 	world_linear_acceleration_recent_avg = 0.0;	
 }
 
-void IMUAdvanced::UpdateWorldLinearAccelHistory( float x, float y )
+void IMUAdvanced::UpdateWorldLinearAccelHistory( float x, float y, float z )
 {
 	if ( next_world_linear_accel_history_index >= WORLD_LINEAR_ACCEL_HISTORY_LENGTH )
 	{
@@ -154,16 +154,22 @@ void IMUAdvanced::InitIMU()
 	pserial_port->Write( protocol_buffer, packet_length );
 }
 
-float IMUAdvanced::GetWorldAccelX()
+float IMUAdvanced::GetWorldLinearAccelX()
 {
 	Synchronized sync(cIMUStateSemaphore);
-	return this->world_accel_x;
+	return this->world_linear_accel_x;
 }
 
-float IMUAdvanced::GetWorldAccelY()
+float IMUAdvanced::GetWorldLinearAccelY()
 {
 	Synchronized sync(cIMUStateSemaphore);
-	return this->world_accel_y;	
+	return this->world_linear_accel_y;	
+}
+
+float IMUAdvanced::GetWorldLinearAccelZ()
+{
+	Synchronized sync(cIMUStateSemaphore);
+	return this->world_linear_accel_z;	
 }
 
 bool  IMUAdvanced::IsMoving()
@@ -252,9 +258,9 @@ void IMUAdvanced::SetRaw( uint16_t quat1, uint16_t quat2, uint16_t quat3, uint16
         // Note that this code assumes the acceleration full scale range
         // is +/- 2 degrees
          
-        linear_acceleration_x = (((float)accel_x) / 16384.0) - gravity[0];
-        linear_acceleration_y = (((float)accel_y) / 16384.0) - gravity[1];
-        linear_acceleration_z = (((float)accel_z) / 16384.0) - gravity[2]; 
+        linear_acceleration_x = (((float)accel_x) / (32768.0 / accel_fsr_g)) - gravity[0];
+        linear_acceleration_y = (((float)accel_y) / (32768.0 / accel_fsr_g)) - gravity[1];
+        linear_acceleration_z = (((float)accel_z) / (32768.0 / accel_fsr_g)) - gravity[2]; 
         
         // Calculate world-frame acceleration
         
@@ -335,11 +341,12 @@ void IMUAdvanced::SetRaw( uint16_t quat1, uint16_t quat2, uint16_t quat3, uint16
 		this->roll = roll_degrees;
 		this->compass_heading = tilt_compensated_heading_degrees;
         
-		this->world_accel_x = world_linear_acceleration_x;
-		this->world_accel_y = world_linear_acceleration_y;
+		this->world_linear_accel_x = world_linear_acceleration_x;
+		this->world_linear_accel_y = world_linear_acceleration_y;
+		this->world_linear_accel_z = world_linear_acceleration_z;
 		this->temp_c = temp_c;
 		
-		UpdateWorldLinearAccelHistory( world_linear_acceleration_x, world_linear_acceleration_y);
+		UpdateWorldLinearAccelHistory( world_linear_acceleration_x, world_linear_acceleration_y, world_linear_acceleration_z);
 	}	
 }
 
@@ -351,6 +358,10 @@ void IMUAdvanced::SetStreamResponse( char stream_type,
 {
 	{
 		Synchronized sync(cIMUStateSemaphore);
+		this->yaw_offset_degrees = yaw_offset_degrees;
 		this->flags = flags;
+		this->accel_fsr_g = accel_fsr_g;
+		this->gyro_fsr_dps = gyro_fsr_dps;
+		this->update_rate_hz = update_rate_hz;
 	}		
 }

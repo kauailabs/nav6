@@ -63,6 +63,7 @@ struct int_param_s {
 int mpu_init(struct int_param_s *int_param);
 int mpu_init_slave(void);
 int mpu_set_bypass(unsigned char bypass_on);
+void mpu_force_reset();
 
 /* Configuration APIs */
 int mpu_lp_accel_mode(unsigned char rate);
