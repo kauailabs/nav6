@@ -58,7 +58,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
             ex.printStackTrace();
         }
         initIMU();
-        m_thread = new Thread();
+        m_thread = new Thread(this);
         m_thread.start();
     }
 
