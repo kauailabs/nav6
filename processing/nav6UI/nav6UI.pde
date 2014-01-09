@@ -123,7 +123,7 @@ static public void main(String args[]) {
 
 void enableRawUpdateMode() {
 
-    int length = IMUProtocol.encodeStreamCommand(protocol_buffer, (byte) IMUProtocol.STREAM_CMD_STREAM_TYPE_RAW);
+    int length = IMUProtocol.encodeStreamCommand(protocol_buffer, (byte) IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION);
     if (length != 0) {
       byte[] stream_command = new byte[length];
       arrayCopy(protocol_buffer,0,stream_command,0,length);
@@ -358,7 +358,7 @@ void draw() {
 // line feed character (which terminates a nav6 message)
 // is received.
 
-IMUProtocol.RawUpdate raw_update = new IMUProtocol.RawUpdate();
+IMUProtocol.QuaternionUpdate raw_update = new IMUProtocol.QuaternionUpdate();
 IMUProtocol.YPRUpdate ypr_update = new IMUProtocol.YPRUpdate();
 IMUProtocol.StreamResponse stream_response = new IMUProtocol.StreamResponse();
 
@@ -378,7 +378,7 @@ void serialEvent(Serial port) {
           
           print(new String(full_message));
           
-          int decode_length = IMUProtocol.decodeRawUpdate(full_message, full_message.length, raw_update);
+          int decode_length = IMUProtocol.decodeQuaternionUpdate(full_message, full_message.length, raw_update);
           if (decode_length != 0) {
             
             last_update_ms = millis();
