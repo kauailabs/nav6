@@ -40,28 +40,46 @@ public class IMUProtocol {
     final static int YPR_UPDATE_CHECKSUM_INDEX = 30;
     final static int YPR_UPDATE_TERMINATOR_INDEX = 32;
 
-    // Raw Data Update Packet - e.g., !r[q1][q2][q3][q4][accelx][accely][accelz][magx][magy][magz][checksum][cr][lf]
-    public final static byte MSGID_RAW_UPDATE = 'r';
-    final static int RAW_UPDATE_MESSAGE_LENGTH = 53;
-    final static int RAW_UPDATE_QUAT1_VALUE_INDEX = 2;
-    final static int RAW_UPDATE_QUAT2_VALUE_INDEX = 6;
-    final static int RAW_UPDATE_QUAT3_VALUE_INDEX = 10;
-    final static int RAW_UPDATE_QUAT4_VALUE_INDEX = 14;
-    final static int RAW_UPDATE_ACCEL_X_VALUE_INDEX = 18;
-    final static int RAW_UPDATE_ACCEL_Y_VALUE_INDEX = 22;
-    final static int RAW_UPDATE_ACCEL_Z_VALUE_INDEX = 26;
-    final static int RAW_UPDATE_MAG_X_VALUE_INDEX = 30;
-    final static int RAW_UPDATE_MAG_Y_VALUE_INDEX = 34;
-    final static int RAW_UPDATE_MAG_Z_VALUE_INDEX = 38;
-    final static int RAW_UPDATE_TEMP_VALUE_INDEX = 42;
-    final static int RAW_UPDATE_CHECKSUM_INDEX = 49;
-    final static int RAW_UPDATE_TERMINATOR_INDEX = 51;
+    // Quaternion Data Update Packet - e.g., !r[q1][q2][q3][q4][accelx][accely][accelz][magx][magy][magz][checksum][cr][lf]
+    public final static byte MSGID_QUATERNION_UPDATE = 'q';
+    final static int QUATERNION_UPDATE_MESSAGE_LENGTH = 53;
+    final static int QUATERNION_UPDATE_QUAT1_VALUE_INDEX = 2;
+    final static int QUATERNION_UPDATE_QUAT2_VALUE_INDEX = 6;
+    final static int QUATERNION_UPDATE_QUAT3_VALUE_INDEX = 10;
+    final static int QUATERNION_UPDATE_QUAT4_VALUE_INDEX = 14;
+    final static int QUATERNION_UPDATE_ACCEL_X_VALUE_INDEX = 18;
+    final static int QUATERNION_UPDATE_ACCEL_Y_VALUE_INDEX = 22;
+    final static int QUATERNION_UPDATE_ACCEL_Z_VALUE_INDEX = 26;
+    final static int QUATERNION_UPDATE_MAG_X_VALUE_INDEX = 30;
+    final static int QUATERNION_UPDATE_MAG_Y_VALUE_INDEX = 34;
+    final static int QUATERNION_UPDATE_MAG_Z_VALUE_INDEX = 38;
+    final static int QUATERNION_UPDATE_TEMP_VALUE_INDEX = 42;
+    final static int QUATERNION_UPDATE_CHECKSUM_INDEX = 49;
+    final static int QUATERNION_UPDATE_TERMINATOR_INDEX = 51;
 
+// Gyro/Raw Data Update packet - e.g., !g[gx][gy][gz][accelx][accely][accelz][magx][magy][magz][temp_c][cr][lf]
+
+    public final static byte MSGID_GYRO_UPDATE = 'g';
+    final static int GYRO_UPDATE_MESSAGE_LENGTH = 46;
+    final static int GYRO_UPDATE_GYRO_X_VALUE_INDEX = 2;
+    final static int GYRO_UPDATE_GYRO_Y_VALUE_INDEX = 6;
+    final static int GYRO_UPDATE_GYRO_Z_VALUE_INDEX = 10;
+    final static int GYRO_UPDATE_ACCEL_X_VALUE_INDEX = 14;
+    final static int GYRO_UPDATE_ACCEL_Y_VALUE_INDEX = 18;
+    final static int GYRO_UPDATE_ACCEL_Z_VALUE_INDEX = 22;
+    final static int GYRO_UPDATE_MAG_X_VALUE_INDEX = 26;
+    final static int GYRO_UPDATE_MAG_Y_VALUE_INDEX = 30;
+    final static int GYRO_UPDATE_MAG_Z_VALUE_INDEX = 34;
+    final static int GYRO_UPDATE_TEMP_VALUE_INDEX = 38;
+    final static int GYRO_UPDATE_CHECKSUM_INDEX = 42;
+    final static int GYRO_UPDATE_TERMINATOR_INDEX = 44;    
+    
     // EnableStream Command Packet - e.g., !S[stream type][checksum][cr][lf]
     public final static byte MSGID_STREAM_CMD = 'S';
     final static int STREAM_CMD_MESSAGE_LENGTH = 7;
     public final static int STREAM_CMD_STREAM_TYPE_YPR = MSGID_YPR_UPDATE;
-    public final static int STREAM_CMD_STREAM_TYPE_RAW = MSGID_RAW_UPDATE;
+    public final static int STREAM_CMD_STREAM_TYPE_QUATERNION = MSGID_QUATERNION_UPDATE;
+    public final static int STREAM_CMD_STREAM_TYPE_GYRO = MSGID_GYRO_UPDATE;
     final static int STREAM_CMD_STREAM_TYPE_INDEX = 2;
     final static int STREAM_CMD_CHECKSUM_INDEX = 3;
     final static int STREAM_CMD_TERMINATOR_INDEX = 5;
@@ -90,7 +108,7 @@ public class IMUProtocol {
     public final static short NAV6_CALIBRATION_STATE_ACCUMULATE =   0x01;
     public final static short NAV6_CALIBRATION_STATE_COMPLETE =     0x02;
     
-    public final static int IMU_PROTOCOL_MAX_MESSAGE_LENGTH = RAW_UPDATE_MESSAGE_LENGTH;
+    public final static int IMU_PROTOCOL_MAX_MESSAGE_LENGTH = QUATERNION_UPDATE_MESSAGE_LENGTH;
 
     static public class YPRUpdate {
 
@@ -119,12 +137,26 @@ public class IMUProtocol {
         public short flags;
     }
 
-    static public class RawUpdate {
+    static public class QuaternionUpdate {
 
         public short q1;
         public short q2;
         public short q3;
         public short q4;
+        public short accel_x;
+        public short accel_y;
+        public short accel_z;
+        public short mag_x;
+        public short mag_y;
+        public short mag_z;
+        public float temp_c;
+    }
+
+    static public class GyroUpdate {
+
+        public short gyro_x;
+        public short gyro_y;
+        public short gyro_z;
         public short accel_x;
         public short accel_y;
         public short accel_z;
@@ -207,28 +239,53 @@ public class IMUProtocol {
         return 0;
     }
 
-    public static int decodeRawUpdate(byte[] buffer, int length,
-            RawUpdate u) {
-        if (length < RAW_UPDATE_MESSAGE_LENGTH) {
+    public static int decodeQuaternionUpdate(byte[] buffer, int length,
+            QuaternionUpdate u) {
+        if (length < QUATERNION_UPDATE_MESSAGE_LENGTH) {
             return 0;
         }
-        if ((buffer[0] == PACKET_START_CHAR) && (buffer[1] == MSGID_RAW_UPDATE)) {
-            if (!verifyChecksum(buffer, RAW_UPDATE_CHECKSUM_INDEX)) {
+        if ((buffer[0] == PACKET_START_CHAR) && (buffer[1] == MSGID_QUATERNION_UPDATE)) {
+            if (!verifyChecksum(buffer, QUATERNION_UPDATE_CHECKSUM_INDEX)) {
                 return 0;
             }
 
-            u.q1 = decodeProtocolUint16(buffer, RAW_UPDATE_QUAT1_VALUE_INDEX);
-            u.q2 = decodeProtocolUint16(buffer, RAW_UPDATE_QUAT2_VALUE_INDEX);
-            u.q3 = decodeProtocolUint16(buffer, RAW_UPDATE_QUAT3_VALUE_INDEX);
-            u.q4 = decodeProtocolUint16(buffer, RAW_UPDATE_QUAT4_VALUE_INDEX);
-            u.accel_x = decodeProtocolUint16(buffer, RAW_UPDATE_ACCEL_X_VALUE_INDEX);
-            u.accel_y = decodeProtocolUint16(buffer, RAW_UPDATE_ACCEL_Y_VALUE_INDEX);
-            u.accel_z = decodeProtocolUint16(buffer, RAW_UPDATE_ACCEL_Z_VALUE_INDEX);
-            u.mag_x = decodeProtocolUint16(buffer, RAW_UPDATE_MAG_X_VALUE_INDEX);
-            u.mag_y = decodeProtocolUint16(buffer, RAW_UPDATE_MAG_Y_VALUE_INDEX);
-            u.mag_z = decodeProtocolUint16(buffer, RAW_UPDATE_MAG_Z_VALUE_INDEX);
-            u.temp_c = decodeProtocolFloat(buffer, RAW_UPDATE_TEMP_VALUE_INDEX);
-            return RAW_UPDATE_MESSAGE_LENGTH;
+            u.q1 = decodeProtocolUint16(buffer, QUATERNION_UPDATE_QUAT1_VALUE_INDEX);
+            u.q2 = decodeProtocolUint16(buffer, QUATERNION_UPDATE_QUAT2_VALUE_INDEX);
+            u.q3 = decodeProtocolUint16(buffer, QUATERNION_UPDATE_QUAT3_VALUE_INDEX);
+            u.q4 = decodeProtocolUint16(buffer, QUATERNION_UPDATE_QUAT4_VALUE_INDEX);
+            u.accel_x = decodeProtocolUint16(buffer, QUATERNION_UPDATE_ACCEL_X_VALUE_INDEX);
+            u.accel_y = decodeProtocolUint16(buffer, QUATERNION_UPDATE_ACCEL_Y_VALUE_INDEX);
+            u.accel_z = decodeProtocolUint16(buffer, QUATERNION_UPDATE_ACCEL_Z_VALUE_INDEX);
+            u.mag_x = decodeProtocolUint16(buffer, QUATERNION_UPDATE_MAG_X_VALUE_INDEX);
+            u.mag_y = decodeProtocolUint16(buffer, QUATERNION_UPDATE_MAG_Y_VALUE_INDEX);
+            u.mag_z = decodeProtocolUint16(buffer, QUATERNION_UPDATE_MAG_Z_VALUE_INDEX);
+            u.temp_c = decodeProtocolFloat(buffer, QUATERNION_UPDATE_TEMP_VALUE_INDEX);
+            return QUATERNION_UPDATE_MESSAGE_LENGTH;
+        }
+        return 0;
+    }
+
+    public static int decodeGyroUpdate(byte[] buffer, int length,
+            GyroUpdate u) {
+        if (length < GYRO_UPDATE_MESSAGE_LENGTH) {
+            return 0;
+        }
+        if ((buffer[0] == PACKET_START_CHAR) && (buffer[1] == MSGID_GYRO_UPDATE)) {
+            if (!verifyChecksum(buffer, GYRO_UPDATE_CHECKSUM_INDEX)) {
+                return 0;
+            }
+
+            u.gyro_x = decodeProtocolUint16(buffer, GYRO_UPDATE_GYRO_X_VALUE_INDEX);
+            u.gyro_y = decodeProtocolUint16(buffer, GYRO_UPDATE_GYRO_Y_VALUE_INDEX);
+            u.gyro_z = decodeProtocolUint16(buffer, GYRO_UPDATE_GYRO_Z_VALUE_INDEX);
+            u.accel_x = decodeProtocolUint16(buffer, GYRO_UPDATE_ACCEL_X_VALUE_INDEX);
+            u.accel_y = decodeProtocolUint16(buffer, GYRO_UPDATE_ACCEL_Y_VALUE_INDEX);
+            u.accel_z = decodeProtocolUint16(buffer, GYRO_UPDATE_ACCEL_Z_VALUE_INDEX);
+            u.mag_x = decodeProtocolUint16(buffer, GYRO_UPDATE_MAG_X_VALUE_INDEX);
+            u.mag_y = decodeProtocolUint16(buffer, GYRO_UPDATE_MAG_Y_VALUE_INDEX);
+            u.mag_z = decodeProtocolUint16(buffer, GYRO_UPDATE_MAG_Z_VALUE_INDEX);
+            u.temp_c = decodeProtocolFloat(buffer, GYRO_UPDATE_TEMP_VALUE_INDEX);
+            return GYRO_UPDATE_MESSAGE_LENGTH;
         }
         return 0;
     }

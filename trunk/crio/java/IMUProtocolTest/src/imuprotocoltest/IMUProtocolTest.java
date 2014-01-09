@@ -26,7 +26,7 @@ public class IMUProtocolTest {
 
         // Create a Stream Command
         byte[] protocol_buffer = new byte[IMUProtocol.IMU_PROTOCOL_MAX_MESSAGE_LENGTH];
-        int length = IMUProtocol.encodeStreamCommand(protocol_buffer, (byte) IMUProtocol.STREAM_CMD_STREAM_TYPE_YPR);
+        int length = IMUProtocol.encodeStreamCommand(protocol_buffer, (byte) IMUProtocol.STREAM_CMD_STREAM_TYPE_GYRO);
         if (length != 0) {
             IMUProtocol.StreamCommand c = new IMUProtocol.StreamCommand();
             int decode_length = IMUProtocol.decodeStreamCommand(protocol_buffer, length, c);
@@ -61,8 +61,8 @@ public class IMUProtocolTest {
 
         // Decode RAW update message
         byte[] raw_packet = raw_update_message.getBytes(Charset.forName("UTF-8"));
-        IMUProtocol.RawUpdate raw = new IMUProtocol.RawUpdate();
-        decode_length = IMUProtocol.decodeRawUpdate(raw_packet, raw_packet.length, raw);
+        IMUProtocol.QuaternionUpdate raw = new IMUProtocol.QuaternionUpdate();
+        decode_length = IMUProtocol.decodeQuaternionUpdate(raw_packet, raw_packet.length, raw);
         if (decode_length != 0) {
             System.out.print("Decoded Raw Update. ");
             System.out.print(" Q1:");

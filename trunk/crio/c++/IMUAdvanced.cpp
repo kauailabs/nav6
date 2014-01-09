@@ -66,7 +66,7 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 				while ( i < bytes_read )
 				{
 					int bytes_remaining = bytes_read - i;
-					int packet_length = IMUProtocol::decodeRawUpdate( &protocol_buffer[i], bytes_remaining, 
+					int packet_length = IMUProtocol::decodeQuaternionUpdate( &protocol_buffer[i], bytes_remaining, 
 							q1,q2,q3,q4,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z,temp_c ); 
 					if ( packet_length > 0 )
 					{
@@ -150,7 +150,7 @@ void IMUAdvanced::InitIMU()
 	
 	// set the nav6 into "Raw" update mode
 	
-	int packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_RAW ); 
+	int packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION ); 
 	pserial_port->Write( protocol_buffer, packet_length );
 }
 
