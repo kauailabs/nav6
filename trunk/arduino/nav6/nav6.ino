@@ -79,11 +79,20 @@ void setup() {
     digitalWrite(STATUS_LED,LOW);
     
     // Clock through up to 1000 bits
+    int x = 0;
     for ( int i = 0; i < 10000; i++ ) {
-      
+     
       digitalWrite(SCL_PIN,HIGH);
       digitalWrite(SCL_PIN,LOW);
       digitalWrite(SCL_PIN,HIGH);
+      
+      x++;
+      if ( x == 8 ) {
+        x = 0;
+        // send a I2C stop signal
+        digitalWrite(SDA_PIN,HIGH);
+        digitalWrite(SDA_PIN,LOW);
+      }
     }
     
     // send a I2C stop signal
@@ -154,6 +163,7 @@ void setup() {
     // DMP Update rate:       100Hz
 
     Serial.print(F("Initializing MPU..."));
+    Serial.flush();
     boolean mpu_initialized = false;
     while ( !mpu_initialized ) {
       digitalWrite(STATUS_LED,HIGH);
@@ -170,6 +180,7 @@ void setup() {
         mpu_force_reset();
         delay(100);
         Serial.println(F("Re-initializing"));
+        Serial.flush();
       }
     }
     Serial.println();
@@ -279,7 +290,7 @@ static signed char gyro_orientation[9] = { 1, 0, 0,
 * nav6 Protocol Configuration/State
 ***************************************/
 
-boolean raw_update = false;
+boolean update_type = MSGID_YPR_UPDATE;
 char protocol_buffer[64];
 
 void loop() {
@@ -288,7 +299,7 @@ void loop() {
 
     if ( compass_data_ready ) {
       
-      if ( raw_update ) {
+      if ( ( update_type == MSGID_QUATERNION_UPDATE ) || ( update_type == MSGID_GYRO_UPDATE ) ) {
         
         compass.getValues(&mag_x, &mag_y, &mag_z);
 
@@ -302,7 +313,6 @@ void loop() {
         // Note that the compass heading is tilt compensated based upon
         // previous pitch/roll readings from the MPU
         compass_heading_radians = compass.compassHeadingTiltCompensatedRadians(-ypr[1], ypr[2]);
-        //compass_heading_radians = compass.compassHeadingRadians();
         compass_heading_degrees = compass_heading_radians * radians_to_degrees;
         
         // Adjust compass for board orientation,
@@ -380,7 +390,7 @@ void loop() {
           
           // Since calibration data has likely changed, send an update
           
-          int num_bytes = IMUProtocol::encodeStreamResponse(  protocol_buffer, raw_update ? MSGID_RAW_UPDATE : MSGID_YPR_UPDATE,
+          int num_bytes = IMUProtocol::encodeStreamResponse(  protocol_buffer, update_type,
                                                                 gyro_fsr, accel_fsr, dmp_update_rate, calibrated_yaw_offset, 
                                                                 (uint16_t)(calibrated_quaternion_offset[0] * 16384),
                                                                 (uint16_t)(calibrated_quaternion_offset[1] * 16384),
@@ -410,18 +420,32 @@ void loop() {
       
       }    
     
-      if ( raw_update ) {
+      if ( update_type == MSGID_QUATERNION_UPDATE ) {
         
-        // Update client with raw sensor data
+        // Update client with quaternions and some raw sensor data
         
-        int num_bytes = IMUProtocol::encodeRawUpdate(  protocol_buffer, 
-                                                       quat[0] >> 16, quat[1] >> 16, quat[2] >> 16, quat[3] >> 16,
+        int num_bytes = IMUProtocol::encodeQuaternionUpdate(  protocol_buffer, 
+                                                               quat[0] >> 16, quat[1] >> 16, quat[2] >> 16, quat[3] >> 16,
+                                                               accel[0], accel[1], accel[2],
+                                                               mag_x, mag_y, mag_z,
+                                                               temp_centigrade);     
+        Serial.write((unsigned char *)protocol_buffer, num_bytes);
+      }
+      else if ( update_type == MSGID_GYRO_UPDATE ) {
+
+        // Update client with raw sensor data only
+        
+        int num_bytes = IMUProtocol::encodeGyroUpdate(  protocol_buffer, 
+                                                       gyro[0], gyro[1], gyro[2],
                                                        accel[0], accel[1], accel[2],
                                                        mag_x, mag_y, mag_z,
                                                        temp_centigrade);     
         Serial.write((unsigned char *)protocol_buffer, num_bytes);
+
       }
       else {
+        
+        // Send a Yaw/Pitch/Roll/Heading update
         
         x -= calibrated_yaw_offset;
     
@@ -580,14 +604,7 @@ void loop() {
       if ( packet_length > 0 )
       {
         send_stream_response = true;
-        if ( stream_type == MSGID_RAW_UPDATE )
-        {
-          raw_update = true;
-        }
-        else
-        {
-          raw_update = false;
-        }
+        update_type = stream_type;
         i += packet_length;
       }
       else // current index is not the start of a valid packet; increment
@@ -598,7 +615,7 @@ void loop() {
   }
   
   if ( send_stream_response ) {
-        int num_bytes = IMUProtocol::encodeStreamResponse(  protocol_buffer, raw_update ? MSGID_RAW_UPDATE : MSGID_YPR_UPDATE,
+        int num_bytes = IMUProtocol::encodeStreamResponse(  protocol_buffer, update_type,
                                                               gyro_fsr, accel_fsr, dmp_update_rate, calibrated_yaw_offset, 
                                                               (uint16_t)(calibrated_quaternion_offset[0] * 16384),
                                                               (uint16_t)(calibrated_quaternion_offset[1] * 16384),
