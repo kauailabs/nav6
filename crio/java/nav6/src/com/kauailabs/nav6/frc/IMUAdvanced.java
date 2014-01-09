@@ -84,7 +84,7 @@ public class IMUAdvanced extends IMU {
             ex.printStackTrace();
         }
 
-        IMUProtocol.RawUpdate update = new IMUProtocol.RawUpdate();
+        IMUProtocol.QuaternionUpdate update = new IMUProtocol.QuaternionUpdate();
         IMUProtocol.StreamResponse response = new IMUProtocol.StreamResponse();
 
         while (!stop) {
@@ -99,10 +99,10 @@ public class IMUAdvanced extends IMU {
                         int bytes_remaining = bytes_read - i;
                         byte[] remaining_data = new byte[bytes_remaining];
                         System.arraycopy(received_data, i, remaining_data, 0, bytes_remaining);
-                        int packet_length = IMUProtocol.decodeRawUpdate(remaining_data, bytes_remaining, update);
+                        int packet_length = IMUProtocol.decodeQuaternionUpdate(remaining_data, bytes_remaining, update);
                         if (packet_length > 0) {
                             update_count++;
-                            setRaw(update);
+                            setQuaternion(update);
                             i += packet_length;
                         } 
                         else 
@@ -132,7 +132,7 @@ public class IMUAdvanced extends IMU {
         initWorldLinearAccelHistory();
         	// set the nav6 into "Raw" update mode
 	byte stream_command_buffer[] = new byte[256];
-	int packet_length = IMUProtocol.encodeStreamCommand( stream_command_buffer, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_RAW ); 
+	int packet_length = IMUProtocol.encodeStreamCommand( stream_command_buffer, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION ); 
         try {
             serial_port.write( stream_command_buffer, packet_length );
         } catch (VisaException ex) {
@@ -161,7 +161,7 @@ public class IMUAdvanced extends IMU {
         return world_linear_accel_history_sum / WORLD_LINEAR_ACCEL_HISTORY_LENGTH;
     }
 
-    private void setRaw(IMUProtocol.RawUpdate raw_update) {
+    private void setQuaternion(IMUProtocol.QuaternionUpdate raw_update) {
         synchronized (this) { // synchronized block
             
             float[] q = new float[4];
