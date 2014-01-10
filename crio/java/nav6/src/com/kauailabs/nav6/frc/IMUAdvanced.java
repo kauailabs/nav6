@@ -23,8 +23,13 @@ public class IMUAdvanced extends IMU {
 
     static final int WORLD_LINEAR_ACCEL_HISTORY_LENGTH = 10;
 
+    public IMUAdvanced(SerialPort port, byte update_rate_hz) {
+        super(port,update_rate_hz);
+        world_linear_accel_history = new float[WORLD_LINEAR_ACCEL_HISTORY_LENGTH];
+    }
+    
     public IMUAdvanced(SerialPort port) {
-        super(port);
+        super(port, DEFAULT_UPDATE_RATE_HZ);
         world_linear_accel_history = new float[WORLD_LINEAR_ACCEL_HISTORY_LENGTH];
     }
 
@@ -130,9 +135,10 @@ public class IMUAdvanced extends IMU {
     protected void initIMU() {
         super.initIMU();
         initWorldLinearAccelHistory();
-        	// set the nav6 into "Raw" update mode
+        
+        // set the nav6 into "Raw" update mode
 	byte stream_command_buffer[] = new byte[256];
-	int packet_length = IMUProtocol.encodeStreamCommand( stream_command_buffer, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION ); 
+	int packet_length = IMUProtocol.encodeStreamCommand( stream_command_buffer, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
         try {
             serial_port.write( stream_command_buffer, packet_length );
         } catch (VisaException ex) {
@@ -318,7 +324,7 @@ public class IMUAdvanced extends IMU {
             this.yaw_offset_degrees = response.yaw_offset_degrees;
             this.accel_fsr_g = response.accel_fsr_g;
             this.gyro_fsr_dps = response.gyro_fsr_dps;
-            this.update_rate_hz = response.update_rate_hz;
+            this.update_rate_hz = (byte)response.update_rate_hz;
         }
     }
     
@@ -329,7 +335,6 @@ public class IMUAdvanced extends IMU {
     float temp_c;
     short accel_fsr_g;
     short gyro_fsr_dps;
-    short update_rate_hz;
     short flags;
     float world_linear_accel_history[];
     int   next_world_linear_accel_history_index;

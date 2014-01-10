@@ -77,8 +77,9 @@ static void imuTask(IMU *imu)
 	}
 }
 
-IMU::IMU( SerialPort *pport, bool internal )
+IMU::IMU( SerialPort *pport, bool internal, uint8_t update_rate_hz )
 {
+	this->update_rate_hz = update_rate_hz;
 	yaw = 0.0;
 	pitch = 0.0;
 	roll = 0.0;
@@ -87,8 +88,9 @@ IMU::IMU( SerialPort *pport, bool internal )
 	InitIMU();	
 }
 
-IMU::IMU( SerialPort *pport )
+IMU::IMU( SerialPort *pport, uint8_t update_rate_hz )
 {
+	this->update_rate_hz = update_rate_hz;
 	m_task = new Task("IMU", (FUNCPTR)imuTask,Task::kDefaultPriority+1);
 	yaw = 0.0;
 	pitch = 0.0;
@@ -115,6 +117,11 @@ void IMU::InitIMU()
 	// Transmit immediately
 	InitializeYawHistory();
 	yaw_offset = 0;
+	
+	// set the nav6 into "Quaternion" update mode
+	
+	int packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_YPR, update_rate_hz ); 
+	pserial_port->Write( protocol_buffer, packet_length );	
 }
 
 /**

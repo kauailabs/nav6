@@ -43,33 +43,52 @@ THE SOFTWARE.
 #define YPR_UPDATE_CHECKSUM_INDEX 30
 #define YPR_UPDATE_TERMINATOR_INDEX 32
 
-// Raw Data Update Packet - e.g., !r[q1][q2][q3][q4][accelx][accely][accelz][magx][magy][magz][checksum][cr][lf]
+// Quaternion Update Packet - e.g., !r[q1][q2][q3][q4][accelx][accely][accelz][magx][magy][magz][checksum][cr][lf]
 
-#define MSGID_RAW_UPDATE 'r'
-#define RAW_UPDATE_MESSAGE_LENGTH  				53      
-#define RAW_UPDATE_QUAT1_VALUE_INDEX  			 2
-#define RAW_UPDATE_QUAT2_VALUE_INDEX  			 6
-#define RAW_UPDATE_QUAT3_VALUE_INDEX 			10
-#define RAW_UPDATE_QUAT4_VALUE_INDEX 			14
-#define RAW_UPDATE_ACCEL_X_VALUE_INDEX  		18
-#define RAW_UPDATE_ACCEL_Y_VALUE_INDEX  		22
-#define RAW_UPDATE_ACCEL_Z_VALUE_INDEX  		26	
-#define RAW_UPDATE_MAG_X_VALUE_INDEX			30
-#define RAW_UPDATE_MAG_Y_VALUE_INDEX            34
-#define RAW_UPDATE_MAG_Z_VALUE_INDEX            38
-#define RAW_UPDATE_TEMP_VALUE_INDEX				42
-#define RAW_UPDATE_CHECKSUM_INDEX               49
-#define RAW_UPDATE_TERMINATOR_INDEX             51
+#define MSGID_QUATERNION_UPDATE 'q'
+#define QUATERNION_UPDATE_MESSAGE_LENGTH  				53      
+#define QUATERNION_UPDATE_QUAT1_VALUE_INDEX  			 2
+#define QUATERNION_UPDATE_QUAT2_VALUE_INDEX  			 6
+#define QUATERNION_UPDATE_QUAT3_VALUE_INDEX 			10
+#define QUATERNION_UPDATE_QUAT4_VALUE_INDEX 			14
+#define QUATERNION_UPDATE_ACCEL_X_VALUE_INDEX  		18
+#define QUATERNION_UPDATE_ACCEL_Y_VALUE_INDEX  		22
+#define QUATERNION_UPDATE_ACCEL_Z_VALUE_INDEX  		26	
+#define QUATERNION_UPDATE_MAG_X_VALUE_INDEX			30
+#define QUATERNION_UPDATE_MAG_Y_VALUE_INDEX            34
+#define QUATERNION_UPDATE_MAG_Z_VALUE_INDEX            38
+#define QUATERNION_UPDATE_TEMP_VALUE_INDEX				42
+#define QUATERNION_UPDATE_CHECKSUM_INDEX               49
+#define QUATERNION_UPDATE_TERMINATOR_INDEX             51
+
+// Gyro/Raw Data Update packet - e.g., !g[gx][gy][gz][accelx][accely][accelz][magx][magy][magz][temp_c][cr][lf]
+
+#define MSGID_GYRO_UPDATE 'g'
+#define GYRO_UPDATE_MESSAGE_LENGTH              46
+#define GYRO_UPDATE_GYRO_X_VALUE_INDEX			 2
+#define GYRO_UPDATE_GYRO_Y_VALUE_INDEX			 6
+#define GYRO_UPDATE_GYRO_Z_VALUE_INDEX			10
+#define GYRO_UPDATE_ACCEL_X_VALUE_INDEX			14
+#define GYRO_UPDATE_ACCEL_Y_VALUE_INDEX			18
+#define GYRO_UPDATE_ACCEL_Z_VALUE_INDEX			22
+#define GYRO_UPDATE_MAG_X_VALUE_INDEX			26
+#define GYRO_UPDATE_MAG_Y_VALUE_INDEX           30
+#define GYRO_UPDATE_MAG_Z_VALUE_INDEX           34
+#define GYRO_UPDATE_TEMP_VALUE_INDEX			38
+#define GYRO_UPDATE_CHECKSUM_INDEX              42
+#define GYRO_UPDATE_TERMINATOR_INDEX            44
 
 // EnableStream Command Packet - e.g., !S[stream type][checksum][cr][lf]
 
 #define MSGID_STREAM_CMD 'S'
-#define STREAM_CMD_MESSAGE_LENGTH 7
+#define STREAM_CMD_MESSAGE_LENGTH 9
 #define STREAM_CMD_STREAM_TYPE_YPR MSGID_YPR_UPDATE
+#define STREAM_CMD_STREAM_TYPE_QUATERNION MSGID_QUATERNION_UPDATE
 #define STREAM_CMD_STREAM_TYPE_RAW MSGID_RAW_UPDATE
 #define STREAM_CMD_STREAM_TYPE_INDEX 2
-#define STREAM_CMD_CHECKSUM_INDEX 3
-#define STREAM_CMD_TERMINATOR_INDEX 5
+#define STREAM_CMD_UPDATE_RATE_HZ_INDEX 3
+#define STREAM_CMD_CHECKSUM_INDEX 5
+#define STREAM_CMD_TERMINATOR_INDEX 7
 
 // EnableStream Response Packet - e.g., !s[stream type][gyro full scale range][accel full scale range][update rate hz][yaw_offset_degrees][q1/2/3/4 offsets][flags][checksum][cr][lf]
 #define MSG_ID_STREAM_RESPONSE 's'
@@ -120,7 +139,7 @@ static int encodeYPRUpdate( char *protocol_buffer, float yaw, float pitch, float
   return YPR_UPDATE_MESSAGE_LENGTH;
 }
 
-static int encodeRawUpdate( char *protocol_buffer, 
+static int encodeQuaternionUpdate( char *protocol_buffer, 
 							uint16_t q1, uint16_t q2, uint16_t q3, uint16_t q4, 
 							uint16_t accel_x, uint16_t accel_y, uint16_t accel_z,
 							int16_t mag_x, int16_t mag_y, int16_t mag_z,
@@ -128,28 +147,56 @@ static int encodeRawUpdate( char *protocol_buffer,
 {
   // Header
   protocol_buffer[0] = PACKET_START_CHAR;
-  protocol_buffer[1] = MSGID_RAW_UPDATE;
+  protocol_buffer[1] = MSGID_QUATERNION_UPDATE;
   
   // Data
-  encodeProtocolUint16( q1,    				&protocol_buffer[RAW_UPDATE_QUAT1_VALUE_INDEX] );
-  encodeProtocolUint16( q2,    				&protocol_buffer[RAW_UPDATE_QUAT2_VALUE_INDEX] );
-  encodeProtocolUint16( q3,    				&protocol_buffer[RAW_UPDATE_QUAT3_VALUE_INDEX] );
-  encodeProtocolUint16( q4,    				&protocol_buffer[RAW_UPDATE_QUAT4_VALUE_INDEX] );
-  encodeProtocolUint16( accel_x,			&protocol_buffer[RAW_UPDATE_ACCEL_X_VALUE_INDEX] );
-  encodeProtocolUint16( accel_y,			&protocol_buffer[RAW_UPDATE_ACCEL_Y_VALUE_INDEX] );
-  encodeProtocolUint16( accel_z,			&protocol_buffer[RAW_UPDATE_ACCEL_Z_VALUE_INDEX] );
-  encodeProtocolUint16( (uint16_t)mag_x,	&protocol_buffer[RAW_UPDATE_MAG_X_VALUE_INDEX] );
-  encodeProtocolUint16( (uint16_t)mag_y,	&protocol_buffer[RAW_UPDATE_MAG_Y_VALUE_INDEX] );
-  encodeProtocolUint16( (uint16_t)mag_z,	&protocol_buffer[RAW_UPDATE_MAG_Z_VALUE_INDEX] );
-  encodeProtocolFloat(  temp_c,				&protocol_buffer[RAW_UPDATE_TEMP_VALUE_INDEX] );
+  encodeProtocolUint16( q1,    				&protocol_buffer[QUATERNION_UPDATE_QUAT1_VALUE_INDEX] );
+  encodeProtocolUint16( q2,    				&protocol_buffer[QUATERNION_UPDATE_QUAT2_VALUE_INDEX] );
+  encodeProtocolUint16( q3,    				&protocol_buffer[QUATERNION_UPDATE_QUAT3_VALUE_INDEX] );
+  encodeProtocolUint16( q4,    				&protocol_buffer[QUATERNION_UPDATE_QUAT4_VALUE_INDEX] );
+  encodeProtocolUint16( accel_x,			&protocol_buffer[QUATERNION_UPDATE_ACCEL_X_VALUE_INDEX] );
+  encodeProtocolUint16( accel_y,			&protocol_buffer[QUATERNION_UPDATE_ACCEL_Y_VALUE_INDEX] );
+  encodeProtocolUint16( accel_z,			&protocol_buffer[QUATERNION_UPDATE_ACCEL_Z_VALUE_INDEX] );
+  encodeProtocolUint16( (uint16_t)mag_x,	&protocol_buffer[QUATERNION_UPDATE_MAG_X_VALUE_INDEX] );
+  encodeProtocolUint16( (uint16_t)mag_y,	&protocol_buffer[QUATERNION_UPDATE_MAG_Y_VALUE_INDEX] );
+  encodeProtocolUint16( (uint16_t)mag_z,	&protocol_buffer[QUATERNION_UPDATE_MAG_Z_VALUE_INDEX] );
+  encodeProtocolFloat(  temp_c,				&protocol_buffer[QUATERNION_UPDATE_TEMP_VALUE_INDEX] );
   
   // Footer
-  encodeTermination( protocol_buffer, RAW_UPDATE_MESSAGE_LENGTH, RAW_UPDATE_MESSAGE_LENGTH - 4 );
+  encodeTermination( protocol_buffer, QUATERNION_UPDATE_MESSAGE_LENGTH, QUATERNION_UPDATE_MESSAGE_LENGTH - 4 );
 
-  return RAW_UPDATE_MESSAGE_LENGTH;
+  return QUATERNION_UPDATE_MESSAGE_LENGTH;
 }
 
-static int encodeStreamCommand( char *protocol_buffer, char stream_type)
+static int encodeGyroUpdate( char *protocol_buffer, 
+							uint16_t gyro_x, uint16_t gyro_y, uint16_t gyro_z, 
+							uint16_t accel_x, uint16_t accel_y, uint16_t accel_z,
+							int16_t mag_x, int16_t mag_y, int16_t mag_z,
+							float temp_c )
+{
+  // Header
+  protocol_buffer[0] = PACKET_START_CHAR;
+  protocol_buffer[1] = MSGID_GYRO_UPDATE;
+  
+  // Data
+  encodeProtocolUint16( gyro_x, 			&protocol_buffer[GYRO_UPDATE_GYRO_X_VALUE_INDEX] );
+  encodeProtocolUint16( gyro_y, 			&protocol_buffer[GYRO_UPDATE_GYRO_Y_VALUE_INDEX] );
+  encodeProtocolUint16( gyro_z, 			&protocol_buffer[GYRO_UPDATE_GYRO_Z_VALUE_INDEX] );
+  encodeProtocolUint16( accel_x,			&protocol_buffer[GYRO_UPDATE_ACCEL_X_VALUE_INDEX] );
+  encodeProtocolUint16( accel_y,			&protocol_buffer[GYRO_UPDATE_ACCEL_Y_VALUE_INDEX] );
+  encodeProtocolUint16( accel_z,			&protocol_buffer[GYRO_UPDATE_ACCEL_Z_VALUE_INDEX] );
+  encodeProtocolUint16( (uint16_t)mag_x,	&protocol_buffer[GYRO_UPDATE_MAG_X_VALUE_INDEX] );
+  encodeProtocolUint16( (uint16_t)mag_y,	&protocol_buffer[GYRO_UPDATE_MAG_Y_VALUE_INDEX] );
+  encodeProtocolUint16( (uint16_t)mag_z,	&protocol_buffer[GYRO_UPDATE_MAG_Z_VALUE_INDEX] );
+  encodeProtocolFloat(  temp_c,				&protocol_buffer[GYRO_UPDATE_TEMP_VALUE_INDEX] );
+  
+  // Footer
+  encodeTermination( protocol_buffer, GYRO_UPDATE_MESSAGE_LENGTH, GYRO_UPDATE_MESSAGE_LENGTH - 4 );
+
+  return GYRO_UPDATE_MESSAGE_LENGTH;
+}
+
+static int encodeStreamCommand( char *protocol_buffer, char stream_type, unsigned char update_rate_hz)
 {
   // Header
   protocol_buffer[0] = PACKET_START_CHAR;
@@ -157,6 +204,8 @@ static int encodeStreamCommand( char *protocol_buffer, char stream_type)
   
   // Data
   protocol_buffer[STREAM_CMD_STREAM_TYPE_INDEX] = stream_type;
+  // convert update_rate_hz to two ascii bytes
+  sprintf(&protocol_buffer[STREAM_CMD_UPDATE_RATE_HZ_INDEX], "%02X", update_rate_hz);
   
   // Footer
   encodeTermination( protocol_buffer, STREAM_CMD_MESSAGE_LENGTH, STREAM_CMD_MESSAGE_LENGTH - 4 );
@@ -219,7 +268,7 @@ static int decodeStreamResponse( char *buffer, int length,
 }
 
 
-static int decodeStreamCommand( char *buffer, int length, char& stream_type )
+static int decodeStreamCommand( char *buffer, int length, char& stream_type, unsigned char& update_rate_hz )
 {
   if ( length < STREAM_CMD_MESSAGE_LENGTH ) return 0;
   if ( ( buffer[0] == '!' ) && ( buffer[1] == MSGID_STREAM_CMD ) )
@@ -227,6 +276,8 @@ static int decodeStreamCommand( char *buffer, int length, char& stream_type )
     if ( !verifyChecksum( buffer, STREAM_CMD_CHECKSUM_INDEX ) ) return 0;
 
     stream_type = buffer[STREAM_CMD_STREAM_TYPE_INDEX];
+	update_rate_hz = decodeUint8( &buffer[STREAM_CMD_UPDATE_RATE_HZ_INDEX] );
+
     return STREAM_CMD_MESSAGE_LENGTH;
   }
   return 0;
@@ -248,29 +299,55 @@ static int decodeYPRUpdate( char *buffer, int length, float& yaw, float& pitch, 
   return 0;
 }
 
-static int decodeRawUpdate( char *buffer, int length, 
-							uint16_t& q1, uint16_t& q2, uint16_t& q3, uint16_t& q4,
+static int decodeQuaternionUpdate( char *buffer, int length, 
+									uint16_t& q1, uint16_t& q2, uint16_t& q3, uint16_t& q4,
+									uint16_t& accel_x, uint16_t& accel_y, uint16_t& accel_z,
+									int16_t& mag_x, int16_t& mag_y, int16_t& mag_z,
+									float& temp_c )
+{
+  if ( length < QUATERNION_UPDATE_MESSAGE_LENGTH ) return 0;
+  if ( ( buffer[0] == PACKET_START_CHAR ) && ( buffer[1] == MSGID_QUATERNION_UPDATE ) )
+  {
+    if ( !verifyChecksum( buffer, QUATERNION_UPDATE_CHECKSUM_INDEX ) ) return 0;
+
+    q1   	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT1_VALUE_INDEX] );
+    q2   	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT2_VALUE_INDEX] );
+    q3   	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT3_VALUE_INDEX] );
+    q4   	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT4_VALUE_INDEX] );
+    accel_x	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_ACCEL_X_VALUE_INDEX] );
+    accel_y	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_ACCEL_Y_VALUE_INDEX] );
+    accel_z	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_ACCEL_Z_VALUE_INDEX] );
+    mag_x	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_MAG_X_VALUE_INDEX] );
+    mag_y	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_MAG_Y_VALUE_INDEX] );
+    mag_z	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_MAG_Z_VALUE_INDEX] );
+	temp_c  = decodeProtocolFloat(  &buffer[QUATERNION_UPDATE_TEMP_VALUE_INDEX] );
+	return QUATERNION_UPDATE_MESSAGE_LENGTH;
+  }
+  return 0;
+}
+
+static int decodeGyroUpdate( char *buffer, int length, 
+							uint16_t& gyro_x, uint16_t& gyro_y, uint16_t& gyro_z, 
 							uint16_t& accel_x, uint16_t& accel_y, uint16_t& accel_z,
 							int16_t& mag_x, int16_t& mag_y, int16_t& mag_z,
 							float& temp_c )
 {
-  if ( length < RAW_UPDATE_MESSAGE_LENGTH ) return 0;
-  if ( ( buffer[0] == PACKET_START_CHAR ) && ( buffer[1] == MSGID_RAW_UPDATE ) )
+  if ( length < GYRO_UPDATE_MESSAGE_LENGTH ) return 0;
+  if ( ( buffer[0] == PACKET_START_CHAR ) && ( buffer[1] == MSGID_GYRO_UPDATE ) )
   {
-    if ( !verifyChecksum( buffer, RAW_UPDATE_CHECKSUM_INDEX ) ) return 0;
+    if ( !verifyChecksum( buffer, GYRO_UPDATE_CHECKSUM_INDEX ) ) return 0;
 
-    q1   	= decodeProtocolUint16( &buffer[RAW_UPDATE_QUAT1_VALUE_INDEX] );
-    q2   	= decodeProtocolUint16( &buffer[RAW_UPDATE_QUAT2_VALUE_INDEX] );
-    q3   	= decodeProtocolUint16( &buffer[RAW_UPDATE_QUAT3_VALUE_INDEX] );
-    q4   	= decodeProtocolUint16( &buffer[RAW_UPDATE_QUAT4_VALUE_INDEX] );
-    accel_x	= decodeProtocolUint16( &buffer[RAW_UPDATE_ACCEL_X_VALUE_INDEX] );
-    accel_y	= decodeProtocolUint16( &buffer[RAW_UPDATE_ACCEL_Y_VALUE_INDEX] );
-    accel_z	= decodeProtocolUint16( &buffer[RAW_UPDATE_ACCEL_Z_VALUE_INDEX] );
-    mag_x	= (int16_t)decodeProtocolUint16( &buffer[RAW_UPDATE_MAG_X_VALUE_INDEX] );
-    mag_y	= (int16_t)decodeProtocolUint16( &buffer[RAW_UPDATE_MAG_Y_VALUE_INDEX] );
-    mag_z	= (int16_t)decodeProtocolUint16( &buffer[RAW_UPDATE_MAG_Z_VALUE_INDEX] );
-	temp_c  = decodeProtocolFloat(  &buffer[RAW_UPDATE_TEMP_VALUE_INDEX] );
-	return RAW_UPDATE_MESSAGE_LENGTH;
+    gyro_x	= decodeProtocolUint16( &buffer[GYRO_UPDATE_GYRO_X_VALUE_INDEX] );
+    gyro_y  = decodeProtocolUint16( &buffer[GYRO_UPDATE_GYRO_Y_VALUE_INDEX] );
+    gyro_z	= decodeProtocolUint16( &buffer[GYRO_UPDATE_GYRO_Z_VALUE_INDEX] );
+    accel_x	= decodeProtocolUint16( &buffer[GYRO_UPDATE_ACCEL_X_VALUE_INDEX] );
+    accel_y	= decodeProtocolUint16( &buffer[GYRO_UPDATE_ACCEL_Y_VALUE_INDEX] );
+    accel_z	= decodeProtocolUint16( &buffer[GYRO_UPDATE_ACCEL_Z_VALUE_INDEX] );
+    mag_x	= (int16_t)decodeProtocolUint16( &buffer[GYRO_UPDATE_MAG_X_VALUE_INDEX] );
+    mag_y	= (int16_t)decodeProtocolUint16( &buffer[GYRO_UPDATE_MAG_Y_VALUE_INDEX] );
+    mag_z	= (int16_t)decodeProtocolUint16( &buffer[GYRO_UPDATE_MAG_Z_VALUE_INDEX] );
+	temp_c  = decodeProtocolFloat(  &buffer[GYRO_UPDATE_TEMP_VALUE_INDEX] );
+	return GYRO_UPDATE_MESSAGE_LENGTH;
   }
   return 0;
 }
@@ -340,12 +417,12 @@ static bool verifyChecksum( char *buffer, int content_length )
     }
 
     // Decode Checksum
-    unsigned char decoded_checksum = decodeChecksum( &buffer[content_length] );
+    unsigned char decoded_checksum = decodeUint8( &buffer[content_length] );
     
     return ( checksum == decoded_checksum );
 }
 
-static unsigned char decodeChecksum( char *checksum )
+static unsigned char decodeUint8( char *checksum )
 {
 	unsigned char first_digit = checksum[0] <= '9' ? checksum[0] - '0' : ((checksum[0] - 'A') + 10);
 	unsigned char second_digit = checksum[1] <= '9' ? checksum[1] - '0' : ((checksum[1] - 'A') + 10);
