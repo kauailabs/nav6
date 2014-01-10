@@ -101,8 +101,8 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 	}
 }
 
-IMUAdvanced::IMUAdvanced( SerialPort *pport ) :
-	IMU(pport,true)
+IMUAdvanced::IMUAdvanced( SerialPort *pport, uint8_t update_rate_hz ) :
+	IMU(pport,true, update_rate_hz)
 {
 	m_task = new Task("IMUAdvanced", (FUNCPTR)imuAdvancedTask,Task::kDefaultPriority+1); 
 	m_task->Start((UINT32)this);
@@ -148,9 +148,9 @@ void IMUAdvanced::InitIMU()
 	IMU::InitIMU();
 	InitWorldLinearAccelHistory();
 	
-	// set the nav6 into "Raw" update mode
+	// set the nav6 into "Quaternion" update mode
 	
-	int packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION ); 
+	int packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
 	pserial_port->Write( protocol_buffer, packet_length );
 }
 

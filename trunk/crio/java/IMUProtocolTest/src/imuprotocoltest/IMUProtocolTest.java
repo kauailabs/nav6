@@ -26,8 +26,9 @@ public class IMUProtocolTest {
 
         // Create a Stream Command
         byte[] protocol_buffer = new byte[IMUProtocol.IMU_PROTOCOL_MAX_MESSAGE_LENGTH];
-        int length = IMUProtocol.encodeStreamCommand(protocol_buffer, (byte) IMUProtocol.STREAM_CMD_STREAM_TYPE_GYRO);
+        int length = IMUProtocol.encodeStreamCommand(protocol_buffer, (byte) IMUProtocol.STREAM_CMD_STREAM_TYPE_GYRO,(byte)100);
         if (length != 0) {
+            System.out.println(protocol_buffer);
             IMUProtocol.StreamCommand c = new IMUProtocol.StreamCommand();
             int decode_length = IMUProtocol.decodeStreamCommand(protocol_buffer, length, c);
             if (decode_length != 0) {

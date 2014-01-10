@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.Timer;
 public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Runnable {
 
     static final int YAW_HISTORY_LENGTH = 10;
+    static final byte DEFAULT_UPDATE_RATE_HZ = 100;
 
     SerialPort serial_port;
     float yaw;
@@ -38,6 +39,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
     double yaw_offset;
     ITable m_table;
     Thread m_thread;
+    protected byte update_rate_hz;
 
     int update_count = 0;
     int byte_count = 0;
@@ -45,7 +47,8 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
     boolean stop = false;
     char protocol_buffer[];
 
-    public IMU(SerialPort serial_port) {
+    public IMU(SerialPort serial_port, byte update_rate_hz) {
+        this.update_rate_hz = update_rate_hz;
         this.serial_port = serial_port;
         yaw_history = new float[YAW_HISTORY_LENGTH];
         protocol_buffer = new char[256];
@@ -59,7 +62,11 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
         }
         initIMU();
         m_thread = new Thread(this);
-        m_thread.start();
+        m_thread.start();        
+    }
+    
+    public IMU(SerialPort serial_port) {
+        this(serial_port,DEFAULT_UPDATE_RATE_HZ);
     }
 
     protected void initIMU() {
@@ -75,6 +82,13 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
         initializeYawHistory();
         yaw_offset = 0;
 
+        // set the nav6 into "Raw" update mode
+	byte stream_command_buffer[] = new byte[256];
+	int packet_length = IMUProtocol.encodeStreamCommand( stream_command_buffer, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
+        try {
+            serial_port.write( stream_command_buffer, packet_length );
+        } catch (VisaException ex) {
+        }
     }
 
     private void initializeYawHistory() {

@@ -36,7 +36,7 @@ class IMUAdvanced : public IMU
 {
 public:
 
-	IMUAdvanced( SerialPort *pport );
+	IMUAdvanced( SerialPort *pport, uint8_t update_rate_hz = 100 );
 	virtual ~IMUAdvanced();
 	
 	virtual float GetWorldLinearAccelX();

@@ -76,13 +76,14 @@ public class IMUProtocol {
     
     // EnableStream Command Packet - e.g., !S[stream type][checksum][cr][lf]
     public final static byte MSGID_STREAM_CMD = 'S';
-    final static int STREAM_CMD_MESSAGE_LENGTH = 7;
+    final static int STREAM_CMD_MESSAGE_LENGTH = 9;
     public final static int STREAM_CMD_STREAM_TYPE_YPR = MSGID_YPR_UPDATE;
     public final static int STREAM_CMD_STREAM_TYPE_QUATERNION = MSGID_QUATERNION_UPDATE;
     public final static int STREAM_CMD_STREAM_TYPE_GYRO = MSGID_GYRO_UPDATE;
     final static int STREAM_CMD_STREAM_TYPE_INDEX = 2;
-    final static int STREAM_CMD_CHECKSUM_INDEX = 3;
-    final static int STREAM_CMD_TERMINATOR_INDEX = 5;
+    final static int STREAM_CMD_UPDATE_RATE_HZ_INDEX = 3;
+    final static int STREAM_CMD_CHECKSUM_INDEX = 5;
+    final static int STREAM_CMD_TERMINATOR_INDEX = 7;
 
     // EnableStream Response Packet - e.g., !s[stream type][gyro full scale range][accel full scale range][update rate hz][yaw_offset_degrees][flags][checksum][cr][lf]
     public final static byte MSG_ID_STREAM_RESPONSE = 's';
@@ -166,13 +167,14 @@ public class IMUProtocol {
         public float temp_c;
     }
 
-    public static int encodeStreamCommand(byte[] protocol_buffer, byte stream_type) {
+    public static int encodeStreamCommand(byte[] protocol_buffer, byte stream_type, byte update_rate_hz) {
         // Header
         protocol_buffer[0] = PACKET_START_CHAR;
         protocol_buffer[1] = MSGID_STREAM_CMD;
 
         // Data
         protocol_buffer[STREAM_CMD_STREAM_TYPE_INDEX] = stream_type;
+        byteToHex(update_rate_hz, protocol_buffer, STREAM_CMD_UPDATE_RATE_HZ_INDEX);
 
         // Footer
         encodeTermination(protocol_buffer, STREAM_CMD_MESSAGE_LENGTH, STREAM_CMD_MESSAGE_LENGTH - 4);
@@ -337,12 +339,12 @@ public class IMUProtocol {
         }
 
         // Decode Checksum
-        byte decoded_checksum = decodeChecksum(buffer, content_length);
+        byte decoded_checksum = decodeUint8(buffer, content_length);
 
         return (checksum == decoded_checksum);
     }
 
-    public static byte decodeChecksum(byte[] checksum, int offset) {
+    public static byte decodeUint8(byte[] checksum, int offset) {
         byte first_digit = (byte) (checksum[0 + offset] <= '9' ? checksum[0 + offset] - '0' : ((checksum[0 + offset] - 'A') + 10));
         byte second_digit = (byte) (checksum[1 + offset] <= '9' ? checksum[1 + offset] - '0' : ((checksum[1 + offset] - 'A') + 10));
         byte decoded_checksum = (byte) ((first_digit * 16) + second_digit);

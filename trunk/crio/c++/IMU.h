@@ -30,12 +30,12 @@ class IMU : public SensorBase, public PIDSource, public LiveWindowSendable
 {
 protected:
 	SerialPort *pserial_port;
-	IMU(SerialPort *pport, bool internal);
+	IMU(SerialPort *pport, bool internal, uint8_t update_rate_hz);
 	void InitIMU();
 	
 public:
 
-	IMU( SerialPort *pport );
+	IMU( SerialPort *pport, uint8_t update_rate_hz = 100 );
 	virtual ~IMU();
 	virtual float GetPitch();	// Pitch, in units of degrees (-180 to 180)
 	virtual float GetRoll();	// Roll, in units of degrees (-180 to 180)
@@ -77,6 +77,7 @@ protected:
 	int 	next_yaw_history_index;
 	double 	last_update_time;
 	double 	yaw_offset;
+	uint8_t update_rate_hz;
     
 	ITable *m_table;
 };
