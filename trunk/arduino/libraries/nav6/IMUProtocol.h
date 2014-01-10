@@ -81,13 +81,14 @@ THE SOFTWARE.
 // EnableStream Command Packet - e.g., !S[stream type][checksum][cr][lf]
 
 #define MSGID_STREAM_CMD 'S'
-#define STREAM_CMD_MESSAGE_LENGTH 7
+#define STREAM_CMD_MESSAGE_LENGTH 9
 #define STREAM_CMD_STREAM_TYPE_YPR MSGID_YPR_UPDATE
 #define STREAM_CMD_STREAM_TYPE_QUATERNION MSGID_QUATERNION_UPDATE
 #define STREAM_CMD_STREAM_TYPE_RAW MSGID_RAW_UPDATE
 #define STREAM_CMD_STREAM_TYPE_INDEX 2
-#define STREAM_CMD_CHECKSUM_INDEX 3
-#define STREAM_CMD_TERMINATOR_INDEX 5
+#define STREAM_CMD_UPDATE_RATE_HZ_INDEX 3
+#define STREAM_CMD_CHECKSUM_INDEX 5
+#define STREAM_CMD_TERMINATOR_INDEX 7
 
 // EnableStream Response Packet - e.g., !s[stream type][gyro full scale range][accel full scale range][update rate hz][yaw_offset_degrees][q1/2/3/4 offsets][flags][checksum][cr][lf]
 #define MSG_ID_STREAM_RESPONSE 's'
@@ -195,7 +196,7 @@ static int encodeGyroUpdate( char *protocol_buffer,
   return GYRO_UPDATE_MESSAGE_LENGTH;
 }
 
-static int encodeStreamCommand( char *protocol_buffer, char stream_type)
+static int encodeStreamCommand( char *protocol_buffer, char stream_type, unsigned char update_rate_hz)
 {
   // Header
   protocol_buffer[0] = PACKET_START_CHAR;
@@ -203,6 +204,8 @@ static int encodeStreamCommand( char *protocol_buffer, char stream_type)
   
   // Data
   protocol_buffer[STREAM_CMD_STREAM_TYPE_INDEX] = stream_type;
+  // convert update_rate_hz to two ascii bytes
+  sprintf(&protocol_buffer[STREAM_CMD_UPDATE_RATE_HZ_INDEX], "%02X", update_rate_hz);
   
   // Footer
   encodeTermination( protocol_buffer, STREAM_CMD_MESSAGE_LENGTH, STREAM_CMD_MESSAGE_LENGTH - 4 );
@@ -265,7 +268,7 @@ static int decodeStreamResponse( char *buffer, int length,
 }
 
 
-static int decodeStreamCommand( char *buffer, int length, char& stream_type )
+static int decodeStreamCommand( char *buffer, int length, char& stream_type, unsigned char& update_rate_hz )
 {
   if ( length < STREAM_CMD_MESSAGE_LENGTH ) return 0;
   if ( ( buffer[0] == '!' ) && ( buffer[1] == MSGID_STREAM_CMD ) )
@@ -273,6 +276,8 @@ static int decodeStreamCommand( char *buffer, int length, char& stream_type )
     if ( !verifyChecksum( buffer, STREAM_CMD_CHECKSUM_INDEX ) ) return 0;
 
     stream_type = buffer[STREAM_CMD_STREAM_TYPE_INDEX];
+	update_rate_hz = decodeUint8( &buffer[STREAM_CMD_UPDATE_RATE_HZ_INDEX] );
+
     return STREAM_CMD_MESSAGE_LENGTH;
   }
   return 0;
@@ -412,12 +417,12 @@ static bool verifyChecksum( char *buffer, int content_length )
     }
 
     // Decode Checksum
-    unsigned char decoded_checksum = decodeChecksum( &buffer[content_length] );
+    unsigned char decoded_checksum = decodeUint8( &buffer[content_length] );
     
     return ( checksum == decoded_checksum );
 }
 
-static unsigned char decodeChecksum( char *checksum )
+static unsigned char decodeUint8( char *checksum )
 {
 	unsigned char first_digit = checksum[0] <= '9' ? checksum[0] - '0' : ((checksum[0] - 'A') + 10);
 	unsigned char second_digit = checksum[1] <= '9' ? checksum[1] - '0' : ((checksum[1] - 'A') + 10);

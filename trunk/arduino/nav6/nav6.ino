@@ -263,7 +263,9 @@ static struct hal_s hal = {0};
 #define ACCEL_ON        (0x01)
 #define GYRO_ON         (0x02)
 /* Starting sampling rate. */
-#define DEFAULT_MPU_HZ  (100)
+#define DEFAULT_MPU_HZ    (100)
+#define MAX_NAV6_MPU_RATE (100)
+#define MIN_NAV6_MPU_RATE (4)
 /* Data requested by client. */
 #define PRINT_ACCEL     (0x01)
 #define PRINT_GYRO      (0x02)
@@ -600,11 +602,30 @@ void loop() {
     {
       int bytes_remaining = bytes_read - i;
       char stream_type;
-      int packet_length = IMUProtocol::decodeStreamCommand( &protocol_buffer[i], bytes_remaining, stream_type ); 
+      unsigned char update_rate_hz;
+      int packet_length = IMUProtocol::decodeStreamCommand( &protocol_buffer[i], bytes_remaining, stream_type, update_rate_hz ); 
       if ( packet_length > 0 )
       {
         send_stream_response = true;
         update_type = stream_type;
+        
+        // if update rate has changed, reconfigure the MPU w/the new rate.
+        
+        if ( update_rate_hz != dmp_update_rate ) {
+          if ( update_rate_hz > MAX_NAV6_MPU_RATE ) {
+            update_rate_hz = MAX_NAV6_MPU_RATE;
+          }
+          else if ( update_rate_hz < MIN_NAV6_MPU_RATE ) {
+            update_rate_hz = MIN_NAV6_MPU_RATE;
+          }
+          disable_mpu();
+          mpu_set_sample_rate(update_rate_hz);
+          dmp_set_fifo_rate(update_rate_hz);
+          /* Read back configuration in case it was set improperly. */
+          mpu_get_sample_rate(&dmp_update_rate);          
+          enable_mpu();
+        }
+        
         i += packet_length;
       }
       else // current index is not the start of a valid packet; increment
@@ -761,6 +782,11 @@ boolean initialize_mpu() {
     dmp_enable_feature(dmp_features);
     dmp_set_fifo_rate(DEFAULT_MPU_HZ);
     return true;
+}
+
+void disable_mpu() {
+    mpu_set_dmp_state(0);
+    hal.dmp_on = 0;
 }
 
 void enable_mpu() {
