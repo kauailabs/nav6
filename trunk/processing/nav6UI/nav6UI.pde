@@ -123,7 +123,7 @@ static public void main(String args[]) {
 
 void enableRawUpdateMode() {
 
-    int length = IMUProtocol.encodeStreamCommand(protocol_buffer, (byte) IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION);
+    int length = IMUProtocol.encodeStreamCommand(protocol_buffer, (byte) IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION,(byte)100);
     if (length != 0) {
       byte[] stream_command = new byte[length];
       arrayCopy(protocol_buffer,0,stream_command,0,length);
