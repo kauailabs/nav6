@@ -54,7 +54,7 @@ By default, the nav6 IMU begins transmitting YPR Updates upon power up.  The Str
 ||
 ||Byte Offset||Element||Data Type||
 ||0||Stream Type (YPR or Raw)||8-bit ASCII Character||
-||1||Update Rate (Hz) [Valid range:  4-100]||8-bit Integer||
+||1||Update Rate (Hz) - Valid range:  4-100||8-bit Integer||
 ||
 
 ||
