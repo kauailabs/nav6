@@ -8,7 +8,7 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 
   * Yaw, Pitch and Roll Angles
   * Tilt-compensated Compass Heading
-  * 100Hz Update Rate
+  * Configurable Update Rate from 4 to 100Hz
   * Automatic Accelerometer/Gyroscope Calibration
   * Automatic Hard-Iron Magnetometer Calibration
 
@@ -38,8 +38,8 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 ||Magnetometer Sensitivity:       ||1.3 Gauss||
 ||Gyro Low-pass Filter Bandwidth: ||42Hz||
 ||Yaw angle accuracy:             ||~1 degree of drift/minute||
-||Serial Port Update Rate:        ||100 Hz||
-||DMP Update Rate:                ||100 Hz||
+||Serial Port Update Rate:        ||4-100 Hz||
+||DMP Update Rate:                ||4-100 Hz||
 ||Magnetometer Raw Update Rate:   ||15 Hz||
 ||
 
@@ -48,7 +48,7 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 ||
 ||Gyro Sensitivity Range             ||+/- 250,500,1000 or 2000 degrees/sec||
 ||Accelerometer Sensitivity Range    ||+/- 2,4,8 or 16 g||
-||Motion Processor Update Rate       ||Up to 200Hz||
+||Motion Processor Update Rate       ||Up to 1KHz||
 ||ADC Resolution                     ||16 bits||
 ||
 
