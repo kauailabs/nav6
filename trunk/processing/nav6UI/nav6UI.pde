@@ -204,7 +204,7 @@ void setup() {
     try {
       port = new Serial(this, portName, 57600);
       opened_port_name = portName;
-      port.setDTR(false);
+      port.setDTR(true);
     }
     catch(Exception ex) {
       print("Error opening serial port ");
