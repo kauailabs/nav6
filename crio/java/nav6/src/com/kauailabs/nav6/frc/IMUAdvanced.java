@@ -136,7 +136,7 @@ public class IMUAdvanced extends IMU {
         super.initIMU();
         initWorldLinearAccelHistory();
         
-        // set the nav6 into "Raw" update mode
+        // set the nav6 into "Quaternion" update mode
 	byte stream_command_buffer[] = new byte[256];
 	int packet_length = IMUProtocol.encodeStreamCommand( stream_command_buffer, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
         try {
