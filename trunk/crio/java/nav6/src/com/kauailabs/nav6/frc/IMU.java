@@ -82,9 +82,9 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
         initializeYawHistory();
         yaw_offset = 0;
 
-        // set the nav6 into "Raw" update mode
+        // set the nav6 into "YPR" update mode
 	byte stream_command_buffer[] = new byte[256];
-	int packet_length = IMUProtocol.encodeStreamCommand( stream_command_buffer, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
+	int packet_length = IMUProtocol.encodeStreamCommand( stream_command_buffer, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_YPR, update_rate_hz ); 
         try {
             serial_port.write( stream_command_buffer, packet_length );
         } catch (VisaException ex) {

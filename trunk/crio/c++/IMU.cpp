@@ -118,7 +118,7 @@ void IMU::InitIMU()
 	InitializeYawHistory();
 	yaw_offset = 0;
 	
-	// set the nav6 into "Quaternion" update mode
+	// set the nav6 into "YPR" update mode
 	
 	int packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_YPR, update_rate_hz ); 
 	pserial_port->Write( protocol_buffer, packet_length );	
