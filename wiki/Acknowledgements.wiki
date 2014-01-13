@@ -4,6 +4,8 @@ The development of nav6 could not happen without the contributions and support o
   
   * Cynthia Libert, my wife, who patiently put up with the long nights and early mornings when work on the nav6 meant less time for yard work, helping around the house and walks on the beach.  Cynthia is now running the Kauai Labs shipping department and ensuring that those who order the nav6 receive it quickly and correctly.
   
+  * Quinn Hannah-White and Braden Beck, Team 2465 Control System team members, who helped with the testing and integration of the nav6 prototype during the 2013 FRC season and during the off-season that followed.
+
   * Will Martin, FRC Team 11, an early nav6 customer who has helped develop and improve some of the Java Library code which simplifies the integration of the nav6 on a Java-based FRC robot.
   
   * Joe Ross, Mentor, FRC Team 330 (Beachbots), who volunteered to develop a !LabView VI Library, which simplifies the integration of the nav6 on a !LabView-based FRC robot.
