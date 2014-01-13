@@ -16,7 +16,7 @@
 
   * [https://code.google.com/p/nav6/wiki/FAQ Frequently Asked Questions]
 
-  * [Acknowledgements !Acknowledgements]
+  * [Acknowledgements Acknowledgements]
 
 * Application Examples
 
