@@ -12,9 +12,7 @@ package com.kauailabs.nav6.frc;
 import com.kauailabs.nav6.IMUProtocol;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.visa.VisaException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.sun.squawk.util.MathUtils;
 /**
  *
  * @author Scott
@@ -76,7 +74,7 @@ public class IMUAdvanced extends IMU {
         }
     }
     
-    @Override
+    //@Override
     public void run() {
         stop = false;
         try {
@@ -131,7 +129,7 @@ public class IMUAdvanced extends IMU {
     
     }
    
-    @Override
+    //@Override
     protected void initIMU() {
         super.initIMU();
         initWorldLinearAccelHistory();
@@ -204,14 +202,14 @@ public class IMUAdvanced extends IMU {
   
             // calculate Euler angles
            
-            euler[0] = (float) Math.atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1);
-            euler[1] = (float) -Math.asin(2*q[1]*q[3] + 2*q[0]*q[2]);
-            euler[2] = (float) Math.atan2(2*q[2]*q[3] - 2*q[0]*q[1], 2*q[0]*q[0] + 2*q[3]*q[3] - 1);
+            euler[0] = (float) MathUtils.atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1);
+            euler[1] = (float) -MathUtils.asin(2*q[1]*q[3] + 2*q[0]*q[2]);
+            euler[2] = (float) MathUtils.atan2(2*q[2]*q[3] - 2*q[0]*q[1], 2*q[0]*q[0] + 2*q[3]*q[3] - 1);
   
             // calculate yaw/pitch/roll angles
-            ypr[0] = (float) Math.atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1);
-            ypr[1] = (float) Math.atan(gravity[0] / Math.sqrt(gravity[1]*gravity[1] + gravity[2]*gravity[2]));
-            ypr[2] = (float) Math.atan(gravity[1] / Math.sqrt(gravity[0]*gravity[0] + gravity[2]*gravity[2]));
+            ypr[0] = (float) MathUtils.atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1);
+            ypr[1] = (float) MathUtils.atan(gravity[0] / Math.sqrt(gravity[1]*gravity[1] + gravity[2]*gravity[2]));
+            ypr[2] = (float) MathUtils.atan(gravity[1] / Math.sqrt(gravity[0]*gravity[0] + gravity[2]*gravity[2]));
              
             yaw_degrees = (float) (ypr[0] * (180.0/Math.PI)); 
             pitch_degrees = (float) (ypr[1] * (180.0/Math.PI)); 
@@ -294,7 +292,7 @@ public class IMUAdvanced extends IMU {
             
             float MAG_X = raw_update.mag_x * cos_pitch + raw_update.mag_z * sin_pitch;
             float MAG_Y = raw_update.mag_x * sin_roll * sin_pitch + raw_update.mag_y * cos_roll - raw_update.mag_z * sin_roll * cos_pitch;
-            float tilt_compensated_heading_radians = (float) Math.atan2(MAG_Y,MAG_X);
+            float tilt_compensated_heading_radians = (float) MathUtils.atan2(MAG_Y,MAG_X);
             float tilt_compensated_heading_degrees = (float) (tilt_compensated_heading_radians * (180.0 / Math.PI));
             
             // Adjust compass for board orientation,
