@@ -15,7 +15,7 @@ import java.nio.charset.Charset;
 public class IMUProtocolTest {
 
     private static final String ypr_update_message = "!y-000.10 006.64 001.92 352.11C8\r\n";
-    private static final String raw_update_message = "!r3FDDFEDFFCF5FD71085C02104424FFFC0095FF29 030.032E\r\n";
+    private static final String raw_update_message = "!qEBDE0624EBA238E7FE5EDD522B02FF1DFFF8FE77 031.846B\r\n";
     private static final String stream_response_message = "!sr07D000020064 001.973FDC027FFCDDFEC8000274\r\n";
 
     /**
@@ -65,7 +65,7 @@ public class IMUProtocolTest {
         IMUProtocol.QuaternionUpdate raw = new IMUProtocol.QuaternionUpdate();
         decode_length = IMUProtocol.decodeQuaternionUpdate(raw_packet, raw_packet.length, raw);
         if (decode_length != 0) {
-            System.out.print("Decoded Raw Update. ");
+            System.out.print("Decoded Quaternion Update. ");
             System.out.print(" Q1:");
             System.out.print(raw.q1);
             System.out.print(" Q2:");
@@ -88,7 +88,7 @@ public class IMUProtocolTest {
             System.out.print(raw.mag_z);
             System.out.println();
         } else {
-            System.out.println("Error decoding Raw Update Message");
+            System.out.println("Error decoding Quaternion Update Message");
         }
 
         // Decode YPR update message
