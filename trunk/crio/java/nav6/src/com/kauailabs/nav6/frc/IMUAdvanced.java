@@ -31,35 +31,35 @@ public class IMUAdvanced extends IMU {
         world_linear_accel_history = new float[WORLD_LINEAR_ACCEL_HISTORY_LENGTH];
     }
 
-    float GetWorldLinearAccelX()
+    float getWorldLinearAccelX()
     {
         synchronized (this) { // synchronized block
             return this.world_linear_accel_x;
         }
     }
 
-    float GetWorldLinearAccelY()
+    float getWorldLinearAccelY()
     {
         synchronized (this) { // synchronized block
             return this.world_linear_accel_y;
         }
     }
 
-    float GetWorldLinearAccelZ()
+    float getWorldLinearAccelZ()
     {
         synchronized (this) { // synchronized block
             return this.world_linear_accel_z;
         }
     }
 
-    boolean IsMoving()
+    boolean isMoving()
     {
         synchronized (this) { // synchronized block
             return (getAverageFromWorldLinearAccelHistory() >= 0.01);
         }
     }
 
-    boolean IsCalibrating()
+    boolean isCalibrating()
     {
         synchronized (this) { // synchronized block
             short calibration_state = (short)(this.flags & IMUProtocol.NAV6_FLAG_MASK_CALIBRATION_STATE);
@@ -67,7 +67,7 @@ public class IMUAdvanced extends IMU {
         }
     }
 
-    float GetTempC()
+    float getTempC()
     {
         synchronized (this) { // synchronized block
             return this.temp_c;
