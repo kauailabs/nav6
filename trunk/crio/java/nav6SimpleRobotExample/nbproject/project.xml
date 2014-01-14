@@ -85,7 +85,7 @@
                 <classpath mode="boot">${sunspot.home}\lib\squawk.jar</classpath>
                 <classpath mode="compile">${sunspot.home}\lib\wpilibj.jar;${sunspot.home}\lib\networktables-crio.jar;${sunspot.home}\lib\nav6.jar</classpath>
                 <built-to>build</built-to>
-                <source-level>1.4</source-level>
+                <source-level>1.3</source-level>
             </compilation-unit>
         </java-data>
     </configuration>
