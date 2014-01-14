@@ -182,8 +182,8 @@ public class IMUProtocol {
         return STREAM_CMD_MESSAGE_LENGTH;
     }
 
-    public static int decodeStreamResponse(byte[] buffer, int length,
-            StreamResponse r) {
+    public static int decodeStreamResponse(byte[] buffer, int length, StreamResponse r) {
+        
         if (length < STREAM_RESPONSE_MESSAGE_LENGTH) {
             return 0;
         }
