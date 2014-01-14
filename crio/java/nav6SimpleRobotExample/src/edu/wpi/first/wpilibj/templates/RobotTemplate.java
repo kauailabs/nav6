@@ -8,7 +8,8 @@
 package edu.wpi.first.wpilibj.templates;
 
 
-import com.kauailabs.nav6.frc.IMU;
+import com.kauailabs.nav6.frc.IMU; 
+//import com.kauailabs.nav6.frc.IMUAdvanced; Comment this in to use "Advanced" features
 import edu.wpi.first.wpilibj.SimpleRobot;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -25,11 +26,18 @@ import edu.wpi.first.wpilibj.visa.VisaException;
 public class RobotTemplate extends SimpleRobot {
     
     SerialPort serial_port;
-    IMU imu;
+    IMU imu;  // Alternatively, use IMUAdvanced for advanced features
     
     public RobotTemplate() {
         try {
             serial_port = new SerialPort(57600);
+            
+            // You can add a second parameter to modify the 
+            // update rate (in hz) from 4 to 100.  The default is 100.
+            
+            // You can also use the IMUAdvanced class for advanced
+            // features.
+            
             imu = new IMU(serial_port);
         } catch (VisaException ex) {
             ex.printStackTrace();
@@ -57,6 +65,14 @@ public class RobotTemplate extends SimpleRobot {
 	SmartDashboard.putNumber("IMU_Update_Count", imu.getUpdateCount());
 	SmartDashboard.putNumber("IMU_Byte_Count", imu.getByteCount());
         
+        // If you are using the IMUAdvanced class, you can also access the following
+        // additional functions, at the expense of some extra processing
+        // that occurs on the CRio processor
+        
+        // SmartDashboard.putNumber("IMU_Accel_X", imu.getWorldLinearAccelX() );
+        // SmartDashboard.putNumber("IMU_Accel_Y", imu.getWorldLinearAccelY() );
+        // SmartDashboard.putBoolean("IMU_IsMoving", imu.isMoving() );
+        // SmartDashboard.putNumber("IMU_Temp_C", imu.getTempC() );
     }
     
     /**
