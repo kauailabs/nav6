@@ -27,7 +27,7 @@
     <property file="${user.home}/.sunspotfrc.properties"/>
     <!-- property file="nav6Properties.properties"/ -->
     <import file="${sunspot.home}/build.xml"/>
-
+    
     <!--
 
     This file imports the master build file for compiling and deploying sunspot
