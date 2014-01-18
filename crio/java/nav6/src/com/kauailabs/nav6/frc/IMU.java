@@ -229,6 +229,8 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
         update.roll = (float) 0.0;
         update.compass_heading = (float) 0.0;
 
+        byte[] remaining_data = new byte[256];
+        
         while (!stop) {
             try {
                 byte[] received_data = serial_port.read(256);
@@ -239,7 +241,6 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
                     // Scan the buffer looking for valid packets
                     while (i < bytes_read) {
                         int bytes_remaining = bytes_read - i;
-                        byte[] remaining_data = new byte[bytes_remaining];
                         System.arraycopy(received_data, i, remaining_data, 0, bytes_remaining);
                         int packet_length = IMUProtocol.decodeYPRUpdate(remaining_data, bytes_remaining, update);
                         if (packet_length > 0) {
