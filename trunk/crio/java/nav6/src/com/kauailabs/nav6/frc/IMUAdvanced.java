@@ -23,43 +23,42 @@ public class IMUAdvanced extends IMU {
 
     public IMUAdvanced(SerialPort port, byte update_rate_hz) {
         super(port,update_rate_hz);
-        world_linear_accel_history = new float[WORLD_LINEAR_ACCEL_HISTORY_LENGTH];
+        
     }
     
     public IMUAdvanced(SerialPort port) {
-        super(port, DEFAULT_UPDATE_RATE_HZ);
-        world_linear_accel_history = new float[WORLD_LINEAR_ACCEL_HISTORY_LENGTH];
+        this(port, DEFAULT_UPDATE_RATE_HZ);
     }
 
-    float getWorldLinearAccelX()
+    public float getWorldLinearAccelX()
     {
         synchronized (this) { // synchronized block
             return this.world_linear_accel_x;
         }
     }
 
-    float getWorldLinearAccelY()
+    public float getWorldLinearAccelY()
     {
         synchronized (this) { // synchronized block
             return this.world_linear_accel_y;
         }
     }
 
-    float getWorldLinearAccelZ()
+    public float getWorldLinearAccelZ()
     {
         synchronized (this) { // synchronized block
             return this.world_linear_accel_z;
         }
     }
 
-    boolean isMoving()
+    public boolean isMoving()
     {
         synchronized (this) { // synchronized block
             return (getAverageFromWorldLinearAccelHistory() >= 0.01);
         }
     }
 
-    boolean isCalibrating()
+    public boolean isCalibrating()
     {
         synchronized (this) { // synchronized block
             short calibration_state = (short)(this.flags & IMUProtocol.NAV6_FLAG_MASK_CALIBRATION_STATE);
@@ -67,7 +66,7 @@ public class IMUAdvanced extends IMU {
         }
     }
 
-    float getTempC()
+    public float getTempC()
     {
         synchronized (this) { // synchronized block
             return this.temp_c;
@@ -90,6 +89,8 @@ public class IMUAdvanced extends IMU {
         IMUProtocol.QuaternionUpdate update = new IMUProtocol.QuaternionUpdate();
         IMUProtocol.StreamResponse response = new IMUProtocol.StreamResponse();
 
+        byte[] remaining_data = new byte[256];
+        
         while (!stop) {
             try {
                 byte[] received_data = serial_port.read(256);
@@ -100,7 +101,6 @@ public class IMUAdvanced extends IMU {
                     // Scan the buffer looking for valid packets
                     while (i < bytes_read) {
                         int bytes_remaining = bytes_read - i;
-                        byte[] remaining_data = new byte[bytes_remaining];
                         System.arraycopy(received_data, i, remaining_data, 0, bytes_remaining);
                         int packet_length = IMUProtocol.decodeQuaternionUpdate(remaining_data, bytes_remaining, update);
                         if (packet_length > 0) {
@@ -132,6 +132,7 @@ public class IMUAdvanced extends IMU {
     //@Override
     protected void initIMU() {
         super.initIMU();
+        world_linear_accel_history = new float[WORLD_LINEAR_ACCEL_HISTORY_LENGTH];
         initWorldLinearAccelHistory();
         
         // set the nav6 into "Quaternion" update mode
@@ -143,21 +144,21 @@ public class IMUAdvanced extends IMU {
         }
 
     }
-    void initWorldLinearAccelHistory(){
+    private void initWorldLinearAccelHistory(){
         for (int i = 0; i < WORLD_LINEAR_ACCEL_HISTORY_LENGTH; i++) {
             world_linear_accel_history[i] = 0;
         }
         next_world_linear_accel_history_index = 0;
         world_linear_acceleration_recent_avg = (float) 0.0;
     }
-    void updateWorldLinearAccelHistory( float x, float y, float z ){
+    private void updateWorldLinearAccelHistory( float x, float y, float z ){
         if (next_world_linear_accel_history_index >= WORLD_LINEAR_ACCEL_HISTORY_LENGTH) {
             next_world_linear_accel_history_index = 0;
         }
         world_linear_accel_history[next_world_linear_accel_history_index] = Math.abs(x) + Math.abs(y);
         next_world_linear_accel_history_index++;
     }
-    float getAverageFromWorldLinearAccelHistory(){
+    public float getAverageFromWorldLinearAccelHistory(){
         float world_linear_accel_history_sum = (float) 0.0;
         for (int i = 0; i < WORLD_LINEAR_ACCEL_HISTORY_LENGTH; i++) {
             world_linear_accel_history_sum += world_linear_accel_history[i];
@@ -201,10 +202,11 @@ public class IMUAdvanced extends IMU {
             gravity[2] = q[0]*q[0] - q[1]*q[1] - q[2]*q[2] + q[3]*q[3];
   
             // calculate Euler angles
+            // This code is here for reference, and is commented out for performance reasons
            
-            euler[0] = (float) MathUtils.atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1);
-            euler[1] = (float) -MathUtils.asin(2*q[1]*q[3] + 2*q[0]*q[2]);
-            euler[2] = (float) MathUtils.atan2(2*q[2]*q[3] - 2*q[0]*q[1], 2*q[0]*q[0] + 2*q[3]*q[3] - 1);
+            //euler[0] = (float) MathUtils.atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1);
+            //euler[1] = (float) -MathUtils.asin(2*q[1]*q[3] + 2*q[0]*q[2]);
+            //euler[2] = (float) MathUtils.atan2(2*q[2]*q[3] - 2*q[0]*q[1], 2*q[0]*q[0] + 2*q[3]*q[3] - 1);
   
             // calculate yaw/pitch/roll angles
             ypr[0] = (float) MathUtils.atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1);
