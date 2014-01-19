@@ -11,11 +11,11 @@
 package com.kauailabs.nav6.frc;
 
 import com.kauailabs.nav6.IMUProtocol;
+import com.kauailabs.nav6.frc.BufferingSerialPort;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.SensorBase;
 import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
 import edu.wpi.first.wpilibj.tables.ITable;
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.visa.VisaException;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -28,7 +28,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
     static final int YAW_HISTORY_LENGTH = 10;
     static final byte DEFAULT_UPDATE_RATE_HZ = 100;
 
-    SerialPort serial_port;
+    BufferingSerialPort serial_port;
     float yaw;
     float pitch;
     float roll;
@@ -47,7 +47,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
     boolean stop = false;
     char protocol_buffer[];
 
-    public IMU(SerialPort serial_port, byte update_rate_hz) {
+    public IMU(BufferingSerialPort serial_port, byte update_rate_hz) {
         this.update_rate_hz = update_rate_hz;
         this.serial_port = serial_port;
         yaw_history = new float[YAW_HISTORY_LENGTH];
@@ -65,7 +65,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
         m_thread.start();        
     }
     
-    public IMU(SerialPort serial_port) {
+    public IMU(BufferingSerialPort serial_port) {
         this(serial_port,DEFAULT_UPDATE_RATE_HZ);
     }
 
@@ -214,6 +214,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
 
         stop = false;
         try {
+            serial_port.setReadBufferSize(256);
             serial_port.setTimeout(1.0);
             serial_port.enableTermination('\n');
             serial_port.flush();

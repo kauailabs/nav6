@@ -21,12 +21,12 @@ public class IMUAdvanced extends IMU {
 
     static final int WORLD_LINEAR_ACCEL_HISTORY_LENGTH = 10;
 
-    public IMUAdvanced(SerialPort port, byte update_rate_hz) {
+    public IMUAdvanced(BufferingSerialPort port, byte update_rate_hz) {
         super(port,update_rate_hz);
         
     }
     
-    public IMUAdvanced(SerialPort port) {
+    public IMUAdvanced(BufferingSerialPort port) {
         this(port, DEFAULT_UPDATE_RATE_HZ);
     }
 
@@ -77,6 +77,7 @@ public class IMUAdvanced extends IMU {
     public void run() {
         stop = false;
         try {
+            serial_port.setReadBufferSize(256);
             serial_port.setTimeout(1.0);
             serial_port.enableTermination('\n');
             serial_port.flush();
