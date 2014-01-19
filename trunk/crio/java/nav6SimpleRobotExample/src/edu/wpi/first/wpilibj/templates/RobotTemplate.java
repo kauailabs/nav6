@@ -8,10 +8,10 @@
 package edu.wpi.first.wpilibj.templates;
 
 
+import com.kauailabs.nav6.frc.BufferingSerialPort;
 import com.kauailabs.nav6.frc.IMU; 
 //import com.kauailabs.nav6.frc.IMUAdvanced; Comment this in to use "Advanced" features
 import edu.wpi.first.wpilibj.SimpleRobot;
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,16 +26,17 @@ import edu.wpi.first.wpilibj.visa.VisaException;
  */
 public class RobotTemplate extends SimpleRobot {
     
-    SerialPort serial_port;
+    BufferingSerialPort serial_port;
     IMU imu;  // Alternatively, use IMUAdvanced for advanced features
     
     public RobotTemplate() {
         try {
-            serial_port = new SerialPort(57600);
+            serial_port = new BufferingSerialPort(57600);
             
             // You can add a second parameter to modify the 
             // update rate (in hz) from 4 to 100.  The default is 100.
-            // To help reduce CPU load, set it to 50.
+            // If you need to minimize CPU load, you can set it to 50
+            // or even lower, depending upon your needs.
             
             // You can also use the IMUAdvanced class for advanced
             // features.
