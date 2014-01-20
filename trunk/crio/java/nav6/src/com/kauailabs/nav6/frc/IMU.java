@@ -29,10 +29,10 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
     static final byte DEFAULT_UPDATE_RATE_HZ = 100;
 
     BufferingSerialPort serial_port;
-    float yaw;
-    float pitch;
-    float roll;
-    float compass_heading;
+    volatile float yaw;
+    volatile float pitch;
+    volatile float roll;
+    volatile float compass_heading;
     float yaw_history[];
     int next_yaw_history_index;
     double last_update_time;
@@ -41,8 +41,8 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
     Thread m_thread;
     protected byte update_rate_hz;
 
-    int update_count = 0;
-    int byte_count = 0;
+    volatile int update_count = 0;
+    volatile int byte_count = 0;
 
     boolean stop = false;
     char protocol_buffer[];
@@ -102,12 +102,12 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
     }
 
     private void setYawPitchRoll(float yaw, float pitch, float roll, float compass_heading) {
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             this.yaw = yaw;
             this.pitch = pitch;
             this.roll = roll;
             this.compass_heading = compass_heading;
-        }
+        //}
         updateYawHistory(this.yaw);
     }
 
@@ -131,22 +131,22 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
 
     // Pitch, in units of degrees (-180 to 180)
     public float getPitch() {
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             return pitch;
-        }
+        //}
     }
 
     public float getRoll() {
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             return roll;
-        }
+        //}
     }
 
     public float getYaw() {
         float calculated_yaw;
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             calculated_yaw = this.yaw;
-        }
+        //}
         calculated_yaw -= yaw_offset;
         if (calculated_yaw < -180) {
             calculated_yaw += 360;
@@ -159,9 +159,9 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
 
     public float getCompassHeading() {
 
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             return compass_heading;
-        }
+        //}
     }
 
     public void zeroYaw() {
@@ -212,14 +212,14 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
 
     public void run() {
 
+        int last_err_code = 0;
         stop = false;
         try {
-            serial_port.setReadBufferSize(256);
-            serial_port.setTimeout(1.0);
+            serial_port.setReadBufferSize(512);
+            serial_port.setTimeout(5.0);
             serial_port.enableTermination('\n');
             serial_port.flush();
             serial_port.reset();
-            //pport->SetReadBufferSize(512);
         } catch (VisaException ex) {
             ex.printStackTrace();
         }
@@ -234,6 +234,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
         
         while (!stop) {
             try {
+                int packets_received = 0;
                 byte[] received_data = serial_port.read(256);
                 int bytes_read = received_data.length;
                 if (bytes_read > 0) {
@@ -245,6 +246,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
                         System.arraycopy(received_data, i, remaining_data, 0, bytes_remaining);
                         int packet_length = IMUProtocol.decodeYPRUpdate(remaining_data, bytes_remaining, update);
                         if (packet_length > 0) {
+                            packets_received++;
                             update_count++;
                             setYawPitchRoll(update.yaw, update.pitch, update.roll, update.compass_heading);
                             i += packet_length;
@@ -253,9 +255,20 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
                             i++;
                         }
                     }
+                    if ( ( packets_received == 0 ) && ( bytes_read == 256 ) ) {
+                        // No packets received and 256 bytes received; this
+                        // condition occurs in the Java SerialPort.  In this case,
+                        // reset the serial port.
+                        serial_port.reset();
+                    }
+                    else if ( packets_received == 1 ) {
+                        // If only one packet was received, another is not expected
+                        // until 1.0/updated_rate_hz seconds later, so delay.
+                        //Timer.delay((1.0 / update_rate_hz) / 2);
+                    }
                 }
             } catch (VisaException ex) {
-                ex.printStackTrace();
+                // ex.hasCode() value of 17 == Timeout
             }
         }
     }
