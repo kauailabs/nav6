@@ -29,7 +29,7 @@ static bool stop = false;
  * SerialPort.
  **/ 
 
-static char protocol_buffer[256];
+static char protocol_buffer[1024];
 
 static void imuTask(IMU *imu) 
 {
@@ -46,6 +46,15 @@ static void imuTask(IMU *imu)
 	float roll = 0.0;
 	float compass_heading = 0.0;	
 	
+    // Give the nav6 circuit a few seconds to initialize, then send the stream configuration command.
+    Wait(2.0);
+    int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_YPR, imu->update_rate_hz ); 
+   
+    pport->Write( protocol_buffer, cmd_packet_length );
+    pport->Flush();
+    pport->Reset();
+	
+	
 	while (!stop)
 	{ 
 //		INT32 bytes_received = pport->GetBytesReceived();
@@ -54,6 +63,7 @@ static void imuTask(IMU *imu)
 			UINT32 bytes_read = pport->Read( protocol_buffer, sizeof(protocol_buffer) );
 			if ( bytes_read > 0 )
 			{
+				int packets_received = 0;
 				byte_count += bytes_read;
 				UINT32 i = 0;
 				// Scan the buffer looking for valid packets
@@ -63,6 +73,7 @@ static void imuTask(IMU *imu)
 					int packet_length = IMUProtocol::decodeYPRUpdate( &protocol_buffer[i], bytes_remaining, yaw, pitch, roll, compass_heading ); 
 					if ( packet_length > 0 )
 					{
+						packets_received++;
 						update_count++;
 						imu->SetYawPitchRoll(yaw,pitch,roll,compass_heading);
 						i += packet_length;
@@ -72,6 +83,32 @@ static void imuTask(IMU *imu)
 						i++;
 					}
 				}
+                if ( ( packets_received == 0 ) && ( bytes_read == 256 ) ) {
+                    // No packets received and 256 bytes received; this
+                    // condition occurs in the SerialPort.  In this case,
+                    // reset the serial port.
+                	pport->Reset();
+                }
+				
+			}
+			else {
+				double start_wait_timer = Timer::GetFPGATimestamp();
+				// Timeout
+				int bytes_received = pport->GetBytesReceived();
+				while ( !stop && ( bytes_received == 0 ) ) {
+					Wait(1.0/imu->update_rate_hz);
+					bytes_received = pport->GetBytesReceived();
+				}
+                if ( !stop && (bytes_received > 0 ) ) {
+                    if ( (Timer::GetFPGATimestamp() - start_wait_timer ) > 1.0 ) {
+                    	Wait(2.0);
+                        int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_YPR, imu->update_rate_hz ); 
+                       
+                        pport->Write( protocol_buffer, cmd_packet_length );
+                        pport->Flush();
+                        pport->Reset();
+                    }
+                }
 			}
 		}
 	}
