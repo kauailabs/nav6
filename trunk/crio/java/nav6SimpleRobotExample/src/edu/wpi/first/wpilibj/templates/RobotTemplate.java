@@ -10,7 +10,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import com.kauailabs.nav6.frc.BufferingSerialPort;
 import com.kauailabs.nav6.frc.IMU; 
-//import com.kauailabs.nav6.frc.IMUAdvanced; Comment this in to use "Advanced" features
+import com.kauailabs.nav6.frc.IMUAdvanced;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -28,6 +28,7 @@ public class RobotTemplate extends SimpleRobot {
     
     BufferingSerialPort serial_port;
     IMU imu;  // Alternatively, use IMUAdvanced for advanced features
+    //IMUAdvanced imu;
     
     public RobotTemplate() {
         try {
