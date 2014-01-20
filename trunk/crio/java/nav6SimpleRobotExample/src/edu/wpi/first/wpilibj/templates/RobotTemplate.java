@@ -35,18 +35,21 @@ public class RobotTemplate extends SimpleRobot {
             
             // You can add a second parameter to modify the 
             // update rate (in hz) from 4 to 100.  The default is 100.
-            // If you need to minimize CPU load, you can set it to 50
-            // or even lower, depending upon your needs.
+            // If you need to minimize CPU load, you can set it to a
+            // lower value, as shown here, depending upon your needs.
             
             // You can also use the IMUAdvanced class for advanced
             // features.
-            
-            imu = new IMU(serial_port,(byte)50);
-            //imu = new IMUAdvanced(serial_port,(byte)50);
+
+            byte update_rate_hz = 20;
+            imu = new IMU(serial_port,update_rate_hz);
+            //imu = new IMUAdvanced(serial_port,update_rate_hz);
         } catch (VisaException ex) {
             ex.printStackTrace();
         }
-        LiveWindow.addSensor("IMU", "Gyro", imu);
+        if ( imu != null ) {
+            LiveWindow.addSensor("IMU", "Gyro", imu);
+        }
     }
     
     /**
