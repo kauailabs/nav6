@@ -52,6 +52,14 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 	float yaw_offset_degrees;
 	uint16_t flags;
 	
+    // Give the nav6 circuit a few seconds to initialize, then send the stream configuration command.
+    Wait(2.0);
+    int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION, imu->update_rate_hz ); 
+   
+    pport->Write( protocol_buffer, cmd_packet_length );
+    pport->Flush();
+    pport->Reset();	
+	
 	while (!stop)
 	{ 
 //		INT32 bytes_received = pport->GetBytesReceived();
@@ -60,6 +68,7 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 			UINT32 bytes_read = pport->Read( protocol_buffer, sizeof(protocol_buffer) );
 			if ( bytes_read > 0 )
 			{
+				int packets_received = 0;
 				byte_count += bytes_read;
 				UINT32 i = 0;
 				// Scan the buffer looking for valid packets
@@ -70,6 +79,7 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 							q1,q2,q3,q4,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z,temp_c ); 
 					if ( packet_length > 0 )
 					{
+						packets_received++;
 						update_count++;
 						imu->SetRaw(q1,q2,q3,q4,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z,temp_c);
 						i += packet_length;
@@ -83,6 +93,7 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 								  flags );
 						if ( packet_length > 0 ) 
 						{
+							packets_received++;
 							imu->SetStreamResponse( stream_type, 
 									  gyro_fsr_dps, accel_fsr_g, update_rate_hz,
 									  yaw_offset_degrees, 
@@ -96,7 +107,33 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 						}
 					}
 				}
+	            if ( ( packets_received == 0 ) && ( bytes_read == 256 ) ) {
+	                // No packets received and 256 bytes received; this
+	                // condition occurs in the SerialPort.  In this case,
+	                // reset the serial port.
+	            	pport->Reset();
+	            }				
 			}
+			else {
+				double start_wait_timer = Timer::GetFPGATimestamp();
+				// Timeout
+				int bytes_received = pport->GetBytesReceived();
+				while ( !stop && ( bytes_received == 0 ) ) {
+					Wait(1.0/imu->update_rate_hz);
+					bytes_received = pport->GetBytesReceived();
+				}
+                if ( !stop && (bytes_received > 0 ) ) {
+                    if ( (Timer::GetFPGATimestamp() - start_wait_timer ) > 1.0 ) {
+                    	Wait(2.0);
+                        int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION, imu->update_rate_hz ); 
+                       
+                        pport->Write( protocol_buffer, cmd_packet_length );
+                        pport->Flush();
+                        pport->Reset();
+                    }
+                }
+			}
+            
 		}
 	}
 }
@@ -104,8 +141,15 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 IMUAdvanced::IMUAdvanced( SerialPort *pport, uint8_t update_rate_hz ) :
 	IMU(pport,true, update_rate_hz)
 {
+	yaw_offset_degrees = 0;
+	accel_fsr_g = 2;
+	gyro_fsr_dps = 2000;
 	m_task = new Task("IMUAdvanced", (FUNCPTR)imuAdvancedTask,Task::kDefaultPriority+1); 
 	m_task->Start((UINT32)this);
+}
+
+IMUAdvanced::~IMUAdvanced() {
+	
 }
 
 void IMUAdvanced::InitWorldLinearAccelHistory()
@@ -258,9 +302,9 @@ void IMUAdvanced::SetRaw( uint16_t quat1, uint16_t quat2, uint16_t quat3, uint16
         // Note that this code assumes the acceleration full scale range
         // is +/- 2 degrees
          
-        linear_acceleration_x = (((float)accel_x) / (32768.0 / accel_fsr_g)) - gravity[0];
-        linear_acceleration_y = (((float)accel_y) / (32768.0 / accel_fsr_g)) - gravity[1];
-        linear_acceleration_z = (((float)accel_z) / (32768.0 / accel_fsr_g)) - gravity[2]; 
+        linear_acceleration_x = (float)(((float)accel_x) / (32768.0 / (float)accel_fsr_g)) - gravity[0];
+        linear_acceleration_y = (float)(((float)accel_y) / (32768.0 / (float)accel_fsr_g)) - gravity[1];
+        linear_acceleration_z = (float)(((float)accel_z) / (32768.0 / (float)accel_fsr_g)) - gravity[2]; 
         
         // Calculate world-frame acceleration
         

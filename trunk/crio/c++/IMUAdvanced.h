@@ -69,7 +69,6 @@ private:
 	float   temp_c;
 	uint16_t accel_fsr_g;
 	uint16_t gyro_fsr_dps;
-	uint16_t update_rate_hz;
 	uint16_t flags;
 	float 	world_linear_accel_history[WORLD_LINEAR_ACCEL_HISTORY_LENGTH];
 	int 	next_world_linear_accel_history_index;

@@ -61,6 +61,8 @@ public:
 	double GetByteCount();
 	double GetUpdateCount();
 	void Restart();
+
+	uint8_t update_rate_hz;	
 	
 private:
 	void InitializeYawHistory();
@@ -77,7 +79,6 @@ protected:
 	int 	next_yaw_history_index;
 	double 	last_update_time;
 	double 	yaw_offset;
-	uint8_t update_rate_hz;
     
 	ITable *m_table;
 };
