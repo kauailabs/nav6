@@ -211,7 +211,6 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
     }
 
     public void run() {
-
         int last_err_code = 0;
         stop = false;
         try {
@@ -231,6 +230,16 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
         update.compass_heading = (float) 0.0;
 
         byte[] remaining_data = new byte[256];
+
+        // Give the nav6 circuit a few seconds to initialize, then send the stream configuration command.
+        Timer.delay(2.0);
+	int cmd_packet_length = IMUProtocol.encodeStreamCommand( remaining_data, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_YPR, update_rate_hz ); 
+        try {
+            serial_port.write( remaining_data, cmd_packet_length );
+            serial_port.flush();
+            serial_port.reset();
+        } catch (VisaException ex) {
+        }
         
         while (!stop) {
             try {
@@ -261,14 +270,11 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
                         // reset the serial port.
                         serial_port.reset();
                     }
-                    else if ( packets_received == 1 ) {
-                        // If only one packet was received, another is not expected
-                        // until 1.0/updated_rate_hz seconds later, so delay.
-                        //Timer.delay((1.0 / update_rate_hz) / 2);
-                    }
                 }
             } catch (VisaException ex) {
                 // ex.hasCode() value of 17 == Timeout
+                int error_code = ex.hashCode();
+                int x = error_code;
             }
         }
     }

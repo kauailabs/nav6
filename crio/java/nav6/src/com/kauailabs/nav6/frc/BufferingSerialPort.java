@@ -184,7 +184,8 @@ public class BufferingSerialPort {
         m_resourceManagerHandle = Visa.viOpenDefaultRM();
 
         m_portHandle = Visa.viOpen(m_resourceManagerHandle, "ASRL1::INSTR", 0, 0);
-
+        setFlowControl(BufferingSerialPort.FlowControl.kNone);
+        
         Visa.viSetAttribute(m_portHandle, Visa.VI_ATTR_ASRL_BAUD, baudRate);
 
         Visa.viSetAttribute(m_portHandle, Visa.VI_ATTR_ASRL_DATA_BITS, dataBits);
