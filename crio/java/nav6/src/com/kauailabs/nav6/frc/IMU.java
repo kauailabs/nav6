@@ -211,7 +211,6 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
     }
 
     public void run() {
-        int last_err_code = 0;
         stop = false;
         try {
             serial_port.setReadBufferSize(512);

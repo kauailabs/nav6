@@ -13,6 +13,7 @@ import com.kauailabs.nav6.IMUProtocol;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.visa.VisaException;
 import com.sun.squawk.util.MathUtils;
+import edu.wpi.first.wpilibj.Timer;
 /**
  *
  * @author Scott
@@ -32,68 +33,79 @@ public class IMUAdvanced extends IMU {
 
     public float getWorldLinearAccelX()
     {
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             return this.world_linear_accel_x;
-        }
+        //}
     }
 
     public float getWorldLinearAccelY()
     {
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             return this.world_linear_accel_y;
-        }
+        //}
     }
 
     public float getWorldLinearAccelZ()
     {
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             return this.world_linear_accel_z;
-        }
+        //}
     }
 
     public boolean isMoving()
     {
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             return (getAverageFromWorldLinearAccelHistory() >= 0.01);
-        }
+        //}
     }
 
     public boolean isCalibrating()
     {
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             short calibration_state = (short)(this.flags & IMUProtocol.NAV6_FLAG_MASK_CALIBRATION_STATE);
             return (calibration_state != IMUProtocol.NAV6_CALIBRATION_STATE_COMPLETE);
-        }
+        //}
     }
 
     public float getTempC()
     {
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             return this.temp_c;
-        }
+        //}
     }
     
     //@Override
     public void run() {
+
         stop = false;
         try {
-            serial_port.setReadBufferSize(256);
-            serial_port.setTimeout(1.0);
+            serial_port.setReadBufferSize(512);
+            serial_port.setTimeout(5.0);
             serial_port.enableTermination('\n');
             serial_port.flush();
             serial_port.reset();
-            //pport->SetReadBufferSize(512);
         } catch (VisaException ex) {
             ex.printStackTrace();
         }
-
+                
         IMUProtocol.QuaternionUpdate update = new IMUProtocol.QuaternionUpdate();
         IMUProtocol.StreamResponse response = new IMUProtocol.StreamResponse();
 
         byte[] remaining_data = new byte[256];
         
+        // Give the nav6 circuit a few seconds to initialize, then send the stream configuration command.
+        Timer.delay(2.0);
+	int cmd_packet_length = IMUProtocol.encodeStreamCommand( remaining_data, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
+        try {
+            serial_port.write( remaining_data, cmd_packet_length );
+            serial_port.flush();
+            serial_port.reset();
+        } catch (VisaException ex) {
+        }
+        
         while (!stop) {
             try {
+                int packets_received = 0;
                 byte[] received_data = serial_port.read(256);
                 int bytes_read = received_data.length;
                 if (bytes_read > 0) {
@@ -105,6 +117,7 @@ public class IMUAdvanced extends IMU {
                         System.arraycopy(received_data, i, remaining_data, 0, bytes_remaining);
                         int packet_length = IMUProtocol.decodeQuaternionUpdate(remaining_data, bytes_remaining, update);
                         if (packet_length > 0) {
+                            packets_received++;
                             update_count++;
                             setQuaternion(update);
                             i += packet_length;
@@ -113,6 +126,7 @@ public class IMUAdvanced extends IMU {
                         {
                             packet_length = IMUProtocol.decodeStreamResponse(remaining_data, bytes_remaining, response);
                             if (packet_length > 0) {
+                                packets_received++;
                                 setStreamResponse(response);
                                 i += packet_length;
                             }
@@ -122,9 +136,19 @@ public class IMUAdvanced extends IMU {
                             }
                         }
                     }
+                
+                    if ( ( packets_received == 0 ) && ( bytes_read == 256 ) ) {
+                        // No packets received and 256 bytes received; this
+                        // condition occurs in the Java SerialPort.  In this case,
+                        // reset the serial port.
+                        serial_port.reset();
+                    }
+                    
                 }
             } catch (VisaException ex) {
-                ex.printStackTrace();
+                // ex.hasCode() value of 17 == Timeout
+                int error_code = ex.hashCode();
+                int x = error_code;
             }
         }
     
@@ -191,8 +215,6 @@ public class IMUAdvanced extends IMU {
             q[2] = ((float)raw_update.q3) / 16384.0f;
             q[3] = ((float)raw_update.q4) / 16384.0f;
             for (int i = 0; i < 4; i++) if (q[i] >= 2) q[i] = -4 + q[i]; // ???
-            
-            this.temp_c = raw_update.temp_c;
             
             // below calculations are necessary for calculation of yaw/pitch/roll, 
             // and tilt-compensated compass heading
@@ -315,28 +337,30 @@ public class IMUAdvanced extends IMU {
             this.world_linear_accel_x = world_linear_acceleration_x;
             this.world_linear_accel_y = world_linear_acceleration_y;
             this.world_linear_accel_z = world_linear_acceleration_z;
+            this.temp_c = raw_update.temp_c;
+            
         }
     }
 
     private void setStreamResponse( IMUProtocol.StreamResponse response ) {
         
-        synchronized (this) { // synchronized block
+        //synchronized (this) { // synchronized block
             this.flags = response.flags;
             this.yaw_offset_degrees = response.yaw_offset_degrees;
             this.accel_fsr_g = response.accel_fsr_g;
             this.gyro_fsr_dps = response.gyro_fsr_dps;
             this.update_rate_hz = (byte)response.update_rate_hz;
-        }
+        //}
     }
     
-    float yaw_offset_degrees;
-    float world_linear_accel_x;
-    float world_linear_accel_y;
-    float world_linear_accel_z;
-    float temp_c;
-    short accel_fsr_g;
-    short gyro_fsr_dps;
-    short flags;
+    volatile float yaw_offset_degrees;
+    volatile float world_linear_accel_x;
+    volatile float world_linear_accel_y;
+    volatile float world_linear_accel_z;
+    volatile float temp_c;
+    volatile short accel_fsr_g;
+    volatile short gyro_fsr_dps;
+    volatile short flags;
     float world_linear_accel_history[];
     int   next_world_linear_accel_history_index;
     float world_linear_acceleration_recent_avg;
