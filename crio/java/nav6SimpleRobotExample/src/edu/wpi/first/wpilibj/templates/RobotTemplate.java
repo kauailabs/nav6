@@ -76,7 +76,7 @@ public class RobotTemplate extends SimpleRobot {
 //            SmartDashboard.putNumber("IMU_Accel_Y", imu.getWorldLinearAccelY());
 //            SmartDashboard.putBoolean("IMU_IsMoving", imu.isMoving());
 //            SmartDashboard.putNumber("IMU_Temp_C", imu.getTempC());
-            Timer.delay(0.01);
+            Timer.delay(0.2);
         }
      }
     
