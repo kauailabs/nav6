@@ -214,7 +214,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
         stop = false;
         try {
             serial_port.setReadBufferSize(512);
-            serial_port.setTimeout(5.0);
+            serial_port.setTimeout(1.0);
             serial_port.enableTermination('\n');
             serial_port.flush();
             serial_port.reset();
@@ -274,6 +274,33 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
                 // ex.hasCode() value of 17 == Timeout
                 int error_code = ex.hashCode();
                 int x = error_code;
+                try {
+                    double start_wait_timer = Timer.getFPGATimestamp();
+                    int bytes_received = serial_port.getBytesReceived();
+                    while ( !stop && ( bytes_received == 0 ) ) {
+                        Timer.delay(1.0/update_rate_hz);
+                        bytes_received = serial_port.getBytesReceived();
+                    }
+                    if ( !stop && (bytes_received > 0 ) ) {
+                        if ( (Timer.getFPGATimestamp() - start_wait_timer ) > 1.0 ) {
+                            
+                            // If > 1 second has gone by since time timeout,
+                            // Assume the board has been reset; in this case,
+                            // re-issue the stream configuration command
+                            
+                            Timer.delay(2.0);
+                            cmd_packet_length = IMUProtocol.encodeStreamCommand( remaining_data, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_YPR, update_rate_hz ); 
+                            try {
+                                serial_port.write( remaining_data, cmd_packet_length );
+                                serial_port.flush();
+                                serial_port.reset();
+                            } catch (VisaException ex2) {
+                            }                            
+                        }
+                    }
+                } catch (VisaException ex1) {
+                    ex1.printStackTrace();
+                }
             }
         }
     }
