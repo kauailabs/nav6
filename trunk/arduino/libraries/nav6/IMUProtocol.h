@@ -300,8 +300,8 @@ static int decodeYPRUpdate( char *buffer, int length, float& yaw, float& pitch, 
 }
 
 static int decodeQuaternionUpdate( char *buffer, int length, 
-									uint16_t& q1, uint16_t& q2, uint16_t& q3, uint16_t& q4,
-									uint16_t& accel_x, uint16_t& accel_y, uint16_t& accel_z,
+									int16_t& q1, int16_t& q2, int16_t& q3, int16_t& q4,
+									int16_t& accel_x, int16_t& accel_y, int16_t& accel_z,
 									int16_t& mag_x, int16_t& mag_y, int16_t& mag_z,
 									float& temp_c )
 {
@@ -310,13 +310,13 @@ static int decodeQuaternionUpdate( char *buffer, int length,
   {
     if ( !verifyChecksum( buffer, QUATERNION_UPDATE_CHECKSUM_INDEX ) ) return 0;
 
-    q1   	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT1_VALUE_INDEX] );
-    q2   	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT2_VALUE_INDEX] );
-    q3   	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT3_VALUE_INDEX] );
-    q4   	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT4_VALUE_INDEX] );
-    accel_x	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_ACCEL_X_VALUE_INDEX] );
-    accel_y	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_ACCEL_Y_VALUE_INDEX] );
-    accel_z	= decodeProtocolUint16( &buffer[QUATERNION_UPDATE_ACCEL_Z_VALUE_INDEX] );
+    q1   	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT1_VALUE_INDEX] );
+    q2   	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT2_VALUE_INDEX] );
+    q3   	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT3_VALUE_INDEX] );
+    q4   	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_QUAT4_VALUE_INDEX] );
+    accel_x	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_ACCEL_X_VALUE_INDEX] );
+    accel_y	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_ACCEL_Y_VALUE_INDEX] );
+    accel_z	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_ACCEL_Z_VALUE_INDEX] );
     mag_x	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_MAG_X_VALUE_INDEX] );
     mag_y	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_MAG_Y_VALUE_INDEX] );
     mag_z	= (int16_t)decodeProtocolUint16( &buffer[QUATERNION_UPDATE_MAG_Z_VALUE_INDEX] );
