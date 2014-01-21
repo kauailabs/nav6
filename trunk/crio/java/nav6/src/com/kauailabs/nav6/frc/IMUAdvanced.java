@@ -365,6 +365,7 @@ public class IMUAdvanced extends IMU {
             this.world_linear_accel_y = world_linear_acceleration_y;
             this.world_linear_accel_z = world_linear_acceleration_z;
             this.temp_c = raw_update.temp_c;
+            updateYawHistory(this.yaw);
             
         }
     }
