@@ -9,3 +9,9 @@ Pin 2 on the CRio Serial Port Connector must be connected to Pin 2 on the nav6 S
 Some Serial Cables, known as "null-modem" cables, will connect Pin 2 on one side to Pin 3 on the other, and will connect Pin 3 on one side to Pin 2 on the other.
 
 Attempting to use a null-modem cable, or any other cable that does not connect Pins 2 and 3 "straight through" will likely result in frustration, and is not recommended.
+
+3) _Select an update rate that ensures sufficient CPU bandwidth._
+
+On certain platforms, such as a CRio running Java, running the nav6 at a high update rate (e.g., 100Hz) may result in excessive CPU utilization; if this is the case, reduce the update rate to an appropriate setting for your environment.
+
+The FRC Driver Station's "Chart" Tab can be used to monitor the CPU consumption, providing feedback that will help if tuning is required.
