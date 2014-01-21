@@ -58,8 +58,8 @@ public:
 	SerialPort *GetSerialPort() { return pserial_port; }
 	void SetYawPitchRoll(float yaw, float pitch, float roll, float compass_heading);
 	double GetYawOffset() { return yaw_offset; }
-	double GetByteCount();
-	double GetUpdateCount();
+	virtual double GetByteCount();
+	virtual double GetUpdateCount();
 	void Restart();
 
 	uint8_t update_rate_hz;	

@@ -42,8 +42,8 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 	pport->Flush();
 	pport->Reset();
 
-	uint16_t q1, q2, q3, q4;
-	uint16_t accel_x, accel_y, accel_z;
+	int16_t q1, q2, q3, q4;
+	int16_t accel_x, accel_y, accel_z;
 	int16_t mag_x, mag_y, mag_z;
 	float temp_c;
 	char stream_type;
@@ -74,6 +74,7 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 				// Scan the buffer looking for valid packets
 				while ( i < bytes_read )
 				{
+					byte_count += bytes_read;
 					int bytes_remaining = bytes_read - i;
 					int packet_length = IMUProtocol::decodeQuaternionUpdate( &protocol_buffer[i], bytes_remaining, 
 							q1,q2,q3,q4,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z,temp_c ); 
@@ -175,7 +176,7 @@ void IMUAdvanced::UpdateWorldLinearAccelHistory( float x, float y, float z )
 float IMUAdvanced::GetAverageFromWorldLinearAccelHistory()
 {
 	float world_linear_accel_history_avg = 0.0;
-	for ( int i = 0; i > WORLD_LINEAR_ACCEL_HISTORY_LENGTH; i++ )
+	for ( int i = 0; i < WORLD_LINEAR_ACCEL_HISTORY_LENGTH; i++ )
 	{
 		world_linear_accel_history_avg += world_linear_accel_history[i];
 	}
@@ -235,9 +236,9 @@ float IMUAdvanced::GetTempC()
 	return this->temp_c;
 }
 
-void IMUAdvanced::SetRaw( uint16_t quat1, uint16_t quat2, uint16_t quat3, uint16_t quat4,
-					uint16_t accel_x, uint16_t accel_y, uint16_t accel_z,
-					uint16_t mag_x, uint16_t mag_y, uint16_t mag_z,
+void IMUAdvanced::SetRaw( int16_t quat1, int16_t quat2, int16_t quat3, int16_t quat4,
+					int16_t accel_x, int16_t accel_y, int16_t accel_z,
+					int16_t mag_x, int16_t mag_y, int16_t mag_z,
 					float temp_c)
 {
 	{
@@ -245,7 +246,7 @@ void IMUAdvanced::SetRaw( uint16_t quat1, uint16_t quat2, uint16_t quat3, uint16
 
 		float q[4];				// Quaternion from IMU
 		float gravity[3];		// Gravity Vector
-		float euler[3];			// Classic euler angle representation of quaternion
+		//float euler[3];			// Classic euler angle representation of quaternion
 		float ypr[3];			// Angles in "Tait-Bryan" (yaw/pitch/roll) format
 		float yaw_degrees;
 		float pitch_degrees;
@@ -277,9 +278,10 @@ void IMUAdvanced::SetRaw( uint16_t quat1, uint16_t quat2, uint16_t quat3, uint16
         gravity[2] = q[0]*q[0] - q[1]*q[1] - q[2]*q[2] + q[3]*q[3];
         
         // calculate Euler angles
-        euler[0] = atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1);
-        euler[1] = -asin(2*q[1]*q[3] + 2*q[0]*q[2]);
-        euler[2] = atan2(2*q[2]*q[3] - 2*q[0]*q[1], 2*q[0]*q[0] + 2*q[3]*q[3] - 1);
+        // This code is here for reference, and is commented out for performance reasons
+        //euler[0] = atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1);
+        //euler[1] = -asin(2*q[1]*q[3] + 2*q[0]*q[2]);
+        //euler[2] = atan2(2*q[2]*q[3] - 2*q[0]*q[1], 2*q[0]*q[0] + 2*q[3]*q[3] - 1);
 
         // calculate yaw/pitch/roll angles
         ypr[0] = atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1);
@@ -409,4 +411,13 @@ void IMUAdvanced::SetStreamResponse( char stream_type,
 		this->gyro_fsr_dps = gyro_fsr_dps;
 		this->update_rate_hz = update_rate_hz;
 	}		
+}
+
+double IMUAdvanced::GetByteCount()
+{
+	return byte_count;
+}
+double IMUAdvanced::GetUpdateCount()
+{
+	return update_count;
 }
