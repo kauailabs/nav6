@@ -1,1 +1,11 @@
-Troubleshooting tips go here
+1) _Ensure the CRio CONSOLE OUT Dipswitch is off_
+
+If the CRio CONSOLE OUT Dipswitch is ON, the Serial Port will be used exclusively by the CRio to output debug/status messages to a serial terminal.  In this case, the Serial Port cannot be used to communicate to the nav6 Open Source IMU.
+
+2) _Verify your Serial Cable is straight-through (not a null modem cable)_
+
+Pin 2 on the CRio Serial Port Connector must be connected to Pin 2 on the nav6 Serial Port Connector.  CRio Serial Port Connector Pin 3 must be connected to nav6 Serial Port Connector Pin 3.
+
+Some Serial Cables, known as "null-modem" cables, will connect Pin 2 on one side to Pin 3 on the other, and will connect Pin 3 on one side to Pin 2 on the other.
+
+Attempting to use a null-modem cable, or any other cable that does not connect Pins 2 and 3 "straight through" will likely result in frustration, and is not recommended.
