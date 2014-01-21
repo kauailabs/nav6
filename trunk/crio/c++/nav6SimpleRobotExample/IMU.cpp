@@ -314,6 +314,7 @@ void IMU::UpdateYawHistory(float curr_yaw )
 
 double IMU::GetAverageFromYawHistory()
 {
+	Synchronized sync(cIMUStateSemaphore);
 	double yaw_history_sum = 0.0;
 	for ( int i = 0; i < YAW_HISTORY_LENGTH; i++ )
 	{

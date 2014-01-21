@@ -45,10 +45,12 @@ public:
 	virtual bool  IsMoving();
 	virtual bool  IsCalibrating();
 	virtual float GetTempC();
+	virtual double GetByteCount();
+	virtual double GetUpdateCount();
 		
-	void SetRaw( uint16_t q1, uint16_t q2, uint16_t q3, uint16_t q4,
-					uint16_t accel_x, uint16_t accel_y, uint16_t accel_z,
-					uint16_t mag_x, uint16_t mag_y, uint16_t mag_z,
+	void SetRaw( int16_t q1, int16_t q2, int16_t q3, int16_t q4,
+					int16_t accel_x, int16_t accel_y, int16_t accel_z,
+					int16_t mag_x, int16_t mag_y, int16_t mag_z,
 					float temp_c);
 	void SetStreamResponse( char stream_type, 
 							uint16_t gyro_fsr_dps, uint16_t accel_fsr_g, uint16_t update_rate_hz,
