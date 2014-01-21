@@ -48,6 +48,8 @@
 
   * [https://code.google.com/p/nav6/wiki/Customization Customizing the firmware]
 
+  * [Troubleshooting Troubleshooting]
+
   * [https://code.google.com/p/nav6/wiki/FactoryTestProcedure Factory Test Procedure]
 
   * [https://code.google.com/p/nav6/wiki/Support Support]
