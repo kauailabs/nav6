@@ -390,6 +390,7 @@ void IMUAdvanced::SetRaw( uint16_t quat1, uint16_t quat2, uint16_t quat3, uint16
 		this->world_linear_accel_z = world_linear_acceleration_z;
 		this->temp_c = temp_c;
 		
+		UpdateYawHistory(this->yaw);
 		UpdateWorldLinearAccelHistory( world_linear_acceleration_x, world_linear_acceleration_y, world_linear_acceleration_z);
 	}	
 }

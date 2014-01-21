@@ -66,11 +66,13 @@ public:
 	
 private:
 	void InitializeYawHistory();
-	void UpdateYawHistory(float curr_yaw );
 	double GetAverageFromYawHistory();
 
 protected:
-    Task *	m_task;
+
+	void UpdateYawHistory(float curr_yaw );
+	
+	Task *	m_task;
 	float 	yaw;
 	float 	pitch; 
 	float 	roll;
