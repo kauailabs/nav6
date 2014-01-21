@@ -111,7 +111,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
         updateYawHistory(this.yaw);
     }
 
-    private void updateYawHistory(float curr_yaw) {
+    protected void updateYawHistory(float curr_yaw) {
         if (next_yaw_history_index >= YAW_HISTORY_LENGTH) {
             next_yaw_history_index = 0;
         }
