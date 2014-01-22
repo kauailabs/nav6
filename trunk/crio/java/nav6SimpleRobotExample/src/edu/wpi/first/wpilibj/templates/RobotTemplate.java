@@ -27,8 +27,9 @@ import edu.wpi.first.wpilibj.visa.VisaException;
 public class RobotTemplate extends SimpleRobot {
     
     BufferingSerialPort serial_port;
-    IMU imu;  // Alternatively, use IMUAdvanced for advanced features
-    //IMUAdvanced imu;
+    //IMU imu;  // Alternatively, use IMUAdvanced for advanced features
+    IMUAdvanced imu;
+    boolean first_iteration;
     
     public RobotTemplate() {
         try {
@@ -43,14 +44,15 @@ public class RobotTemplate extends SimpleRobot {
             // features.
 
             byte update_rate_hz = 20;
-            imu = new IMU(serial_port,update_rate_hz);
-            //imu = new IMUAdvanced(serial_port,update_rate_hz);
+            //imu = new IMU(serial_port,update_rate_hz);
+            imu = new IMUAdvanced(serial_port,update_rate_hz);
         } catch (VisaException ex) {
             ex.printStackTrace();
         }
         if ( imu != null ) {
             LiveWindow.addSensor("IMU", "Gyro", imu);
         }
+        first_iteration = true;
     }
     
     /**
@@ -66,6 +68,12 @@ public class RobotTemplate extends SimpleRobot {
     public void operatorControl() {
 
         while (isOperatorControl() && isEnabled()) {
+            boolean is_calibrating = imu.isCalibrating();
+            if ( first_iteration && !is_calibrating ) {
+                Timer.delay( 0.3 );
+                imu.zeroYaw();
+                first_iteration = false;
+            }
             SmartDashboard.putBoolean("IMU_Connected", imu.isConnected());
             SmartDashboard.putNumber("IMU_Yaw", imu.getYaw());
             SmartDashboard.putNumber("IMU_Pitch", imu.getPitch());
@@ -76,10 +84,11 @@ public class RobotTemplate extends SimpleRobot {
             // If you are using the IMUAdvanced class, you can also access the following
             // additional functions, at the expense of some extra processing
             // that occurs on the CRio processor
-//            SmartDashboard.putNumber("IMU_Accel_X", imu.getWorldLinearAccelX());
-//            SmartDashboard.putNumber("IMU_Accel_Y", imu.getWorldLinearAccelY());
-//            SmartDashboard.putBoolean("IMU_IsMoving", imu.isMoving());
-//            SmartDashboard.putNumber("IMU_Temp_C", imu.getTempC());
+            SmartDashboard.putNumber("IMU_Accel_X", imu.getWorldLinearAccelX());
+            SmartDashboard.putNumber("IMU_Accel_Y", imu.getWorldLinearAccelY());
+            SmartDashboard.putBoolean("IMU_IsMoving", imu.isMoving());
+            SmartDashboard.putNumber("IMU_Temp_C", imu.getTempC());
+            SmartDashboard.putBoolean("IMU_IsCalibrating", imu.isCalibrating());
             Timer.delay(0.2);
         }
      }
