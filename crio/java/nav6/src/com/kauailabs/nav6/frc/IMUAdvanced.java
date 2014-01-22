@@ -94,12 +94,12 @@ public class IMUAdvanced extends IMU {
         byte[] remaining_data = new byte[256];
         
         // Give the nav6 circuit a few seconds to initialize, then send the stream configuration command.
-        Timer.delay(2.0);
+        Timer.delay(2.0);   
 	int cmd_packet_length = IMUProtocol.encodeStreamCommand( remaining_data, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
         try {
+            serial_port.reset();
             serial_port.write( remaining_data, cmd_packet_length );
             serial_port.flush();
-            serial_port.reset();
         } catch (VisaException ex) {
         }
         
