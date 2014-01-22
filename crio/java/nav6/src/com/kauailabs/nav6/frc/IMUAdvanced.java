@@ -78,6 +78,8 @@ public class IMUAdvanced extends IMU {
     public void run() {
 
         stop = false;
+        boolean stream_response_received = false;
+        double last_stream_command_sent_timestamp = 0.0;
         try {
             serial_port.setReadBufferSize(512);
             serial_port.setTimeout(1.0);
@@ -93,13 +95,12 @@ public class IMUAdvanced extends IMU {
 
         byte[] remaining_data = new byte[256];
         
-        // Give the nav6 circuit a few seconds to initialize, then send the stream configuration command.
-        Timer.delay(2.0);   
 	int cmd_packet_length = IMUProtocol.encodeStreamCommand( remaining_data, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
         try {
             serial_port.reset();
             serial_port.write( remaining_data, cmd_packet_length );
             serial_port.flush();
+            last_stream_command_sent_timestamp = Timer.getFPGATimestamp();
         } catch (VisaException ex) {
         }
         
@@ -128,6 +129,7 @@ public class IMUAdvanced extends IMU {
                             if (packet_length > 0) {
                                 packets_received++;
                                 setStreamResponse(response);
+                                stream_response_received = true;
                                 i += packet_length;
                             }
                             else {
@@ -142,6 +144,16 @@ public class IMUAdvanced extends IMU {
                         // condition occurs in the Java SerialPort.  In this case,
                         // reset the serial port.
                         serial_port.reset();
+                    }
+                    
+                    if ( !stream_response_received && ((Timer.getFPGATimestamp() - last_stream_command_sent_timestamp ) > 3.0 ) ) {
+                        cmd_packet_length = IMUProtocol.encodeStreamCommand( remaining_data, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
+                        try {
+                            serial_port.write( remaining_data, cmd_packet_length );
+                            serial_port.flush();
+                            last_stream_command_sent_timestamp = Timer.getFPGATimestamp();
+                        } catch (VisaException ex2) {
+                        }                                                    
                     }
                     
                 }
@@ -166,9 +178,10 @@ public class IMUAdvanced extends IMU {
                             Timer.delay(2.0);
                             cmd_packet_length = IMUProtocol.encodeStreamCommand( remaining_data, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
                             try {
+                                serial_port.reset();                                
                                 serial_port.write( remaining_data, cmd_packet_length );
                                 serial_port.flush();
-                                serial_port.reset();
+                                last_stream_command_sent_timestamp = Timer.getFPGATimestamp();
                             } catch (VisaException ex2) {
                             }                            
                         }
