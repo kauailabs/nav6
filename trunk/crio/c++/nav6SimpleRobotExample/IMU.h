@@ -57,10 +57,16 @@ public:
 
 	SerialPort *GetSerialPort() { return pserial_port; }
 	void SetYawPitchRoll(float yaw, float pitch, float roll, float compass_heading);
+	void SetStreamResponse( char stream_type, 
+							uint16_t gyro_fsr_dps, uint16_t accel_fsr_g, uint16_t update_rate_hz,
+							float yaw_offset_degrees, 
+							uint16_t q1_offset, uint16_t q2_offset, uint16_t q3_offset, uint16_t q4_offset,
+							uint16_t flags );
 	double GetYawOffset() { return yaw_offset; }
 	virtual double GetByteCount();
 	virtual double GetUpdateCount();
 	void Restart();
+	virtual bool  IsCalibrating();
 
 	uint8_t update_rate_hz;	
 	
@@ -81,6 +87,10 @@ protected:
 	int 	next_yaw_history_index;
 	double 	last_update_time;
 	double 	yaw_offset;
+	float   yaw_offset_degrees;
+	uint16_t accel_fsr_g;
+	uint16_t gyro_fsr_dps;
+	uint16_t flags;
     
 	ITable *m_table;
 };
