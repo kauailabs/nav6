@@ -43,7 +43,6 @@ public:
 	virtual float GetWorldLinearAccelY();
 	virtual float GetWorldLinearAccelZ();
 	virtual bool  IsMoving();
-	virtual bool  IsCalibrating();
 	virtual float GetTempC();
 	virtual double GetByteCount();
 	virtual double GetUpdateCount();
@@ -52,11 +51,6 @@ public:
 					int16_t accel_x, int16_t accel_y, int16_t accel_z,
 					int16_t mag_x, int16_t mag_y, int16_t mag_z,
 					float temp_c);
-	void SetStreamResponse( char stream_type, 
-							uint16_t gyro_fsr_dps, uint16_t accel_fsr_g, uint16_t update_rate_hz,
-							float yaw_offset_degrees, 
-							uint16_t q1_offset, uint16_t q2_offset, uint16_t q3_offset, uint16_t q4_offset,
-							uint16_t flags );
 	
 private:
 	void InitIMU();
@@ -64,14 +58,10 @@ private:
 	void UpdateWorldLinearAccelHistory( float x, float y, float z );
 	float GetAverageFromWorldLinearAccelHistory();
 
-	float   yaw_offset_degrees;
 	float   world_linear_accel_x;
 	float   world_linear_accel_y;
 	float   world_linear_accel_z;
 	float   temp_c;
-	uint16_t accel_fsr_g;
-	uint16_t gyro_fsr_dps;
-	uint16_t flags;
 	float 	world_linear_accel_history[WORLD_LINEAR_ACCEL_HISTORY_LENGTH];
 	int 	next_world_linear_accel_history_index;
 	float	world_linear_acceleration_recent_avg;

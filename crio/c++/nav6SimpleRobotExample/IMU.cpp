@@ -33,6 +33,8 @@ static char protocol_buffer[1024];
 
 static void imuTask(IMU *imu) 
 {
+    bool stream_response_received = false;
+    double last_stream_command_sent_timestamp = 0.0;
 	stop = false;
 	SerialPort *pport = imu->GetSerialPort();
 	pport->SetReadBufferSize(512);
@@ -45,16 +47,18 @@ static void imuTask(IMU *imu)
 	float pitch = 0.0;
 	float roll = 0.0;
 	float compass_heading = 0.0;	
+	char stream_type;
+	uint16_t gyro_fsr_dps, accel_fsr_g, update_rate_hz;
+	uint16_t q1_offset, q2_offset, q3_offset, q4_offset;
+	float yaw_offset_degrees;
+	uint16_t flags;
 	
     // Give the nav6 circuit a few seconds to initialize, then send the stream configuration command.
-    Wait(2.0);
     int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_YPR, imu->update_rate_hz ); 
-   
+    last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();      
     pport->Write( protocol_buffer, cmd_packet_length );
     pport->Flush();
-    pport->Reset();
-	
-	
+		
 	while (!stop)
 	{ 
 //		INT32 bytes_received = pport->GetBytesReceived();
@@ -78,9 +82,28 @@ static void imuTask(IMU *imu)
 						imu->SetYawPitchRoll(yaw,pitch,roll,compass_heading);
 						i += packet_length;
 					}
-					else // current index is not the start of a valid packet; increment
+					else 
 					{
-						i++;
+						packet_length = IMUProtocol::decodeStreamResponse( &protocol_buffer[i], bytes_remaining, stream_type,
+								  gyro_fsr_dps, accel_fsr_g, update_rate_hz,
+								  yaw_offset_degrees, 
+								  q1_offset, q2_offset, q3_offset, q4_offset,
+								  flags );
+						if ( packet_length > 0 ) 
+						{
+							packets_received++;
+							imu->SetStreamResponse( stream_type, 
+									  gyro_fsr_dps, accel_fsr_g, update_rate_hz,
+									  yaw_offset_degrees, 
+									  q1_offset, q2_offset, q3_offset, q4_offset,
+									  flags );
+                            stream_response_received = true;
+							i += packet_length;
+						}
+						else // current index is not the start of a valid packet we're interested in; increment
+						{
+							i++;
+						}
 					}
 				}
                 if ( ( packets_received == 0 ) && ( bytes_read == 256 ) ) {
@@ -89,7 +112,14 @@ static void imuTask(IMU *imu)
                     // reset the serial port.
                 	pport->Reset();
                 }
-				
+                
+                if ( !stream_response_received && ((Timer::GetFPGATimestamp() - last_stream_command_sent_timestamp ) > 3.0 ) ) {
+                    cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_YPR, imu->update_rate_hz ); 
+					last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();
+					pport->Write( protocol_buffer, cmd_packet_length );
+					pport->Flush();
+                }
+	            				
 			}
 			else {
 				double start_wait_timer = Timer::GetFPGATimestamp();
@@ -102,8 +132,10 @@ static void imuTask(IMU *imu)
                 if ( !stop && (bytes_received > 0 ) ) {
                     if ( (Timer::GetFPGATimestamp() - start_wait_timer ) > 1.0 ) {
                     	Wait(2.0);
+                        pport->Reset();
+                    	stream_response_received = false;
                         int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_YPR, imu->update_rate_hz ); 
-                       
+                        last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();
                         pport->Write( protocol_buffer, cmd_packet_length );
                         pport->Flush();
                         pport->Reset();
@@ -127,6 +159,10 @@ IMU::IMU( SerialPort *pport, bool internal, uint8_t update_rate_hz )
 
 IMU::IMU( SerialPort *pport, uint8_t update_rate_hz )
 {
+	yaw_offset_degrees = 0;
+	accel_fsr_g = 2;
+	gyro_fsr_dps = 2000;
+	flags = 0;
 	this->update_rate_hz = update_rate_hz;
 	m_task = new Task("IMU", (FUNCPTR)imuTask,Task::kDefaultPriority+1);
 	yaw = 0.0;
@@ -199,6 +235,12 @@ double IMU::GetUpdateCount()
 	return update_count;
 }
 
+bool IMU::IsCalibrating()
+{
+	Synchronized sync(cIMUStateSemaphore);
+	uint16_t calibration_state = this->flags & NAV6_FLAG_MASK_CALIBRATION_STATE;
+	return (calibration_state != NAV6_CALIBRATION_STATE_COMPLETE);
+}
 
 void IMU::ZeroYaw()
 {
@@ -323,3 +365,21 @@ double IMU::GetAverageFromYawHistory()
 	double yaw_history_avg = yaw_history_sum / YAW_HISTORY_LENGTH;
 	return yaw_history_avg;
 }
+
+void IMU::SetStreamResponse( char stream_type, 
+								uint16_t gyro_fsr_dps, uint16_t accel_fsr_g, uint16_t update_rate_hz,
+								float yaw_offset_degrees, 
+								uint16_t q1_offset, uint16_t q2_offset, uint16_t q3_offset, uint16_t q4_offset,
+								uint16_t flags )
+{
+	{
+		Synchronized sync(cIMUStateSemaphore);
+		this->yaw_offset_degrees = yaw_offset_degrees;
+		this->flags = flags;
+		this->accel_fsr_g = accel_fsr_g;
+		this->gyro_fsr_dps = gyro_fsr_dps;
+		this->update_rate_hz = update_rate_hz;
+	}		
+}
+
+

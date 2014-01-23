@@ -151,9 +151,6 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 IMUAdvanced::IMUAdvanced( SerialPort *pport, uint8_t update_rate_hz ) :
 	IMU(pport,true, update_rate_hz)
 {
-	yaw_offset_degrees = 0;
-	accel_fsr_g = 2;
-	gyro_fsr_dps = 2000;
 	m_task = new Task("IMUAdvanced", (FUNCPTR)imuAdvancedTask,Task::kDefaultPriority+1); 
 	m_task->Start((UINT32)this);
 }
@@ -230,13 +227,6 @@ bool  IMUAdvanced::IsMoving()
 {
 	Synchronized sync(cIMUStateSemaphore);
 	return (GetAverageFromWorldLinearAccelHistory() >= 0.01);
-}
-
-bool IMUAdvanced::IsCalibrating()
-{
-	Synchronized sync(cIMUStateSemaphore);
-	uint16_t calibration_state = this->flags & NAV6_FLAG_MASK_CALIBRATION_STATE;
-	return (calibration_state != NAV6_CALIBRATION_STATE_COMPLETE);
 }
 
 float IMUAdvanced::GetTempC()
@@ -404,22 +394,6 @@ void IMUAdvanced::SetRaw( int16_t quat1, int16_t quat2, int16_t quat3, int16_t q
 		UpdateYawHistory(this->yaw);
 		UpdateWorldLinearAccelHistory( world_linear_acceleration_x, world_linear_acceleration_y, world_linear_acceleration_z);
 	}	
-}
-
-void IMUAdvanced::SetStreamResponse( char stream_type, 
-								uint16_t gyro_fsr_dps, uint16_t accel_fsr_g, uint16_t update_rate_hz,
-								float yaw_offset_degrees, 
-								uint16_t q1_offset, uint16_t q2_offset, uint16_t q3_offset, uint16_t q4_offset,
-								uint16_t flags )
-{
-	{
-		Synchronized sync(cIMUStateSemaphore);
-		this->yaw_offset_degrees = yaw_offset_degrees;
-		this->flags = flags;
-		this->accel_fsr_g = accel_fsr_g;
-		this->gyro_fsr_dps = gyro_fsr_dps;
-		this->update_rate_hz = update_rate_hz;
-	}		
 }
 
 double IMUAdvanced::GetByteCount()
