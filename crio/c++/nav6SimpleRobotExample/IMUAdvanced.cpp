@@ -35,6 +35,8 @@ static char protocol_buffer[256];
 static void imuAdvancedTask(IMUAdvanced *imu) 
 {
 	stop = false;
+    bool stream_response_received = false;
+    double last_stream_command_sent_timestamp = 0.0;
 	SerialPort *pport = imu->GetSerialPort();
 	pport->SetReadBufferSize(512);
 	pport->SetTimeout(1.0);
@@ -52,13 +54,10 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 	float yaw_offset_degrees;
 	uint16_t flags;
 	
-    // Give the nav6 circuit a few seconds to initialize, then send the stream configuration command.
-    Wait(2.0);
     int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION, imu->update_rate_hz ); 
-   
+    last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();   
     pport->Write( protocol_buffer, cmd_packet_length );
     pport->Flush();
-    pport->Reset();	
 	
 	while (!stop)
 	{ 
@@ -100,6 +99,7 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 									  yaw_offset_degrees, 
 									  q1_offset, q2_offset, q3_offset, q4_offset,
 									  flags );
+                            stream_response_received = true;
 							i += packet_length;
 						}
 						else // current index is not the start of a valid packet we're interested in; increment
@@ -114,6 +114,14 @@ static void imuAdvancedTask(IMUAdvanced *imu)
 	                // reset the serial port.
 	            	pport->Reset();
 	            }				
+	            
+                if ( !stream_response_received && ((Timer::GetFPGATimestamp() - last_stream_command_sent_timestamp ) > 3.0 ) ) {
+                    cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION, imu->update_rate_hz ); 
+					last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();
+					pport->Write( protocol_buffer, cmd_packet_length );
+					pport->Flush();
+                }
+	            
 			}
 			else {
 				double start_wait_timer = Timer::GetFPGATimestamp();
@@ -126,8 +134,9 @@ static void imuAdvancedTask(IMUAdvanced *imu)
                 if ( !stop && (bytes_received > 0 ) ) {
                     if ( (Timer::GetFPGATimestamp() - start_wait_timer ) > 1.0 ) {
                     	Wait(2.0);
+                    	stream_response_received = false;
                         int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION, imu->update_rate_hz ); 
-                       
+                        last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();
                         pport->Write( protocol_buffer, cmd_packet_length );
                         pport->Flush();
                         pport->Reset();

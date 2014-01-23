@@ -12,8 +12,10 @@ class RobotDemo : public SimpleRobot
 {
 	NetworkTable *table;
 	IMUAdvanced *imu;
+	//IMU *imu;
 	SerialPort *serial_port;
-
+	bool first_iteration;
+	
 public:
 	RobotDemo()
 	{
@@ -25,9 +27,11 @@ public:
 		serial_port = new SerialPort(57600);
         uint8_t update_rate_hz = 50;
         imu = new IMUAdvanced(serial_port,update_rate_hz);
+        //imu = new IMU(serial_port,update_rate_hz);
         if ( imu ) {
         	LiveWindow::GetInstance()->AddSensor("IMU", "Gyro", imu);
         }
+        first_iteration = true;
 	}
 	
 	/**
@@ -46,6 +50,14 @@ public:
 	{
 		while (IsOperatorControl())
 		{
+			if ( first_iteration ) {
+	            bool is_calibrating = imu->IsCalibrating();
+	            if ( !is_calibrating ) {
+	                Wait( 0.3 );
+	                imu->ZeroYaw();
+	                first_iteration = false;
+	            }
+			}
 			SmartDashboard::PutBoolean( "IMU_Connected", imu->IsConnected());
 			SmartDashboard::PutNumber("IMU_Yaw", imu->GetYaw());
 			SmartDashboard::PutNumber("IMU_Pitch", imu->GetPitch());
@@ -58,6 +70,7 @@ public:
 			SmartDashboard::PutNumber("IMU_Accel_Y", imu->GetWorldLinearAccelY());
 			SmartDashboard::PutBoolean("IMU_IsMoving", imu->IsMoving());
 			SmartDashboard::PutNumber("IMU_Temp_C", imu->GetTempC());
+            SmartDashboard::PutBoolean("IMU_IsCalibrating", imu->IsCalibrating());
 
 			Wait(0.2);				// wait for a while
 		}
