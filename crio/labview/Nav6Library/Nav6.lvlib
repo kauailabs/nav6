@@ -1,5 +1,7 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <Library LVVersion="13008000">
+	<Property Name="NI.Lib.Description" Type="Str">LabVIEW library for the nav6 Open-source Inertial Measurement Unit (IMU) designed for FIRST robotics by KauaiLabs. https://code.google.com/p/nav6/</Property>
+	<Property Name="NI.Lib.HelpPath" Type="Str"></Property>
 	<Property Name="NI.Lib.Icon" Type="Bin">%Q#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!*;!!!*Q(C=\&gt;8.&lt;3*"%)&lt;B$\3(P:,"1A;\F1!L=&lt;)F\YE5+A5Y_DCWH%#F1!K=O*&gt;E/1"3))8R/_U3[T`"R&gt;&lt;OQ4-UBK^\KB^[7G/J(&gt;_F&lt;_L0(?O42_N`?HO6^[@[DU&amp;V^?`UL^`UN[,NV&lt;_M8U0_$HV&gt;P`,BKP@\V`URL%H?^N?M^:/?T8^S@=Y=_DK_DH^\8*`&gt;J*__:U=;(E3UJ!8.;;:BKD\*ETT*ETT*ETT)ATT)ATT)A^T*H&gt;T*H&gt;T*H&gt;T)D&gt;T)D&gt;T)D&lt;S&gt;Z#)8O=AB*:-H%S6&amp;EQ,*9#B+XB*0YEE]C9?P3DS**`%EHM4$%#7?R*.Y%E`CY4)FHM34?"*0YK&amp;5EW1\S@%E(MIL]!3?Q".Y!A^4+P!%A'#SI("1");#TO"$Y!E]A9?0#DS"*`!%HM"$NQ*0Y!E]A3@Q=%F&lt;F7C;Y34(1REZ(M@D?"S0Y['U()`D=4S/R`%QH2S0YX%1TI2/=1BS,H)'/&amp;]=D_0BDRS0YX%]DM@RU.8OE,?6'44$39\(]"A?QW.Y$!]F:(A-D_%R0);(MD)]BM@Q'"\$QV1S0)&lt;(]"A19V+GFV(-O.!9:!3'BV@&lt;,&gt;&lt;O5D3*N6/KT;P;F+L.JNJ%KMWBOOGKG[G[3;L&amp;6SWK;L&amp;5C[$[=3KU#K/;2(8R-&amp;!(XP?U,7V$[WALWJ+WI-VIE_(3$RZY/"SUX__VX7[VW7T5&gt;:V7KZ77S[57CY6GMZEGE]HR-@#$]`B!?(IO8@0Z&lt;D\;X=X(U^PZ?(2\&gt;&lt;G\_8URP@FT-?U?@EW\_Z_\9=QH`3`^$Z[.'ONZ8&gt;&lt;I%9=^X;!!!!!!</Property>
 	<Property Name="NI.Lib.SourceVersion" Type="Int">318799872</Property>
 	<Property Name="NI.Lib.Version" Type="Str">1.0.0.0</Property>
@@ -49,6 +51,6 @@
 	<Item Name="Refnum Set.vi" Type="VI" URL="../Refnum Set.vi"/>
 	<Item Name="Run.vi" Type="VI" URL="../Run.vi"/>
 	<Item Name="GetYawPitchRollCompass.vi" Type="VI" URL="../GetYawPitchRollCompass.vi"/>
-	<Item Name="ZeroYaw.vi" Type="VI" URL="../ZeroYaw.vi"/>
 	<Item Name="GetConnectionStatistics.vi" Type="VI" URL="../GetConnectionStatistics.vi"/>
+	<Item Name="ZeroYaw.vi" Type="VI" URL="../ZeroYaw.vi"/>
 </Library>
