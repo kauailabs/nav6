@@ -1,6 +1,6 @@
 To integrate the nav6 IMU into cRio-based robot control software, source code for a [https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fcrio%2Fc%2B%2B%2Fnav6SimpleRobotExample%253Fstate%253Dclosed C++] and a [https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fcrio%2Fjava Java] class named *IMU*, which is based upon the WPI Library, is provided.  Additionally, a [https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fcrio%2Flabview LabView] VI Library is also available.
 
-*You can either choose to checkout the source code with subversion, or you can choose to download the [https://nav6.googlecode.com/svn/trunk/nav6.zip Latest Build] of the libraries.*
+*You can either choose to [https://code.google.com/p/nav6/source/checkout checkout] the source code with subversion, or you can choose to download the [https://nav6.googlecode.com/svn/trunk/nav6.zip Latest Build] of the libraries.*
 
 _Note:  the example code on this page demonstrates using the C++ version of the IMU class, however the Java version is identical, except that the first word of each Java class method is lower case._
 
