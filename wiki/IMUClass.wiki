@@ -45,6 +45,10 @@ Several methods are provided to help verify proper communication with the nav6 I
 
   IMU::!GetByteCount() - can be used to determine if any bytes are being received over the SerialPort from the nav6.  The value returned from IMU::!GetByteCount() indicates the number of bytes received over the serial port since the IMU object was instantiated.
 
+= Calibration State = 
+
+  IMU::IsCalibration() - if this function returns true, the nav6 IMU is performing a gyroscope/accelerometer/magnetometer calibration procedure.  This procedure take 20 seconds, and begins when power is applied to the nav6 IMU.  During this time, the nav6 IMU should be still.  At the end of the calibration period, the nav6 computes a yaw offset which is used until the nav6 is powered on again.
+
 = Accessing Yaw, Pitch, Roll and Compass Heading values =
 
 Four methods are provided to access the most recent Yaw, Pitch, Roll and Compass Heading values from the nav6 IMU:
