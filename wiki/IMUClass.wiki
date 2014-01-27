@@ -23,7 +23,7 @@ To instantiate an IMU object, the IMU constructor must be invoked and provided a
 
     // Instantiate IMU object
 
-    short update_rate_hz = 50;
+    short update_rate_hz = 50; // valid values:  4-100
     IMU *imu = new IMU(imu_serial_port, update_rate_hz);
 
     // Add the IMU to the Live Window
