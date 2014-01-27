@@ -32,6 +32,16 @@
 
   * [MotionDetection Motion/No-Motion Detection]
 
+* Customization and Troubleshooting
+
+  * [https://code.google.com/p/nav6/wiki/Customization Customizing the firmware]
+
+  * [Troubleshooting Troubleshooting]
+
+  * [https://code.google.com/p/nav6/wiki/FactoryTestProcedure Factory Test Procedure]
+
+  * [https://code.google.com/p/nav6/wiki/Support Support]
+
 * Advanced Topics
 
   * [https://code.google.com/p/nav6/wiki/Specification Specifications]
@@ -47,13 +57,3 @@
   * [https://code.google.com/p/nav6/wiki/References References]
 
   * [https://code.google.com/p/nav6/wiki/Datasheets Component Datasheets]
-
-* Customization and Troubleshooting
-
-  * [https://code.google.com/p/nav6/wiki/Customization Customizing the firmware]
-
-  * [Troubleshooting Troubleshooting]
-
-  * [https://code.google.com/p/nav6/wiki/FactoryTestProcedure Factory Test Procedure]
-
-  * [https://code.google.com/p/nav6/wiki/Support Support]
