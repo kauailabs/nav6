@@ -8,8 +8,6 @@
 
   * [https://code.google.com/p/nav6/wiki/Orientation Orientation]
 
-  * [https://code.google.com/p/nav6/wiki/Specification Specifications]
-
   * [https://code.google.com/p/nav6/wiki/SensorCalibration Calibration]
 
   * [https://code.google.com/p/nav6/wiki/FAQ Frequently Asked Questions]
@@ -33,6 +31,8 @@
   * [MotionDetection Motion/No-Motion Detection]
 
 * Advanced Topics
+
+  * [https://code.google.com/p/nav6/wiki/Specification Specifications]
 
   * [nav6UI The nav6UI Demo Application]
 
