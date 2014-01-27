@@ -47,7 +47,7 @@ Several methods are provided to help verify proper communication with the nav6 I
 
 = Calibration State = 
 
-  IMU::IsCalibration() - if this function returns true, the nav6 IMU is performing a gyroscope/accelerometer/magnetometer calibration procedure.  This procedure take 20 seconds, and begins when power is applied to the nav6 IMU.  During this time, the nav6 IMU should be still.  At the end of the calibration period, the nav6 computes a yaw offset which is used until the nav6 is powered on again.
+  IMU::!IsCalibrating() - if this function returns true, the nav6 IMU is performing a gyroscope/accelerometer/magnetometer calibration procedure.  This procedure take 20 seconds, and begins when power is applied to the nav6 IMU.  During this time, the nav6 IMU should be still.  At the end of the calibration period, the nav6 computes a yaw offset which is used until the nav6 is powered on again.
 
 = Accessing Yaw, Pitch, Roll and Compass Heading values =
 
