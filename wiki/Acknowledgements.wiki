@@ -10,5 +10,5 @@ The development of nav6 could not happen without the contributions and support o
   
   * Joe Ross, Mentor, FRC Team 330 (Beachbots), who volunteered to develop a !LabView VI Library, which simplifies the integration of the nav6 on a !LabView-based FRC robot.
   
-  * The various companies, individuals and groups who sponsor the Kauaibots, including the Kauai Robotics Alliance, BAE Systems, Oceanit Labs, Lappert's Ice Cream, Kapaa Rotary Club, Young Brothers, the Kauai Economic Development Board, Lifeway Pharmacy, NASA, the Parker Group, STU LLC, Syngenta, Textron, J R Welding and Equipment Repairs, Commercial Plumbing Inc., Pioneer, Basil Scott, and many, many others.
+  * The various companies, individuals and groups who sponsor the Kauaibots, including the [http://www.kauairoboticsalliance.org/ Kauai Robotics Alliance], BAE Systems, [http://www.oceanit.com Oceanit Labs], Lappert's Ice Cream, Kapaa Rotary Club, Young Brothers, the Kauai Economic Development Board, Lifeway Pharmacy, NASA, the Parker Group, STU LLC, Syngenta, Textron, J R Welding and Equipment Repairs, Commercial Plumbing Inc., Pioneer, Basil Scott, and many, many others.
   
