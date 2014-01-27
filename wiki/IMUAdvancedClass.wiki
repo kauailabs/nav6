@@ -12,6 +12,4 @@ float IMUAdvanced::GetWorldLinearAccelZ()
 
 bool  IMUAdvanced::!IsMoving()
 
-bool IMUAdvanced::!IsCalibrating()
-
 float IMUAdvanced::GetTempC()
