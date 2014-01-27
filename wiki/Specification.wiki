@@ -39,7 +39,7 @@ _Note that accuracy values are only valid after a start-up calibration period, d
 ||Gyro Low-pass Filter Bandwidth: ||42Hz||
 ||Yaw angle accuracy:             ||~1 degree of drift/minute||
 ||Serial Port Update Rate:        ||4-100 Hz||
-||DMP Update Rate:                ||4-100 Hz||
+||Digital Motion Processor (DMP) Update Rate:                ||4-100 Hz||
 ||Magnetometer Raw Update Rate:   ||15 Hz||
 ||
 
