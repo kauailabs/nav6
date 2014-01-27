@@ -6,8 +6,6 @@
 
   * [https://code.google.com/p/nav6/wiki/Enclosure Creating an Enclosure]
 
-  * [IMUClass Software Integration]
-
   * [https://code.google.com/p/nav6/wiki/Orientation Orientation]
 
   * [https://code.google.com/p/nav6/wiki/Specification Specifications]
@@ -17,6 +15,12 @@
   * [https://code.google.com/p/nav6/wiki/FAQ Frequently Asked Questions]
 
   * [Acknowledgements Acknowledgements]
+
+* FRC Software Libraries
+
+  * [IMUClass C++/Java]
+
+  * [http://www.kauailabs.com/onlinedocs/nav6/labview/Doc/ Labview]
 
 * Application Examples
 
