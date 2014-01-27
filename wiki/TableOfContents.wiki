@@ -20,6 +20,8 @@
 
   * [http://www.kauailabs.com/onlinedocs/nav6/labview/Doc/ Labview]
 
+  * [IMUAdvancedClass The IMUAdvanced class]
+
 * Application Examples
 
   * [FieldOrientedDriveExample Field-oriented Drive]
@@ -35,8 +37,6 @@
   * [https://code.google.com/p/nav6/wiki/Specification Specifications]
 
   * [nav6UI The nav6UI Demo Application]
-
-  * [IMUAdvancedClass The IMUAdvanced class]
 
   * [https://code.google.com/p/nav6/wiki/Protocol Protocol (Basic)]
 
