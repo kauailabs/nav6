@@ -30,7 +30,7 @@ public class IMUProtocolTest {
         if (length != 0) {
             System.out.println(protocol_buffer);
             IMUProtocol.StreamCommand c = new IMUProtocol.StreamCommand();
-            int decode_length = IMUProtocol.decodeStreamCommand(protocol_buffer, length, c);
+            int decode_length = IMUProtocol.decodeStreamCommand(protocol_buffer, 0, length, c);
             if (decode_length != 0) {
                 System.out.print("Decoded Stream Command.  Stream type:  ");
                 System.out.println((char) c.stream_type);
@@ -44,7 +44,7 @@ public class IMUProtocolTest {
         // Decode YPR update message
         byte[] ypr_packet = ypr_update_message.getBytes(Charset.forName("UTF-8"));
         IMUProtocol.YPRUpdate ypr = new IMUProtocol.YPRUpdate();
-        int decode_length = IMUProtocol.decodeYPRUpdate(ypr_packet, ypr_packet.length, ypr);
+        int decode_length = IMUProtocol.decodeYPRUpdate(ypr_packet, 0, ypr_packet.length, ypr);
         if (decode_length != 0) {
             System.out.print("Decoded YPR Update. ");
             System.out.print(" Yaw:");
@@ -63,7 +63,7 @@ public class IMUProtocolTest {
         // Decode RAW update message
         byte[] raw_packet = raw_update_message.getBytes(Charset.forName("UTF-8"));
         IMUProtocol.QuaternionUpdate raw = new IMUProtocol.QuaternionUpdate();
-        decode_length = IMUProtocol.decodeQuaternionUpdate(raw_packet, raw_packet.length, raw);
+        decode_length = IMUProtocol.decodeQuaternionUpdate(raw_packet, 0, raw_packet.length, raw);
         if (decode_length != 0) {
             System.out.print("Decoded Quaternion Update. ");
             System.out.print(" Q1:");
@@ -94,7 +94,7 @@ public class IMUProtocolTest {
         // Decode YPR update message
         byte[] stream_response_packet = stream_response_message.getBytes(Charset.forName("UTF-8"));
         IMUProtocol.StreamResponse response = new IMUProtocol.StreamResponse();
-        decode_length = IMUProtocol.decodeStreamResponse(stream_response_packet, stream_response_packet.length, response);
+        decode_length = IMUProtocol.decodeStreamResponse(stream_response_packet, 0, stream_response_packet.length, response);
         if (decode_length != 0) {
             System.out.print("Decoded Stream Response. ");
             System.out.print(" Stream Type:  ");
