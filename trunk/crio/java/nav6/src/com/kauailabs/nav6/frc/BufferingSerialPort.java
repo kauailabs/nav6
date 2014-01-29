@@ -31,6 +31,14 @@ import edu.wpi.first.wpilibj.visa.VisaException;
 import java.io.UnsupportedEncodingException;
 
 /**
+ * The BufferingSerialPort class is a replacement for the WPI Library
+ * SerialPort class.  As such, it is a modified Driver for the RS-232 
+ * serial port on the cRIO.
+ *
+ * NOTE:  This is a modified version of the WPILIBJ SerialPort class,
+ * and resolves an issue wherein the read buffer length is forced to
+ * be 1 byte in length.  Creating a new class was required to provide
+ * the setRead() method.
  *
  * @author Scott
  */

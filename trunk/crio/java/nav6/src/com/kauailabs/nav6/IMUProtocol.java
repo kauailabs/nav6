@@ -182,111 +182,111 @@ public class IMUProtocol {
         return STREAM_CMD_MESSAGE_LENGTH;
     }
 
-    public static int decodeStreamResponse(byte[] buffer, int length, StreamResponse r) {
+    public static int decodeStreamResponse(byte[] buffer, int offset, int length, StreamResponse r) {
         
         if (length < STREAM_RESPONSE_MESSAGE_LENGTH) {
             return 0;
         }
-        if ((buffer[0] == PACKET_START_CHAR) && (buffer[1] == MSG_ID_STREAM_RESPONSE)) {
-            if (!verifyChecksum(buffer, STREAM_RESPONSE_CHECKSUM_INDEX)) {
+        if ((buffer[offset+0] == PACKET_START_CHAR) && (buffer[offset+1] == MSG_ID_STREAM_RESPONSE)) {
+            if (!verifyChecksum(buffer, offset+STREAM_RESPONSE_CHECKSUM_INDEX)) {
                 return 0;
             }
 
-            r.stream_type = buffer[2];
-            r.gyro_fsr_dps = decodeProtocolUint16(buffer, STREAM_RESPONSE_GYRO_FULL_SCALE_DPS_RANGE);
-            r.accel_fsr_g = decodeProtocolUint16(buffer, STREAM_RESPONSE_ACCEL_FULL_SCALE_G_RANGE);
-            r.update_rate_hz = decodeProtocolUint16(buffer, STREAM_RESPONSE_UPDATE_RATE_HZ);
-            r.yaw_offset_degrees = decodeProtocolFloat(buffer, STREAM_RESPONSE_YAW_OFFSET_DEGREES);
-            r.q1_offset = decodeProtocolUint16(buffer, STREAM_RESPONSE_QUAT1_OFFSET);
-            r.q2_offset = decodeProtocolUint16(buffer, STREAM_RESPONSE_QUAT2_OFFSET);
-            r.q3_offset = decodeProtocolUint16(buffer, STREAM_RESPONSE_QUAT3_OFFSET);
-            r.q4_offset = decodeProtocolUint16(buffer, STREAM_RESPONSE_QUAT4_OFFSET);
-            r.flags = decodeProtocolUint16(buffer, STREAM_RESPONSE_FLAGS);
+            r.stream_type = buffer[offset+2];
+            r.gyro_fsr_dps = decodeProtocolUint16(buffer, offset+STREAM_RESPONSE_GYRO_FULL_SCALE_DPS_RANGE);
+            r.accel_fsr_g = decodeProtocolUint16(buffer, offset+STREAM_RESPONSE_ACCEL_FULL_SCALE_G_RANGE);
+            r.update_rate_hz = decodeProtocolUint16(buffer, offset+STREAM_RESPONSE_UPDATE_RATE_HZ);
+            r.yaw_offset_degrees = decodeProtocolFloat(buffer, offset+STREAM_RESPONSE_YAW_OFFSET_DEGREES);
+            r.q1_offset = decodeProtocolUint16(buffer, offset+STREAM_RESPONSE_QUAT1_OFFSET);
+            r.q2_offset = decodeProtocolUint16(buffer, offset+STREAM_RESPONSE_QUAT2_OFFSET);
+            r.q3_offset = decodeProtocolUint16(buffer, offset+STREAM_RESPONSE_QUAT3_OFFSET);
+            r.q4_offset = decodeProtocolUint16(buffer, offset+STREAM_RESPONSE_QUAT4_OFFSET);
+            r.flags = decodeProtocolUint16(buffer, offset+STREAM_RESPONSE_FLAGS);
 
             return STREAM_RESPONSE_MESSAGE_LENGTH;
         }
         return 0;
     }
 
-    public static int decodeStreamCommand(byte[] buffer, int length, StreamCommand c) {
+    public static int decodeStreamCommand(byte[] buffer, int offset, int length, StreamCommand c) {
         if (length < STREAM_CMD_MESSAGE_LENGTH) {
             return 0;
         }
-        if ((buffer[0] == '!') && (buffer[1] == MSGID_STREAM_CMD)) {
-            if (!verifyChecksum(buffer, STREAM_CMD_CHECKSUM_INDEX)) {
+        if ((buffer[offset+0] == '!') && (buffer[offset+1] == MSGID_STREAM_CMD)) {
+            if (!verifyChecksum(buffer, offset+STREAM_CMD_CHECKSUM_INDEX)) {
                 return 0;
             }
 
-            c.stream_type = buffer[STREAM_CMD_STREAM_TYPE_INDEX];
+            c.stream_type = buffer[offset+STREAM_CMD_STREAM_TYPE_INDEX];
             return STREAM_CMD_MESSAGE_LENGTH;
         }
         return 0;
     }
 
-    public static int decodeYPRUpdate(byte[] buffer, int length, YPRUpdate u) {
+    public static int decodeYPRUpdate(byte[] buffer, int offset, int length, YPRUpdate u) {
         if (length < YPR_UPDATE_MESSAGE_LENGTH) {
             return 0;
         }
-        if ((buffer[0] == '!') && (buffer[1] == 'y')) {
-            if (!verifyChecksum(buffer, YPR_UPDATE_CHECKSUM_INDEX)) {
+        if ((buffer[offset+0] == '!') && (buffer[offset+1] == 'y')) {
+            if (!verifyChecksum(buffer, offset+YPR_UPDATE_CHECKSUM_INDEX)) {
                 return 0;
             }
 
-            u.yaw = decodeProtocolFloat(buffer, YPR_UPDATE_YAW_VALUE_INDEX);
-            u.pitch = decodeProtocolFloat(buffer, YPR_UPDATE_PITCH_VALUE_INDEX);
-            u.roll = decodeProtocolFloat(buffer, YPR_UPDATE_ROLL_VALUE_INDEX);
-            u.compass_heading = decodeProtocolFloat(buffer, YPR_UPDATE_COMPASS_VALUE_INDEX);
+            u.yaw = decodeProtocolFloat(buffer, offset+YPR_UPDATE_YAW_VALUE_INDEX);
+            u.pitch = decodeProtocolFloat(buffer, offset+YPR_UPDATE_PITCH_VALUE_INDEX);
+            u.roll = decodeProtocolFloat(buffer, offset+YPR_UPDATE_ROLL_VALUE_INDEX);
+            u.compass_heading = decodeProtocolFloat(buffer, offset+YPR_UPDATE_COMPASS_VALUE_INDEX);
             return YPR_UPDATE_MESSAGE_LENGTH;
         }
         return 0;
     }
 
-    public static int decodeQuaternionUpdate(byte[] buffer, int length,
+    public static int decodeQuaternionUpdate(byte[] buffer, int offset, int length,
             QuaternionUpdate u) {
         if (length < QUATERNION_UPDATE_MESSAGE_LENGTH) {
             return 0;
         }
-        if ((buffer[0] == PACKET_START_CHAR) && (buffer[1] == MSGID_QUATERNION_UPDATE)) {
-            if (!verifyChecksum(buffer, QUATERNION_UPDATE_CHECKSUM_INDEX)) {
+        if ((buffer[offset+0] == PACKET_START_CHAR) && (buffer[offset+1] == MSGID_QUATERNION_UPDATE)) {
+            if (!verifyChecksum(buffer, offset+QUATERNION_UPDATE_CHECKSUM_INDEX)) {
                 return 0;
             }
 
-            u.q1 = decodeProtocolUint16(buffer, QUATERNION_UPDATE_QUAT1_VALUE_INDEX);
-            u.q2 = decodeProtocolUint16(buffer, QUATERNION_UPDATE_QUAT2_VALUE_INDEX);
-            u.q3 = decodeProtocolUint16(buffer, QUATERNION_UPDATE_QUAT3_VALUE_INDEX);
-            u.q4 = decodeProtocolUint16(buffer, QUATERNION_UPDATE_QUAT4_VALUE_INDEX);
-            u.accel_x = decodeProtocolUint16(buffer, QUATERNION_UPDATE_ACCEL_X_VALUE_INDEX);
-            u.accel_y = decodeProtocolUint16(buffer, QUATERNION_UPDATE_ACCEL_Y_VALUE_INDEX);
-            u.accel_z = decodeProtocolUint16(buffer, QUATERNION_UPDATE_ACCEL_Z_VALUE_INDEX);
-            u.mag_x = decodeProtocolUint16(buffer, QUATERNION_UPDATE_MAG_X_VALUE_INDEX);
-            u.mag_y = decodeProtocolUint16(buffer, QUATERNION_UPDATE_MAG_Y_VALUE_INDEX);
-            u.mag_z = decodeProtocolUint16(buffer, QUATERNION_UPDATE_MAG_Z_VALUE_INDEX);
-            u.temp_c = decodeProtocolFloat(buffer, QUATERNION_UPDATE_TEMP_VALUE_INDEX);
+            u.q1 = decodeProtocolUint16(buffer, offset+QUATERNION_UPDATE_QUAT1_VALUE_INDEX);
+            u.q2 = decodeProtocolUint16(buffer, offset+QUATERNION_UPDATE_QUAT2_VALUE_INDEX);
+            u.q3 = decodeProtocolUint16(buffer, offset+QUATERNION_UPDATE_QUAT3_VALUE_INDEX);
+            u.q4 = decodeProtocolUint16(buffer, offset+QUATERNION_UPDATE_QUAT4_VALUE_INDEX);
+            u.accel_x = decodeProtocolUint16(buffer, offset+QUATERNION_UPDATE_ACCEL_X_VALUE_INDEX);
+            u.accel_y = decodeProtocolUint16(buffer, offset+QUATERNION_UPDATE_ACCEL_Y_VALUE_INDEX);
+            u.accel_z = decodeProtocolUint16(buffer, offset+QUATERNION_UPDATE_ACCEL_Z_VALUE_INDEX);
+            u.mag_x = decodeProtocolUint16(buffer, offset+QUATERNION_UPDATE_MAG_X_VALUE_INDEX);
+            u.mag_y = decodeProtocolUint16(buffer, offset+QUATERNION_UPDATE_MAG_Y_VALUE_INDEX);
+            u.mag_z = decodeProtocolUint16(buffer, offset+QUATERNION_UPDATE_MAG_Z_VALUE_INDEX);
+            u.temp_c = decodeProtocolFloat(buffer, offset+QUATERNION_UPDATE_TEMP_VALUE_INDEX);
             return QUATERNION_UPDATE_MESSAGE_LENGTH;
         }
         return 0;
     }
 
-    public static int decodeGyroUpdate(byte[] buffer, int length,
+    public static int decodeGyroUpdate(byte[] buffer, int offset, int length,
             GyroUpdate u) {
         if (length < GYRO_UPDATE_MESSAGE_LENGTH) {
             return 0;
         }
-        if ((buffer[0] == PACKET_START_CHAR) && (buffer[1] == MSGID_GYRO_UPDATE)) {
-            if (!verifyChecksum(buffer, GYRO_UPDATE_CHECKSUM_INDEX)) {
+        if ((buffer[offset+0] == PACKET_START_CHAR) && (buffer[offset+1] == MSGID_GYRO_UPDATE)) {
+            if (!verifyChecksum(buffer, offset+GYRO_UPDATE_CHECKSUM_INDEX)) {
                 return 0;
             }
 
-            u.gyro_x = decodeProtocolUint16(buffer, GYRO_UPDATE_GYRO_X_VALUE_INDEX);
-            u.gyro_y = decodeProtocolUint16(buffer, GYRO_UPDATE_GYRO_Y_VALUE_INDEX);
-            u.gyro_z = decodeProtocolUint16(buffer, GYRO_UPDATE_GYRO_Z_VALUE_INDEX);
-            u.accel_x = decodeProtocolUint16(buffer, GYRO_UPDATE_ACCEL_X_VALUE_INDEX);
-            u.accel_y = decodeProtocolUint16(buffer, GYRO_UPDATE_ACCEL_Y_VALUE_INDEX);
-            u.accel_z = decodeProtocolUint16(buffer, GYRO_UPDATE_ACCEL_Z_VALUE_INDEX);
-            u.mag_x = decodeProtocolUint16(buffer, GYRO_UPDATE_MAG_X_VALUE_INDEX);
-            u.mag_y = decodeProtocolUint16(buffer, GYRO_UPDATE_MAG_Y_VALUE_INDEX);
-            u.mag_z = decodeProtocolUint16(buffer, GYRO_UPDATE_MAG_Z_VALUE_INDEX);
-            u.temp_c = decodeProtocolFloat(buffer, GYRO_UPDATE_TEMP_VALUE_INDEX);
+            u.gyro_x = decodeProtocolUint16(buffer, offset+GYRO_UPDATE_GYRO_X_VALUE_INDEX);
+            u.gyro_y = decodeProtocolUint16(buffer, offset+GYRO_UPDATE_GYRO_Y_VALUE_INDEX);
+            u.gyro_z = decodeProtocolUint16(buffer, offset+GYRO_UPDATE_GYRO_Z_VALUE_INDEX);
+            u.accel_x = decodeProtocolUint16(buffer, offset+GYRO_UPDATE_ACCEL_X_VALUE_INDEX);
+            u.accel_y = decodeProtocolUint16(buffer, offset+GYRO_UPDATE_ACCEL_Y_VALUE_INDEX);
+            u.accel_z = decodeProtocolUint16(buffer, offset+GYRO_UPDATE_ACCEL_Z_VALUE_INDEX);
+            u.mag_x = decodeProtocolUint16(buffer, offset+GYRO_UPDATE_MAG_X_VALUE_INDEX);
+            u.mag_y = decodeProtocolUint16(buffer, offset+GYRO_UPDATE_MAG_Y_VALUE_INDEX);
+            u.mag_z = decodeProtocolUint16(buffer, offset+GYRO_UPDATE_MAG_Z_VALUE_INDEX);
+            u.temp_c = decodeProtocolFloat(buffer, offset+GYRO_UPDATE_TEMP_VALUE_INDEX);
             return GYRO_UPDATE_MESSAGE_LENGTH;
         }
         return 0;

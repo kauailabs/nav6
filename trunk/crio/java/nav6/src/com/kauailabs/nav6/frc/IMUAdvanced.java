@@ -10,212 +10,155 @@
 
 package com.kauailabs.nav6.frc;
 import com.kauailabs.nav6.IMUProtocol;
-import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.visa.VisaException;
+import com.sun.squawk.util.Arrays;
 import com.sun.squawk.util.MathUtils;
-import edu.wpi.first.wpilibj.Timer;
 /**
- *
+ * The IMUAdvanced class provides a simplified interface to advanced capabilities
+ * of the KauaiLabs nav6 IMU.
+ * 
+ * The IMUAdvanced class enables access to basic connectivity and state information, 
+ * as well as key orientation information (yaw, pitch, roll, compass heading).
+ * Additionally, the IMUAdvanced class also provides access to extended information
+ * including linear acceleration, motion detection, and sensor temperature.
  * @author Scott
- */
-public class IMUAdvanced extends IMU {
+ */public class IMUAdvanced extends IMU {
 
+    private IMUProtocol.QuaternionUpdate quaternion_update_data;    
+    volatile float world_linear_accel_x;
+    volatile float world_linear_accel_y;
+    volatile float world_linear_accel_z;
+    volatile float temp_c;
+    float world_linear_accel_history[];
+    int   next_world_linear_accel_history_index;
+    float world_linear_acceleration_recent_avg;
+    
     static final int WORLD_LINEAR_ACCEL_HISTORY_LENGTH = 10;
 
-    public IMUAdvanced(BufferingSerialPort port, byte update_rate_hz) {
-        super(port,update_rate_hz);
-        
+    /**
+     * Constructs the IMUAdvanced class, overriding the default update rate
+     * with a custom rate which may be from 4 to 100, representing
+     * the number of updates per second sent by the nav6 IMU.  
+     * 
+     * Note that increasing the update rate may increase the 
+     * CPU utilization.  Note that calculation of some 
+     * advanced values utilizes additional cpu cycles, when compared
+     * to the IMU class.
+     * @param serial_port BufferingSerialPort object to use
+     * @param update_rate_hz Custom Update Rate (Hz)
+     */
+    public IMUAdvanced(BufferingSerialPort serial_port, byte update_rate_hz) {
+        super(serial_port,update_rate_hz);
+        quaternion_update_data = new IMUProtocol.QuaternionUpdate();
+        update_type = IMUProtocol.MSGID_QUATERNION_UPDATE;
     }
     
-    public IMUAdvanced(BufferingSerialPort port) {
-        this(port, DEFAULT_UPDATE_RATE_HZ);
+    /**
+     * Constructs the IMUAdvanced class, using the default update rate.  
+     * 
+     * Note that calculation of some advanced values utilizes additional 
+     * cpu cycles, when compared to the IMU class.
+     * @param serial_port BufferingSerialPort object to use
+     */
+    public IMUAdvanced(BufferingSerialPort serial_port) {
+        this(serial_port, DEFAULT_UPDATE_RATE_HZ);
     }
 
+    //@Override
+    protected int decodePacketHandler(byte[] received_data, int offset, int bytes_remaining) {
+        
+        int packet_length = IMUProtocol.decodeQuaternionUpdate(received_data, offset, bytes_remaining, quaternion_update_data);
+        if (packet_length > 0) {
+            setQuaternion(quaternion_update_data);
+        }
+        return packet_length;
+    }
+        
+    /**
+     * Returns the current linear acceleration in the x-axis (in g).
+     * 
+     * World linear acceleration refers to raw acceleration data, which
+     * has had the gravity component removed, and which has been rotated to
+     * the same reference frame as the current yaw value.  The resulting
+     * value represents the current acceleration in the x-axis of the
+     * body (e.g., the robot) on which the nav6 IMU is mounted.
+     * 
+     * @return Current world linear acceleration in the x-axis (in g).
+     */
     public float getWorldLinearAccelX()
     {
-        //synchronized (this) { // synchronized block
-            return this.world_linear_accel_x;
-        //}
+        return this.world_linear_accel_x;
     }
 
+    /**
+     * Returns the current linear acceleration in the y-axis (in g).
+     * 
+     * World linear acceleration refers to raw acceleration data, which
+     * has had the gravity component removed, and which has been rotated to
+     * the same reference frame as the current yaw value.  The resulting
+     * value represents the current acceleration in the y-axis of the
+     * body (e.g., the robot) on which the nav6 IMU is mounted.
+     * 
+     * @return Current world linear acceleration in the y-axis (in g).
+     */
     public float getWorldLinearAccelY()
     {
-        //synchronized (this) { // synchronized block
-            return this.world_linear_accel_y;
-        //}
+        return this.world_linear_accel_y;
     }
 
+    /**
+     * Returns the current linear acceleration in the z-axis (in g).
+     * 
+     * World linear acceleration refers to raw acceleration data, which
+     * has had the gravity component removed, and which has been rotated to
+     * the same reference frame as the current yaw value.  The resulting
+     * value represents the current acceleration in the z-axis of the
+     * body (e.g., the robot) on which the nav6 IMU is mounted.
+     * 
+     * @return Current world linear acceleration in the z-axis (in g).
+     */
     public float getWorldLinearAccelZ()
     {
-        //synchronized (this) { // synchronized block
-            return this.world_linear_accel_z;
-        //}
+        return this.world_linear_accel_z;
     }
 
+    /**
+     * Indicates if the nav6 IMU is currently detection motion,
+     * based upon the x and y-axis world linear acceleration values.
+     * If the sum of the absolute values of the x and y axis exceed,
+     * 0.01g, the motion state is indicated.
+     * @return Returns true if the nav6 IMU is currently detecting motion.
+     */
     public boolean isMoving()
     {
-        //synchronized (this) { // synchronized block
-            return (getAverageFromWorldLinearAccelHistory() >= 0.01);
-        //}
+        return (getAverageFromWorldLinearAccelHistory() >= 0.01);
     }
 
-    public boolean isCalibrating()
-    {
-        //synchronized (this) { // synchronized block
-            short calibration_state = (short)(this.flags & IMUProtocol.NAV6_FLAG_MASK_CALIBRATION_STATE);
-            return (calibration_state != IMUProtocol.NAV6_CALIBRATION_STATE_COMPLETE);
-        //}
-    }
-
+    /**
+     * Returns the current temperature (in degrees centigrade) reported by
+     * the nav6 gyro/accelerometer circuit.
+     * 
+     * This value may be useful in order to perform advanced temperature-
+     * dependent calibration.
+     * @return The current temperature (in degrees centigrade).
+     */
     public float getTempC()
     {
-        //synchronized (this) { // synchronized block
-            return this.temp_c;
-        //}
+        return this.temp_c;
     }
     
-    //@Override
-    public void run() {
-
-        stop = false;
-        boolean stream_response_received = false;
-        double last_stream_command_sent_timestamp = 0.0;
-        try {
-            serial_port.setReadBufferSize(512);
-            serial_port.setTimeout(1.0);
-            serial_port.enableTermination('\n');
-            serial_port.flush();
-            serial_port.reset();
-        } catch (VisaException ex) {
-            ex.printStackTrace();
-        }
-                
-        IMUProtocol.QuaternionUpdate update = new IMUProtocol.QuaternionUpdate();
-        IMUProtocol.StreamResponse response = new IMUProtocol.StreamResponse();
-
-        byte[] remaining_data = new byte[256];
-        
-	int cmd_packet_length = IMUProtocol.encodeStreamCommand( remaining_data, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
-        try {
-            serial_port.reset();
-            serial_port.write( remaining_data, cmd_packet_length );
-            serial_port.flush();
-            last_stream_command_sent_timestamp = Timer.getFPGATimestamp();
-        } catch (VisaException ex) {
-        }
-        
-        while (!stop) {
-            try {
-                int packets_received = 0;
-                byte[] received_data = serial_port.read(256);
-                int bytes_read = received_data.length;
-                if (bytes_read > 0) {
-                    byte_count += bytes_read;
-                    int i = 0;
-                    // Scan the buffer looking for valid packets
-                    while (i < bytes_read) {
-                        int bytes_remaining = bytes_read - i;
-                        System.arraycopy(received_data, i, remaining_data, 0, bytes_remaining);
-                        int packet_length = IMUProtocol.decodeQuaternionUpdate(remaining_data, bytes_remaining, update);
-                        if (packet_length > 0) {
-                            packets_received++;
-                            update_count++;
-                            setQuaternion(update);
-                            i += packet_length;
-                        } 
-                        else 
-                        {
-                            packet_length = IMUProtocol.decodeStreamResponse(remaining_data, bytes_remaining, response);
-                            if (packet_length > 0) {
-                                packets_received++;
-                                setStreamResponse(response);
-                                stream_response_received = true;
-                                i += packet_length;
-                            }
-                            else {
-                                // current index is not the start of a valid packet; increment
-                                i++;
-                            }
-                        }
-                    }
-                
-                    if ( ( packets_received == 0 ) && ( bytes_read == 256 ) ) {
-                        // No packets received and 256 bytes received; this
-                        // condition occurs in the Java SerialPort.  In this case,
-                        // reset the serial port.
-                        serial_port.reset();
-                    }
-                    
-                    if ( !stream_response_received && ((Timer.getFPGATimestamp() - last_stream_command_sent_timestamp ) > 3.0 ) ) {
-                        cmd_packet_length = IMUProtocol.encodeStreamCommand( remaining_data, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
-                        try {
-                            serial_port.write( remaining_data, cmd_packet_length );
-                            serial_port.flush();
-                            last_stream_command_sent_timestamp = Timer.getFPGATimestamp();
-                        } catch (VisaException ex2) {
-                        }                                                    
-                    }
-                    
-                }
-            } catch (VisaException ex) {
-                // This exception typically indicates a Timeout
-                int error_code = ex.hashCode();
-                int x = error_code;
-                try {
-                    double start_wait_timer = Timer.getFPGATimestamp();
-                    int bytes_received = serial_port.getBytesReceived();
-                    while ( !stop && ( bytes_received == 0 ) ) {
-                        Timer.delay(1.0/update_rate_hz);
-                        bytes_received = serial_port.getBytesReceived();
-                    }
-                    if ( !stop && (bytes_received > 0 ) ) {
-                        if ( (Timer.getFPGATimestamp() - start_wait_timer ) > 1.0 ) {
-                            
-                            // If > 1 second has gone by since time timeout,
-                            // Assume the board has been reset; in this case,
-                            // re-issue the stream configuration command
-                            
-                            Timer.delay(2.0);
-                            cmd_packet_length = IMUProtocol.encodeStreamCommand( remaining_data, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
-                            try {
-                                serial_port.reset();                                
-                                serial_port.write( remaining_data, cmd_packet_length );
-                                serial_port.flush();
-                                last_stream_command_sent_timestamp = Timer.getFPGATimestamp();
-                            } catch (VisaException ex2) {
-                            }                            
-                        }
-                    }
-                } catch (VisaException ex1) {
-                    ex1.printStackTrace();
-                }
-             }
-        }
-    
-    }
-   
     //@Override
     protected void initIMU() {
         super.initIMU();
         world_linear_accel_history = new float[WORLD_LINEAR_ACCEL_HISTORY_LENGTH];
         initWorldLinearAccelHistory();
-        
-        // set the nav6 into "Quaternion" update mode
-	byte stream_command_buffer[] = new byte[256];
-	int packet_length = IMUProtocol.encodeStreamCommand( stream_command_buffer, (byte)IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
-        try {
-            serial_port.write( stream_command_buffer, packet_length );
-        } catch (VisaException ex) {
-        }
-
     }
+
     private void initWorldLinearAccelHistory(){
-        for (int i = 0; i < WORLD_LINEAR_ACCEL_HISTORY_LENGTH; i++) {
-            world_linear_accel_history[i] = 0;
-        }
+        Arrays.fill(world_linear_accel_history,0);
         next_world_linear_accel_history_index = 0;
         world_linear_acceleration_recent_avg = (float) 0.0;
     }
+    
     private void updateWorldLinearAccelHistory( float x, float y, float z ){
         if (next_world_linear_accel_history_index >= WORLD_LINEAR_ACCEL_HISTORY_LENGTH) {
             next_world_linear_accel_history_index = 0;
@@ -223,6 +166,7 @@ public class IMUAdvanced extends IMU {
         world_linear_accel_history[next_world_linear_accel_history_index] = Math.abs(x) + Math.abs(y);
         next_world_linear_accel_history_index++;
     }
+    
     public float getAverageFromWorldLinearAccelHistory(){
         float world_linear_accel_history_sum = (float) 0.0;
         for (int i = 0; i < WORLD_LINEAR_ACCEL_HISTORY_LENGTH; i++) {
@@ -236,7 +180,7 @@ public class IMUAdvanced extends IMU {
             
             float[] q = new float[4];
             float[] gravity = new float[3];
-            float[] euler = new float[3];
+            //float[] euler = new float[3];
             float[] ypr = new float[3];
             float yaw_degrees;
             float pitch_degrees;
@@ -254,7 +198,7 @@ public class IMUAdvanced extends IMU {
             q[1] = ((float)raw_update.q2) / 16384.0f;
             q[2] = ((float)raw_update.q3) / 16384.0f;
             q[3] = ((float)raw_update.q4) / 16384.0f;
-            for (int i = 0; i < 4; i++) if (q[i] >= 2) q[i] = -4 + q[i]; // ???
+            for (int i = 0; i < 4; i++) if (q[i] >= 2) q[i] = -4 + q[i]; // Range-check quaterions
             
             // below calculations are necessary for calculation of yaw/pitch/roll, 
             // and tilt-compensated compass heading
@@ -280,8 +224,8 @@ public class IMUAdvanced extends IMU {
             pitch_degrees = (float) (ypr[1] * (180.0/Math.PI)); 
             roll_degrees = (float) (ypr[2] * (180.0/Math.PI)); 
              
-            // Subtract offset, and handle potential 360 degree wrap-around
-            yaw_degrees -= yaw_offset_degrees;
+            // Subtract nav6 offset, and handle potential 360 degree wrap-around
+            yaw_degrees -= nav6_yaw_offset_degrees;
             if ( yaw_degrees < -180 ) yaw_degrees += 360;
             if ( yaw_degrees > 180 ) yaw_degrees -= 360;
              
@@ -378,31 +322,7 @@ public class IMUAdvanced extends IMU {
             this.world_linear_accel_y = world_linear_acceleration_y;
             this.world_linear_accel_z = world_linear_acceleration_z;
             this.temp_c = raw_update.temp_c;
-            updateYawHistory(this.yaw);
-            
+            updateYawHistory(this.yaw);            
         }
     }
-
-    private void setStreamResponse( IMUProtocol.StreamResponse response ) {
-        
-        //synchronized (this) { // synchronized block
-            this.flags = response.flags;
-            this.yaw_offset_degrees = response.yaw_offset_degrees;
-            this.accel_fsr_g = response.accel_fsr_g;
-            this.gyro_fsr_dps = response.gyro_fsr_dps;
-            this.update_rate_hz = (byte)response.update_rate_hz;
-        //}
-    }
-    
-    volatile float yaw_offset_degrees;
-    volatile float world_linear_accel_x;
-    volatile float world_linear_accel_y;
-    volatile float world_linear_accel_z;
-    volatile float temp_c;
-    volatile short accel_fsr_g;
-    volatile short gyro_fsr_dps;
-    volatile short flags;
-    float world_linear_accel_history[];
-    int   next_world_linear_accel_history_index;
-    float world_linear_acceleration_recent_avg;
 }
