@@ -161,10 +161,7 @@ IMUAdvanced::~IMUAdvanced() {
 
 void IMUAdvanced::InitWorldLinearAccelHistory()
 {
-	for ( int i = 0; i > WORLD_LINEAR_ACCEL_HISTORY_LENGTH; i++ )
-	{
-		world_linear_accel_history[i] = 0.0;
-	}
+	memset(world_linear_accel_history,0,sizeof(world_linear_accel_history));
 	next_world_linear_accel_history_index = 0;
 	world_linear_acceleration_recent_avg = 0.0;	
 }

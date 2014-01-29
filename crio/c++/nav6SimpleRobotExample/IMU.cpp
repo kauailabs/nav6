@@ -48,7 +48,7 @@ static void imuTask(IMU *imu)
 	float roll = 0.0;
 	float compass_heading = 0.0;	
 	char stream_type;
-	uint16_t gyro_fsr_dps, accel_fsr_g, update_rate_hz;
+	uint16_t gyro_fsr_dps, accel_fsr, update_rate_hz;
 	uint16_t q1_offset, q2_offset, q3_offset, q4_offset;
 	float yaw_offset_degrees;
 	uint16_t flags;
@@ -85,7 +85,7 @@ static void imuTask(IMU *imu)
 					else 
 					{
 						packet_length = IMUProtocol::decodeStreamResponse( &protocol_buffer[i], bytes_remaining, stream_type,
-								  gyro_fsr_dps, accel_fsr_g, update_rate_hz,
+								  gyro_fsr_dps, accel_fsr, update_rate_hz,
 								  yaw_offset_degrees, 
 								  q1_offset, q2_offset, q3_offset, q4_offset,
 								  flags );
@@ -93,7 +93,7 @@ static void imuTask(IMU *imu)
 						{
 							packets_received++;
 							imu->SetStreamResponse( stream_type, 
-									  gyro_fsr_dps, accel_fsr_g, update_rate_hz,
+									  gyro_fsr_dps, accel_fsr, update_rate_hz,
 									  yaw_offset_degrees, 
 									  q1_offset, q2_offset, q3_offset, q4_offset,
 									  flags );
@@ -335,10 +335,7 @@ void IMU::SetYawPitchRoll(float yaw, float pitch, float roll, float compass_head
 
 void IMU::InitializeYawHistory()
 {
-	for ( int i = 0; i < YAW_HISTORY_LENGTH; i++ )
-	{
-		yaw_history[i] = 0;
-	}
+	memset(yaw_history,0,sizeof(yaw_history));
 	next_yaw_history_index = 0;
 	last_update_time = 0.0;
 }
@@ -367,7 +364,7 @@ double IMU::GetAverageFromYawHistory()
 }
 
 void IMU::SetStreamResponse( char stream_type, 
-								uint16_t gyro_fsr_dps, uint16_t accel_fsr_g, uint16_t update_rate_hz,
+								uint16_t gyro_fsr_dps, uint16_t accel_fsr, uint16_t update_rate_hz,
 								float yaw_offset_degrees, 
 								uint16_t q1_offset, uint16_t q2_offset, uint16_t q3_offset, uint16_t q4_offset,
 								uint16_t flags )
@@ -376,7 +373,7 @@ void IMU::SetStreamResponse( char stream_type,
 		Synchronized sync(cIMUStateSemaphore);
 		this->yaw_offset_degrees = yaw_offset_degrees;
 		this->flags = flags;
-		this->accel_fsr_g = accel_fsr_g;
+		this->accel_fsr_g = accel_fsr;
 		this->gyro_fsr_dps = gyro_fsr_dps;
 		this->update_rate_hz = update_rate_hz;
 	}		
