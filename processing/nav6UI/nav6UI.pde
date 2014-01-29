@@ -121,9 +121,9 @@ static public void main(String args[]) {
 }
  
 
-void enableRawUpdateMode() {
+void enableRawUpdateMode(int rate) {
 
-    int length = IMUProtocol.encodeStreamCommand(protocol_buffer, (byte) IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION,(byte)100);
+    int length = IMUProtocol.encodeStreamCommand(protocol_buffer, (byte) IMUProtocol.STREAM_CMD_STREAM_TYPE_QUATERNION,(byte)rate);
     if (length != 0) {
       byte[] stream_command = new byte[length];
       arrayCopy(protocol_buffer,0,stream_command,0,length);
@@ -221,7 +221,7 @@ void setup() {
     delay(3000);
     
     // Send command to nav6 requesting streaming data in 'raw' format
-    enableRawUpdateMode();    
+    enableRawUpdateMode(100);    
     
 }
 
@@ -362,6 +362,8 @@ IMUProtocol.QuaternionUpdate raw_update = new IMUProtocol.QuaternionUpdate();
 IMUProtocol.YPRUpdate ypr_update = new IMUProtocol.YPRUpdate();
 IMUProtocol.StreamResponse stream_response = new IMUProtocol.StreamResponse();
 
+long update_count = 0;
+
 void serialEvent(Serial port) {
     
   try {
@@ -378,9 +380,10 @@ void serialEvent(Serial port) {
           
           print(new String(full_message));
           
-          int decode_length = IMUProtocol.decodeQuaternionUpdate(full_message, full_message.length, raw_update);
+          int decode_length = IMUProtocol.decodeQuaternionUpdate(full_message, 0, full_message.length, raw_update);
           if (decode_length != 0) {
             
+            update_count++;
             last_update_ms = millis();
             
             q[0] = ((float)raw_update.q1) / 16384.0f;
@@ -518,12 +521,12 @@ void serialEvent(Serial port) {
             // If a YPR Update was received, send a stream command to switch to Raw Update Mode.
             // This case can happen if the nav6 IMU is reset after this application has completed
             // initialization.
-            decode_length = IMUProtocol.decodeYPRUpdate(full_message, full_message.length, ypr_update);
+            decode_length = IMUProtocol.decodeYPRUpdate(full_message, 0, full_message.length, ypr_update);
             if ( decode_length > 0 ) {
-              enableRawUpdateMode();
+              enableRawUpdateMode(100);
             }
             else {
-              decode_length = IMUProtocol.decodeStreamResponse(full_message,full_message.length,stream_response);
+              decode_length = IMUProtocol.decodeStreamResponse(full_message,0, full_message.length,stream_response);
               if ( decode_length > 0 ) {
                 updateRateHz = stream_response.update_rate_hz;
                 gyroFSRDPS = stream_response.gyro_fsr_dps;
@@ -545,7 +548,23 @@ void serialEvent(Serial port) {
   }
   catch(Exception ex ) {
     println("Exception during serialEvent()");
-  }  
+  }
+  /*
+  if ( update_count > 1000 ) {
+    int new_rate;
+    if ( updateRateHz == 100 ) {
+      new_rate = 50;
+    }
+    else if ( updateRateHz == 50 ) {
+      new_rate = 20;
+    }
+    else {
+      new_rate = 100;
+    }
+    enableRawUpdateMode(new_rate);
+    update_count = 0;
+  }
+  */
 }
 
 void drawCylinder(float topRadius, float bottomRadius, float tall, int sides) {
