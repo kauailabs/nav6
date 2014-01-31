@@ -1,7 +1,5 @@
-A Labview software library and example code for integrating the nav6 into a FRC Robot is available.
+A LabView software library and example code for integrating the nav6 into a FRC Robot is available.
 
-Source code for this [https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fcrio%2Flabview LabView library] is also available.
-
-[http://www.kauailabs.com/onlinedocs/nav6/labview/Doc Online help]
+[https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fcrio%2Flabview Source code] and [http://www.kauailabs.com/onlinedocs/nav6/labview/Doc Online help] for this LabView library available online.
 
 *You can either choose to [https://code.google.com/p/nav6/source/checkout checkout] the source code with subversion, or you can choose to download the [https://nav6.googlecode.com/svn/trunk/nav6.zip latest build] of the libraries.*
