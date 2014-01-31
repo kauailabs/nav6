@@ -1,0 +1,3 @@
+A Labview software library and example code for integrating the nav6 into a FRC Robot is available.
+
+[http://www.kauailabs.com/onlinedocs/nav6/labview/Doc Online help]
