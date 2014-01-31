@@ -1,0 +1,1 @@
+A C++ software library and example code for integrating the nav6 into a FRC Robot is available.
