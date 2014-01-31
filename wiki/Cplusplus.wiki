@@ -1,1 +1,1 @@
-A C++ software library and example code for integrating the nav6 into a FRC Robot is available.
+A C++ software library and [https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fcrio%2Fc%2B%2B%2Fnav6SimpleRobotExample example code] for integrating the nav6 into a FRC Robot is available.
