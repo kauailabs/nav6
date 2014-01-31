@@ -16,11 +16,13 @@
 
 * FRC Software Libraries
 
-  * [IMUClass C++]
+  * [Cplusplus C++]
 
   * [http://www.kauailabs.com/onlinedocs/nav6/java Java]
 
   * [http://www.kauailabs.com/onlinedocs/nav6/labview/Doc/ Labview]
+
+  * [IMUClass The IMU class]
 
   * [IMUAdvancedClass The IMUAdvanced class]
 
