@@ -1,5 +1,3 @@
-#summary nav6 Key Specifications
-
 The nav6 circuit board and official firmware provide inertial and magnetic measurements, with a range, accuracy and update rate as described on this page.
 
 _Note that accuracy values are only valid after a start-up calibration period, during which time the nav6 circuit board must be held still._
