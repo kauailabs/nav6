@@ -43,10 +43,6 @@ static void imuTask(IMU *imu)
 	pport->Flush();
 	pport->Reset();
 
-	float yaw = 0.0;
-	float pitch = 0.0;
-	float roll = 0.0;
-	float compass_heading = 0.0;	
 	char stream_type;
 	uint16_t gyro_fsr_dps, accel_fsr, update_rate_hz;
 	uint16_t q1_offset, q2_offset, q3_offset, q4_offset;
@@ -54,111 +50,93 @@ static void imuTask(IMU *imu)
 	uint16_t flags;
 	
     // Give the nav6 circuit a few seconds to initialize, then send the stream configuration command.
-    int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_YPR, imu->update_rate_hz ); 
-    last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();      
+    int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, imu->current_stream_type, imu->update_rate_hz ); 
+    pport->Reset();
     pport->Write( protocol_buffer, cmd_packet_length );
     pport->Flush();
+    last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();
 		
 	while (!stop)
 	{ 
-//		INT32 bytes_received = pport->GetBytesReceived();
-//		if ( bytes_received > 0 )
+		UINT32 bytes_read = pport->Read( protocol_buffer, sizeof(protocol_buffer) );
+		if ( bytes_read > 0 )
 		{
-			UINT32 bytes_read = pport->Read( protocol_buffer, sizeof(protocol_buffer) );
-			if ( bytes_read > 0 )
+			int packets_received = 0;
+			byte_count += bytes_read;
+			UINT32 i = 0;
+			// Scan the buffer looking for valid packets
+			while ( i < bytes_read )
 			{
-				int packets_received = 0;
-				byte_count += bytes_read;
-				UINT32 i = 0;
-				// Scan the buffer looking for valid packets
-				while ( i < bytes_read )
+				int bytes_remaining = bytes_read - i;
+				int packet_length = imu->DecodePacketHandler( &protocol_buffer[i], bytes_remaining ); 
+				if ( packet_length > 0 )
 				{
-					int bytes_remaining = bytes_read - i;
-					int packet_length = IMUProtocol::decodeYPRUpdate( &protocol_buffer[i], bytes_remaining, yaw, pitch, roll, compass_heading ); 
-					if ( packet_length > 0 )
+					packets_received++;
+					update_count++;
+					i += packet_length;
+				}
+				else 
+				{
+					packet_length = IMUProtocol::decodeStreamResponse( &protocol_buffer[i], bytes_remaining, stream_type,
+							  gyro_fsr_dps, accel_fsr, update_rate_hz,
+							  yaw_offset_degrees, 
+							  q1_offset, q2_offset, q3_offset, q4_offset,
+							  flags );
+					if ( packet_length > 0 ) 
 					{
 						packets_received++;
-						update_count++;
-						imu->SetYawPitchRoll(yaw,pitch,roll,compass_heading);
-						i += packet_length;
-					}
-					else 
-					{
-						packet_length = IMUProtocol::decodeStreamResponse( &protocol_buffer[i], bytes_remaining, stream_type,
+						imu->SetStreamResponse( stream_type, 
 								  gyro_fsr_dps, accel_fsr, update_rate_hz,
 								  yaw_offset_degrees, 
 								  q1_offset, q2_offset, q3_offset, q4_offset,
 								  flags );
-						if ( packet_length > 0 ) 
-						{
-							packets_received++;
-							imu->SetStreamResponse( stream_type, 
-									  gyro_fsr_dps, accel_fsr, update_rate_hz,
-									  yaw_offset_degrees, 
-									  q1_offset, q2_offset, q3_offset, q4_offset,
-									  flags );
-                            stream_response_received = true;
-							i += packet_length;
-						}
-						else // current index is not the start of a valid packet we're interested in; increment
-						{
-							i++;
-						}
+						stream_response_received = true;
+						i += packet_length;
+					}
+					else // current index is not the start of a valid packet we're interested in; increment
+					{
+						i++;
 					}
 				}
-                if ( ( packets_received == 0 ) && ( bytes_read == 256 ) ) {
-                    // No packets received and 256 bytes received; this
-                    // condition occurs in the SerialPort.  In this case,
-                    // reset the serial port.
-                	pport->Reset();
-                }
-                
-                if ( !stream_response_received && ((Timer::GetFPGATimestamp() - last_stream_command_sent_timestamp ) > 3.0 ) ) {
-                    cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_YPR, imu->update_rate_hz ); 
-					last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();
-					pport->Write( protocol_buffer, cmd_packet_length );
-					pport->Flush();
-                }
-	            				
 			}
-			else {
-				double start_wait_timer = Timer::GetFPGATimestamp();
-				// Timeout
-				int bytes_received = pport->GetBytesReceived();
-				while ( !stop && ( bytes_received == 0 ) ) {
-					Wait(1.0/imu->update_rate_hz);
-					bytes_received = pport->GetBytesReceived();
-				}
-                if ( !stop && (bytes_received > 0 ) ) {
-                    if ( (Timer::GetFPGATimestamp() - start_wait_timer ) > 1.0 ) {
-                    	Wait(2.0);
-                        pport->Reset();
-                    	stream_response_received = false;
-                        int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_YPR, imu->update_rate_hz ); 
-                        last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();
-                        pport->Write( protocol_buffer, cmd_packet_length );
-                        pport->Flush();
-                        pport->Reset();
-                    }
-                }
+			if ( ( packets_received == 0 ) && ( bytes_read == 256 ) ) {
+				// No packets received and 256 bytes received; this
+				// condition occurs in the SerialPort.  In this case,
+				// reset the serial port.
+				pport->Reset();
 			}
+			
+			if ( !stream_response_received && ((Timer::GetFPGATimestamp() - last_stream_command_sent_timestamp ) > 3.0 ) ) {
+				cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, imu->current_stream_type, imu->update_rate_hz ); 
+				last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();
+				pport->Write( protocol_buffer, cmd_packet_length );
+				pport->Flush();
+			}	            				
+		}
+		else {
+			// This exception typically indicates a Timeout
+			stream_response_received = false;
 		}
 	}
 }
 
-IMU::IMU( SerialPort *pport, bool internal, uint8_t update_rate_hz )
-{
-	this->update_rate_hz = update_rate_hz;
-	yaw = 0.0;
-	pitch = 0.0;
-	roll = 0.0;
-	pserial_port = pport;
-	pserial_port->Reset();
-	InitIMU();	
+int IMU::DecodePacketHandler( char *received_data, int bytes_remaining ) {
+	
+	float yaw = 0.0;
+	float pitch = 0.0;
+	float roll = 0.0;
+	float compass_heading = 0.0;		
+
+	int packet_length = IMUProtocol::decodeYPRUpdate( received_data, bytes_remaining, yaw, pitch, roll, compass_heading ); 
+	if ( packet_length > 0 )
+	{
+		SetYawPitchRoll(yaw,pitch,roll,compass_heading);
+	}
+	return packet_length;
 }
 
-IMU::IMU( SerialPort *pport, uint8_t update_rate_hz )
-{
+void IMU::InternalInit( SerialPort *pport, uint8_t update_rate_hz, char stream_type ) {
+	current_stream_type = stream_type;
 	yaw_offset_degrees = 0;
 	accel_fsr_g = 2;
 	gyro_fsr_dps = 2000;
@@ -171,7 +149,16 @@ IMU::IMU( SerialPort *pport, uint8_t update_rate_hz )
 	pserial_port = pport;
 	pserial_port->Reset();
 	InitIMU();
-	m_task->Start((UINT32)this);
+	m_task->Start((UINT32)this);		
+}
+
+IMU::IMU( SerialPort *pport, uint8_t update_rate_hz, char stream_type ) {
+	InternalInit(pport,update_rate_hz,stream_type);
+}
+
+IMU::IMU( SerialPort *pport, uint8_t update_rate_hz )
+{
+	InternalInit(pport,update_rate_hz,STREAM_CMD_STREAM_TYPE_YPR);
 }
 
 /**
@@ -193,7 +180,7 @@ void IMU::InitIMU()
 	
 	// set the nav6 into "YPR" update mode
 	
-	int packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_YPR, update_rate_hz ); 
+	int packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, current_stream_type, update_rate_hz ); 
 	pserial_port->Write( protocol_buffer, packet_length );	
 }
 
