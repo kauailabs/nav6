@@ -30,9 +30,8 @@ class IMU : public SensorBase, public PIDSource, public LiveWindowSendable
 {
 protected:
 	SerialPort *pserial_port;
-	IMU(SerialPort *pport, bool internal, uint8_t update_rate_hz);
-	void InitIMU();
-	
+	IMU( SerialPort *pport, uint8_t update_rate_hz, char stream_type );
+	void InternalInit( SerialPort *pport, uint8_t update_rate_hz, char stream_type );
 public:
 
 	IMU( SerialPort *pport, uint8_t update_rate_hz = 100 );
@@ -63,16 +62,20 @@ public:
 							uint16_t q1_offset, uint16_t q2_offset, uint16_t q3_offset, uint16_t q4_offset,
 							uint16_t flags );
 	double GetYawOffset() { return yaw_offset; }
-	virtual double GetByteCount();
-	virtual double GetUpdateCount();
+	double GetByteCount();
+	double GetUpdateCount();
 	void Restart();
-	virtual bool  IsCalibrating();
+	bool  IsCalibrating();
 
 	uint8_t update_rate_hz;	
+	char current_stream_type;
+	virtual int DecodePacketHandler( char *received_data, int bytes_remaining );
 	
 private:
 	void InitializeYawHistory();
 	double GetAverageFromYawHistory();
+	void InitIMU();
+	
 
 protected:
 

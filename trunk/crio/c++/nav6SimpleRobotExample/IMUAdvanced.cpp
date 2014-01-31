@@ -18,141 +18,25 @@
 #include "Synchronized.h"
 #include <math.h>
 
-static SEM_ID cIMUStateSemaphore = semBCreate (SEM_Q_PRIORITY, SEM_FULL);   
-static int update_count = 0;
-static int byte_count = 0;
-
-static bool stop = false;
-
-/*** Internal task.
- * 
- * Task which retrieves yaw/pitch/roll updates from the IMU, via the
- * SerialPort.
- **/ 
-
-static char protocol_buffer[256];
-
-static void imuAdvancedTask(IMUAdvanced *imu) 
-{
-	stop = false;
-    bool stream_response_received = false;
-    double last_stream_command_sent_timestamp = 0.0;
-	SerialPort *pport = imu->GetSerialPort();
-	pport->SetReadBufferSize(512);
-	pport->SetTimeout(1.0);
-	pport->EnableTermination('\n');
-	pport->Flush();
-	pport->Reset();
-
+int IMUAdvanced::DecodePacketHandler( char *received_data, int bytes_remaining ) {
+	
 	int16_t q1, q2, q3, q4;
 	int16_t accel_x, accel_y, accel_z;
 	int16_t mag_x, mag_y, mag_z;
 	float temp_c;
-	char stream_type;
-	uint16_t gyro_fsr_dps, accel_fsr_g, update_rate_hz;
-	uint16_t q1_offset, q2_offset, q3_offset, q4_offset;
-	float yaw_offset_degrees;
-	uint16_t flags;
-	
-    int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION, imu->update_rate_hz ); 
-    last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();   
-    pport->Write( protocol_buffer, cmd_packet_length );
-    pport->Flush();
-	
-	while (!stop)
-	{ 
-//		INT32 bytes_received = pport->GetBytesReceived();
-//		if ( bytes_received > 0 )
-		{
-			UINT32 bytes_read = pport->Read( protocol_buffer, sizeof(protocol_buffer) );
-			if ( bytes_read > 0 )
-			{
-				int packets_received = 0;
-				byte_count += bytes_read;
-				UINT32 i = 0;
-				// Scan the buffer looking for valid packets
-				while ( i < bytes_read )
-				{
-					byte_count += bytes_read;
-					int bytes_remaining = bytes_read - i;
-					int packet_length = IMUProtocol::decodeQuaternionUpdate( &protocol_buffer[i], bytes_remaining, 
-							q1,q2,q3,q4,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z,temp_c ); 
-					if ( packet_length > 0 )
-					{
-						packets_received++;
-						update_count++;
-						imu->SetRaw(q1,q2,q3,q4,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z,temp_c);
-						i += packet_length;
-					}
-					else 
-					{
-						packet_length = IMUProtocol::decodeStreamResponse( &protocol_buffer[i], bytes_remaining, stream_type,
-								  gyro_fsr_dps, accel_fsr_g, update_rate_hz,
-								  yaw_offset_degrees, 
-								  q1_offset, q2_offset, q3_offset, q4_offset,
-								  flags );
-						if ( packet_length > 0 ) 
-						{
-							packets_received++;
-							imu->SetStreamResponse( stream_type, 
-									  gyro_fsr_dps, accel_fsr_g, update_rate_hz,
-									  yaw_offset_degrees, 
-									  q1_offset, q2_offset, q3_offset, q4_offset,
-									  flags );
-                            stream_response_received = true;
-							i += packet_length;
-						}
-						else // current index is not the start of a valid packet we're interested in; increment
-						{
-							i++;
-						}
-					}
-				}
-	            if ( ( packets_received == 0 ) && ( bytes_read == 256 ) ) {
-	                // No packets received and 256 bytes received; this
-	                // condition occurs in the SerialPort.  In this case,
-	                // reset the serial port.
-	            	pport->Reset();
-	            }				
-	            
-                if ( !stream_response_received && ((Timer::GetFPGATimestamp() - last_stream_command_sent_timestamp ) > 3.0 ) ) {
-                    cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION, imu->update_rate_hz ); 
-					last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();
-					pport->Write( protocol_buffer, cmd_packet_length );
-					pport->Flush();
-                }
-	            
-			}
-			else {
-				double start_wait_timer = Timer::GetFPGATimestamp();
-				// Timeout
-				int bytes_received = pport->GetBytesReceived();
-				while ( !stop && ( bytes_received == 0 ) ) {
-					Wait(1.0/imu->update_rate_hz);
-					bytes_received = pport->GetBytesReceived();
-				}
-                if ( !stop && (bytes_received > 0 ) ) {
-                    if ( (Timer::GetFPGATimestamp() - start_wait_timer ) > 1.0 ) {
-                    	Wait(2.0);
-                    	stream_response_received = false;
-                        int cmd_packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION, imu->update_rate_hz ); 
-                        last_stream_command_sent_timestamp = Timer::GetFPGATimestamp();
-                        pport->Write( protocol_buffer, cmd_packet_length );
-                        pport->Flush();
-                        pport->Reset();
-                    }
-                }
-			}
-            
-		}
+
+	int packet_length = IMUProtocol::decodeQuaternionUpdate( received_data, bytes_remaining, 
+			q1,q2,q3,q4,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z,temp_c ); 
+	if ( packet_length > 0 ) {
+		SetQuaternion(q1,q2,q3,q4,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z,temp_c);
 	}
+	return packet_length;
 }
 
 IMUAdvanced::IMUAdvanced( SerialPort *pport, uint8_t update_rate_hz ) :
-	IMU(pport,true, update_rate_hz)
+	IMU(pport,update_rate_hz,STREAM_CMD_STREAM_TYPE_QUATERNION)
 {
-	m_task = new Task("IMUAdvanced", (FUNCPTR)imuAdvancedTask,Task::kDefaultPriority+1); 
-	m_task->Start((UINT32)this);
+	InitWorldLinearAccelHistory();
 }
 
 IMUAdvanced::~IMUAdvanced() {
@@ -187,59 +71,37 @@ float IMUAdvanced::GetAverageFromWorldLinearAccelHistory()
 	return world_linear_accel_history_avg;
 }
 
-
-/**
- * Initialize the IMU.
- */
-void IMUAdvanced::InitIMU()
-{
-	IMU::InitIMU();
-	InitWorldLinearAccelHistory();
-	
-	// set the nav6 into "Quaternion" update mode
-	
-	int packet_length = IMUProtocol::encodeStreamCommand( protocol_buffer, STREAM_CMD_STREAM_TYPE_QUATERNION, update_rate_hz ); 
-	pserial_port->Write( protocol_buffer, packet_length );
-}
-
 float IMUAdvanced::GetWorldLinearAccelX()
 {
-	Synchronized sync(cIMUStateSemaphore);
 	return this->world_linear_accel_x;
 }
 
 float IMUAdvanced::GetWorldLinearAccelY()
 {
-	Synchronized sync(cIMUStateSemaphore);
 	return this->world_linear_accel_y;	
 }
 
 float IMUAdvanced::GetWorldLinearAccelZ()
 {
-	Synchronized sync(cIMUStateSemaphore);
 	return this->world_linear_accel_z;	
 }
 
 bool  IMUAdvanced::IsMoving()
 {
-	Synchronized sync(cIMUStateSemaphore);
 	return (GetAverageFromWorldLinearAccelHistory() >= 0.01);
 }
 
 float IMUAdvanced::GetTempC()
 {
-	Synchronized sync(cIMUStateSemaphore);
 	return this->temp_c;
 }
 
-void IMUAdvanced::SetRaw( int16_t quat1, int16_t quat2, int16_t quat3, int16_t quat4,
+void IMUAdvanced::SetQuaternion( int16_t quat1, int16_t quat2, int16_t quat3, int16_t quat4,
 					int16_t accel_x, int16_t accel_y, int16_t accel_z,
 					int16_t mag_x, int16_t mag_y, int16_t mag_z,
 					float temp_c)
 {
 	{
-		Synchronized sync(cIMUStateSemaphore);
-
 		float q[4];				// Quaternion from IMU
 		float gravity[3];		// Gravity Vector
 		//float euler[3];			// Classic euler angle representation of quaternion
@@ -391,13 +253,4 @@ void IMUAdvanced::SetRaw( int16_t quat1, int16_t quat2, int16_t quat3, int16_t q
 		UpdateYawHistory(this->yaw);
 		UpdateWorldLinearAccelHistory( world_linear_acceleration_x, world_linear_acceleration_y, world_linear_acceleration_z);
 	}	
-}
-
-double IMUAdvanced::GetByteCount()
-{
-	return byte_count;
-}
-double IMUAdvanced::GetUpdateCount()
-{
-	return update_count;
 }
