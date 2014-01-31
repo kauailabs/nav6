@@ -2,4 +2,6 @@ A Java software library and example code for integrating the nav6 into a FRC Rob
 
 [http://www.kauailabs.com/onlinedocs/nav6/java Online help]
 
+[https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fcrio%2Fjava Source code] and [http://www.kauailabs.com/onlinedocs/nav6/java Online help] for this Java library are available online.
+
 *You can either choose to [https://code.google.com/p/nav6/source/checkout checkout] the source code with subversion, or you can choose to download the [https://nav6.googlecode.com/svn/trunk/nav6.zip latest build] of the libraries.*
