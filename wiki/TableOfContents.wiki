@@ -18,9 +18,9 @@
 
   * [Cplusplus C++]
 
-  * [http://www.kauailabs.com/onlinedocs/nav6/java Java]
+  * [Java Java]
 
-  * [http://www.kauailabs.com/onlinedocs/nav6/labview/Doc/ Labview]
+  * [Labview Labview]
 
   * [IMUClass The IMU class]
 
