@@ -58,7 +58,7 @@ static void imuTask(IMU *imu)
 		
 	while (!stop)
 	{ 
-		UINT32 bytes_read = pport->Read( protocol_buffer, sizeof(protocol_buffer) );
+		UINT32 bytes_read = pport->Read( protocol_buffer, 256 );
 		if ( bytes_read > 0 )
 		{
 			int packets_received = 0;
