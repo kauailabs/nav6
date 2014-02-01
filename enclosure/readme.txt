@@ -5,3 +5,5 @@ IMU Enclosure Notes.ppt:  Summary of design and a mounting diagram
 nav6.stl:                 3D Model (STL Format) of nav6 board
 base.stl:                 3D model (STL Format) of enclosure base
 lid.stl:                  3D model (STL Format) of enclosure lid
+base.STEP:                3D model (STEP Format) of enclosure base
+lid.STEP:                 3D model (STEP Format) of enclosure lid
