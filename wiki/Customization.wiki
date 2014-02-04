@@ -20,7 +20,7 @@ NOTE: To interface the Arduino IDE to the nav6 from a computer without a RS-232 
 
 7) Compile and upload your latest code to the nav6 via the File->Upload menu item.
 
-_*Unlike the Arduino UNO board, you'll need to press the reset button on the nav6 circuit board just before starting the upload to the nav6. This approach was taken to ensure the board is not reset accidentally during normal use._*
+_*Unlike the Arduino UNO board, you'll need to press the reset button on the nav6 circuit board just before starting the upload to the nav6. This approach was taken to ensure the nav6 is not reset accidentally during normal use._*
 
 _*As soon as the upload starts, press the "RESET" button on the Nav6.  Pressing the RESET button will cause the bootloader software to execute.  If the upload starts within 2 seconds of pressing the RESET button, the upload should succeed.   You'll see the RX and TX LEDs blink as the sketch is uploaded.  If the RESET button is pushed too early, or too late, simply attempt the upload and press the RESET button again.*_
 
