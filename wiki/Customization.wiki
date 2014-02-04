@@ -20,6 +20,8 @@ NOTE: To interface the Arduino IDE to the nav6 from a computer without a RS-232 
 
 7) Compile and upload your latest code to the nav6 via the File->Upload menu item.
 
+_*As soon as the upload starts, press the "RESET" button on the Nav6.  Pressing the RESET button will cause the bootloader software to execute.  If the upload starts within 2 seconds of pressing the RESET button, the upload should succeed.   If the RESET button is pushed too early, or too late, simply attempt the upload and press the RESET button again.*_
+
 *NOTES:  
 
   * At any time you can re-load the latest [http://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Farduino/nav6 latest nav6 IMU firmware] using this same process.
