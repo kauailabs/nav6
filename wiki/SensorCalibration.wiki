@@ -4,7 +4,7 @@ The nav6 includes automatic calibration of the gyroscopes/accelerometers, the ya
 
 = Gyroscope/Accelerometer Calibration =
 
-The Invensense MPU-6050 Digital Motion Processor (DMP) includes several automatic calibration methods.  The simplest-to-use calibration method is used in the nav6, which will automatically calibrate the gyroscope and accelerometer whenever the nav6 is still for a period of 8 seconds.  
+The Invensense MPU-6050 Digital Motion Processor (DMP) includes several automatic calibration methods.  The simplest-to-use calibration method is used in the nav6, which will automatically calibrate the gyroscope and accelerometer whenever the nav6 is still for a period of 8 seconds.  Assuming the nav6 is held still after power is applied, the entire calibration process should complete in 20 seconds.
 
 In a typical FIRST FRC competition match, this means that the gyroscope/accelerometers are automatically calibrated at the beginning of a match, between the time when the robot is powered on and when the match actually starts.
 
