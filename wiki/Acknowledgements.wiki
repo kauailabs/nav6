@@ -6,7 +6,7 @@ The development of nav6 could not happen without the contributions and support o
   
   * Quinn Hannah-White and Braden Beck, Kauaibots (Team 2465) Control System team members, who helped with the testing and integration of the nav6 prototype and the nav6 C++ library during the 2013 FRC season and during the off-season that followed.
 
-  * Will Martshall, FRC Team 11, an early nav6 customer who has helped develop and improve the accuracy and performance of Java Library code which simplifies the integration of the nav6 on a Java-based FRC robot.
+  * Will Marshall, FRC Team 11, an early nav6 customer who has helped develop and improve the accuracy and performance of Java Library code which simplifies the integration of the nav6 on a Java-based FRC robot.
   
   * Joe Ross, Mentor, FRC Team 330 (Beachbots), who volunteered to develop the nav6 !LabView VI Library, which simplifies the integration of the nav6 on a !LabView-based FRC robot.
   
