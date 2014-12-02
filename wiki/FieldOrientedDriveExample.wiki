@@ -1,6 +1,6 @@
 An easy-to-use, highly-maneuverable drive system is at the heart of a successful [http://www.usfirst.org/frc FIRST Robotics Challenge (FRC)] robot.  Omnidirectional drive systems (e.g., omniwheel, mecanum, swerve) are typically employed to provide enhanced maneuverability, yet introduce a new challenge:  _increased driving complexity, related to the requirement that the driver “put their head in the robot”_.  The nav6 IMU can be used to add Field-Oriented Drive to omnidirectional drive robots - reducing driver training time, enabling driver/shooter delegation in turret-less shooting robotis, and allowing drivers to fully focus on the game rather than the drive system. 
 
-http://www.kauailabs.com/store/image/cache/data/OmniDirectionalDrive.png
+http://www.kauailabs.com/store/image/data/OmniDirectionalDrive.png
 
 Omnidirectional drive systems provide drivers a highly-maneuverable robot that can move in the Y axis (forward-backward), X-axis (strafe), and Z axis (rotating about it's center axis).  Each degree of freedom is independent, meaning that the overall robot motion is comprised of a “mix” of motion in each of the X, Y and Z axes, control of which is easily provided with a 3-degree of freedom joystick.
 This resulting maneuverability is quite useful during FRC competitions to avoid other robots, pick up and place game pieces, line up for shooting to a target, etc.
