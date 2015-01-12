@@ -1,3 +1,23 @@
+= RoboRio =
+
+== USB:  Verify USB Serial Port Binding ==
+
+If connecting the RoboRio to the nav6 via one of the RoboRIO USB host ports (using a USB-serial adapter cable), verify that the nav6's USB interface is correctly bound to RoboRIO Serial Port ASRL3:INTR, as shown below.
+
+This information is displayed in the RoboRio's webdashboard.  For instance, if you have connected your RoboRio to your PC via USB cable (connected to the RoboRio's USB Device Port), the web dashboard can be viewed within a web browser (in this case, at http://172.22.11.2).
+
+https://navx-mxp.googlecode.com/svn/trunk/images/roborio_webdashboard_ports.png
+
+== RS-232:  Verify RoboRIO Console Out is disabled ==
+
+If you are connecting the nav6 to the RoboRio's RS-232 port, ensure that the "Console Out" feature of the RoboRio is disabled.  If the "Console Out" feature of the Roborio is enabled, no other communication of the RS-232 port is permitted.
+
+This setting can be edited via the [http://wpilib.screenstepslive.com/s/4485/m/24166/l/262266-roborio-webdashboard RoboRio Web Dashboard]
+
+Note that this setting can also be changed via the !RoboRio imaging tool. Note that if you ever have to reimage the roboRIO, the imaging tool will automatically turn the console out back on.
+
+= CRio =
+
 1) *_Ensure the CRio CONSOLE OUT Dipswitch is off_*
 
 If the CRio CONSOLE OUT Dipswitch is ON, the Serial Port will be used exclusively by the CRio to output debug/status messages to a serial terminal.  In this case, the Serial Port cannot be used to communicate to the nav6 Open Source IMU.
