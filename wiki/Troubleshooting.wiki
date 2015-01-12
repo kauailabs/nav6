@@ -10,7 +10,7 @@ https://navx-mxp.googlecode.com/svn/trunk/images/roborio_webdashboard_ports.png
 
 == RS-232:  Verify RoboRIO Console Out is disabled ==
 
-If you are connecting the nav6 to the RoboRio's RS-232 port, ensure that the "Console Out" feature of the RoboRio is disabled.  If the "Console Out" feature of the Roborio is enabled, no other communication of the RS-232 port is permitted.
+If you are connecting the nav6 to the !RoboRio's RS-232 port, ensure that the "Console Out" feature of the !RoboRio is disabled.  If the "Console Out" feature of the !Roborio is enabled, no other communication of the RS-232 port is permitted.
 
 This setting can be edited via the [http://wpilib.screenstepslive.com/s/4485/m/24166/l/262266-roborio-webdashboard RoboRio Web Dashboard]
 
