@@ -2,9 +2,9 @@
 
 == USB:  Verify USB Serial Port Binding ==
 
-If connecting the RoboRio to the nav6 via one of the RoboRIO USB host ports (using a USB-serial adapter cable), verify that the nav6's USB interface is correctly bound to RoboRIO Serial Port ASRL3:INTR, as shown below.
+If connecting the !RoboRio to the nav6 via one of the !RoboRIO USB host ports (using a USB-serial adapter cable), verify that the nav6's USB interface is correctly bound to !RoboRIO Serial Port ASRL3:INTR, as shown below.
 
-This information is displayed in the RoboRio's webdashboard.  For instance, if you have connected your RoboRio to your PC via USB cable (connected to the RoboRio's USB Device Port), the web dashboard can be viewed within a web browser (in this case, at http://172.22.11.2).
+This information is displayed in the !RoboRio's webdashboard.  For instance, if you have connected your !RoboRio to your PC via USB cable (connected to the !RoboRio's USB Device Port), the web dashboard can be viewed within a web browser (in this case, at http://172.22.11.2).
 
 https://navx-mxp.googlecode.com/svn/trunk/images/roborio_webdashboard_ports.png
 
