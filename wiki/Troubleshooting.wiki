@@ -1,3 +1,5 @@
+This page includes trouble-shooting tips for the nav6 when used with the !RoboRio and the !CRio.
+
 = !RoboRio =
 
 == USB:  Verify USB Serial Port Binding ==
@@ -15,6 +17,12 @@ If you are connecting the nav6 to the !RoboRio's RS-232 port, ensure that the "C
 This setting can be edited via the [http://wpilib.screenstepslive.com/s/4485/m/24166/l/262266-roborio-webdashboard RoboRio Web Dashboard]
 
 Note that this setting can also be changed via the !RoboRio imaging tool. Note that if you ever have to reimage the roboRIO, the imaging tool will automatically turn the console out back on.
+
+== RS-232: Verify TX, RX and GND are connected correctly ==
+
+TX on the nav6 side connects to RX on the roborio side, and vice versa. Additionally,  GND on the nav6's RS-232 connector must be connected to GND on the roborio's RS-232 connector.
+
+To verify that the nav6 is sending data, look at the green TX led on the nav6 circuit board.  During startup, the !RoboRio nav6 library will send a message to the nav6, so during this time you should also see a very brief flash of the RX led on the nav6 circuit board.
 
 = CRio =
 
