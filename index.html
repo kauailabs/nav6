@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Nav6 by kauailabs</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Nav6</h1>
+          <h2>Open-source Inertial Measurement Unit (IMU) designed for robotics</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/kauailabs/nav6/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/kauailabs/nav6/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/kauailabs/nav6" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <p>[<a href="http://www.kauailabs.com/store/index.php?route=product/product&amp;product_id=50">http://www.kauailabs.com/store/index.php?route=product/product&amp;product_id=50</a> <a href="http://www.kauailabs.com/store/image/data/nav6_Banner3_build_selfguided_robots2.png">http://www.kauailabs.com/store/image/data/nav6_Banner3_build_selfguided_robots2.png</a>]</p>
+
+<p><em>NOTE:  the new [<a href="https://code.google.com/p/navx">https://code.google.com/p/navx</a> navX MXP Robotics Navigation Sensor] is now available; if you are using a National Instrument RoboRIO, this provides additional features including RoboRIO I/O Expansion and 9-axis headings (AHRS functionality) along with enhanced calibration algorithms and tools.</em></p>
+
+<p><em>The _</em>nav6<em>_ [<a href="http://en.wikipedia.org/wiki/Inertial_measurement_unit">http://en.wikipedia.org/wiki/Inertial_measurement_unit</a> inertial measurement unit (IMU)] brings sophisticated inertial navigation to air, land and sea robots, including the <a href="FRC">http://www.usfirst.org/frc FIRST Robotics Challenge</a>.</em></p>
+
+<p>nav6 rapidly calculates yaw, pitch, roll and compass heading, as well as linear acceleration, enabling features including:</p>
+
+<ul>
+<li>[FieldOrientedDriveExample "Field-oriented" drive mode]</li>
+<li>[AutoBalancingExample Robot balancing]</li>
+<li>[RotateToAngleExample Auto-rotation to an absolute or relative angle]</li>
+<li>[MotionDetection Motion / No-Motion Detection]</li>
+<li>Bump Detection</li>
+</ul>
+
+<p>== Key Features ==</p>
+
+<ul>
+<li>Yaw, Pitch and Roll Angles</li>
+<li>Tilt-compensated Compass Heading</li>
+<li>Configurable Update Rate from 4 to 100Hz</li>
+<li>Automatic Accelerometer/Gyroscope Calibration</li>
+<li>Automatic Hard-Iron Magnetometer Calibration</li>
+<li>Libraries and example code for integration onto a FRC Robot, in C++, Java and !LabView</li>
+<li>Completely Open Source:  Source Code, Schematics/Bill of Materials and Enclosure Design files (for 3D printer)</li>
+<li>Arduino-compatible - programmable with free Arduino IDE</li>
+</ul>
+
+<p>===<em><em>Available now at the [<a href="http://www.kauailabs.com/store/index.php?route=product/product&amp;product_id=50">http://www.kauailabs.com/store/index.php?route=product/product&amp;product_id=50</a> Kauailabs store].</em></em>===</p>
+
+<p>[<a href="http://www.kauailabs.com/store/index.php?route=product/product&amp;product_id=50">http://www.kauailabs.com/store/index.php?route=product/product&amp;product_id=50</a> <a href="https://nav6.googlecode.com/svn/trunk/images/nav6_purple_1_small.jpg">https://nav6.googlecode.com/svn/trunk/images/nav6_purple_1_small.jpg</a>]</p>
+
+<p>== Overview ==</p>
+
+<p>The nav6 features the powerful Invensense [<a href="http://invensense.com/mems/gyro/mpu6050.html">http://invensense.com/mems/gyro/mpu6050.html</a> MPU-6050] IC which includes a 3-axis accelerometer, a 3-axis gyroscope and an on-chip "Digital Motion Processor" (DMP).  The nav6 employs sophisticated motion processing algorithms provided by the DMP included with the MPU-6050.  The result:  highly accurate tip/tilt, and accurate yaw that exhibits minimal drift of approximately 1 degree per minute.  The sensor provides a update rate up to 100Hz, suitable for use in robotic systems.</p>
+
+<p>The nav6 also includes a Honeywell [<a href="http://www51.honeywell.com/aero/common/documents/myaerospacecatalog-documents/Defense_Brochures-documents/HMC5883L_3-Axis_Digital_Compass_IC.pdf">http://www51.honeywell.com/aero/common/documents/myaerospacecatalog-documents/Defense_Brochures-documents/HMC5883L_3-Axis_Digital_Compass_IC.pdf</a> HMC5883L] 3-axis magnetometer.  Although the magnetometer compass readings are often unreliable when robot motors are energized, it is useful for establishing absolute orientation at the beginning of a competition.  Combined with the nav6 "pose" and this initial orientation, a robot's absolute orientation throughout a competition match can be maintained.</p>
+
+<p>The nav6 is managed by an Atmel ATMEGA328P microcontroller, which offloads processing from the host.  The nav6 is Arduino-compatible, and the nav6 firmware can be customized via the free Arduino Integrated Development Environment (IDE).  </p>
+
+<p>The nav6 has been designed specifically to enable [FRCRobotInstallation easy integration] into a FRC robotics control system:  it's power connection connects directly to an unregulated 12V output on the Power Distribution Board and it's data connection connects directly to the cRio serial port.  Additionally, [<a href="https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fcrio">https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fcrio</a> source code for easy integration into the FRC cRio controller] is also provided.</p>
+
+<p>==Fully Open Source==</p>
+
+<p>The nav6 project is completely open-source and includes the following freely-available components:</p>
+
+<p>===<em>Board schematics/layout</em>===</p>
+
+<ul>
+<li>https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fschematics board schematics and bill of materials.</li>
+</ul>
+
+<p>===<em>Arduino-compatible firmware source code</em>===</p>
+
+<ul>
+<li>As the nav6 behaves almost exactly like an Arduino UNO Rev 3 board, it can be programmed via the [<a href="http://arduino.cc/en/main/software">http://arduino.cc/en/main/software</a> Arduino IDE].<br>
+</li>
+<li>The [<a href="https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Farduino">https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Farduino</a> nav6 firmware Source Code] can be built and downloaded to the nav6 via the Arduino IDE.</li>
+</ul>
+
+<p>NOTE: To interface the Arduino IDE to the nav6 from a computer without a RS-232 serial port, you can use an inexpensive [<a href="http://www.kauailabs.com/store/index.php?route=product/product&amp;product_id=53">http://www.kauailabs.com/store/index.php?route=product/product&amp;product_id=53</a> USB-to-RS-232 converter cable].</p>
+
+<p>===<em>cRio client source code</em>===</p>
+
+<ul>
+<li>The [<a href="https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fcrio">https://code.google.com/p/nav6/source/browse/#svn%2Ftrunk%2Fcrio</a> nav6 cRio library source code] is compatible with the FRC WPI Library (C++ and Java variants) as well as !LabView, which runs on the FIRST robotics cRio and RoboRIO platforms.  This code allows robot control system code to acquire yaw/pitch/roll/compass-heading values from the board in real-time.</li>
+</ul>
+
+<p>===<em>Enclosure design files</em>===</p>
+
+<p>A custom enclosure to protect and mount the nav6 IMU can be made with a 3D printer using provided [Enclosure] design files.</p>
+
+<p>[<a href="http://www.kauailabs.com">http://www.kauailabs.com</a> <a href="http://www.kauailabs.com/wp-content/uploads/2013/12/cropped-kauailabsbanner_990_x_18012.png">http://www.kauailabs.com/wp-content/uploads/2013/12/cropped-kauailabsbanner_990_x_18012.png</a>]</p>
+        </section>
+
+        <footer>
+          Nav6 is maintained by <a href="https://github.com/kauailabs">kauailabs</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
