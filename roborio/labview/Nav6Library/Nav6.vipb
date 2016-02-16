@@ -1,7 +1,7 @@
-<VI_Package_Builder_Settings Version="0.6" Created_Date="2016-01-15 17:18:28" Modified_Date="2016-01-15 17:24:15" Creator="Matthew" Comments="" ID="a2f876229db8553b5e230e85a221b65c">
+<VI_Package_Builder_Settings Version="0.6" Created_Date="2016-01-15 17:18:28" Modified_Date="2016-02-15 20:37:41" Creator="Matthew" Comments="" ID="7c365e4444b62a62367db5f00bc6e09e">
   <Library_General_Settings>
     <Package_File_Name>FRCT_Team#_3937_Breakaway_lib_Nav6</Package_File_Name>
-    <Library_Version>1.0.0.2</Library_Version>
+    <Library_Version>1.0.0.4</Library_Version>
     <Auto_Increment_Version>false</Auto_Increment_Version>
     <Library_Source_Folder>.</Library_Source_Folder>
     <Library_Output_Folder>..</Library_Output_Folder>
@@ -106,9 +106,6 @@
         <Namespace_Type>Prefix</Namespace_Type>
         <Namespace/>
       </Namespace_Overrides>
-      <Compile_Exclusions>
-        <Path/>
-      </Compile_Exclusions>
     </Source_Files>
     <License_Agreement_Filepath/>
     <Licensing_and_Activation>
@@ -446,7 +443,7 @@
         <Path>ZeroYaw.vi</Path>
         <VI_Title/>
       </Items_Data>
-      <GUID>31C8C9EAD28C4EA394BD4F12FAB1580E</GUID>
+      <GUID>F4E993E0C3FDFC13AE9AA83D64912306</GUID>
     </Functions_Palette_Data>
     <Controls_Palette_Data>
       <Parent_Palette_Index>-1</Parent_Palette_Index>
@@ -509,7 +506,7 @@
         <Path>Nav6Mode.ctl</Path>
         <VI_Title/>
       </Items_Data>
-      <GUID>65C900D9903312947AD0E9BFFCF5B885</GUID>
+      <GUID>D177AB5DD0FAE3DBB46E5C8CF803460F</GUID>
     </Controls_Palette_Data>
   </Library_Palette_Definition>
 </VI_Package_Builder_Settings>
